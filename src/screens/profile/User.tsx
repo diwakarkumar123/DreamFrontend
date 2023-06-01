@@ -1,7 +1,7 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React from 'react';
 import { SPACING, TEXT, COLOR, BORDER } from '../../configs/styles/index';
-import { AVATA_IMG, BOOKMARK_IMG } from '../../configs/source';
+import { AVATA_IMG, BOOKMARK_IMG,  } from '../../configs/source';
 import { UserModel } from '../../models/User.model';
 import { urlSourceMedia } from '../../utils/utils';
 import { Container } from '../../components';
@@ -14,6 +14,10 @@ export type Props = {
 
 const User: React.FC<Props> = ({ user, showHeader }) => {
   const navigation = useNavigation();
+  const alt_url = 'https://media.licdn.com/dms/image/D4D03AQFe9vksJNnGiA/profile-displayphoto-shrink_800_800/0/1683797622677?e=2147483647&v=beta&t=jbVEvQ5xMGlW_wzNSt8AiT0Td6C5brUNrdsRAIGfKW4'
+
+
+
   const EditProfile = () => {
     return (
       <TouchableOpacity 
@@ -26,7 +30,7 @@ const User: React.FC<Props> = ({ user, showHeader }) => {
     );
   };
 
-  const Follow = () => {
+  const Follow = () => { 
     return (
       <View
         style={[
@@ -44,12 +48,13 @@ const User: React.FC<Props> = ({ user, showHeader }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container}> 
       <Image
-        source={{ uri: urlSourceMedia(user?.avatar) }}
+        // source={{ uri: user?.avatar || alt_url}}
+        source={AVATA_IMG}
         style={styles.avata}
       />
-      <Text style={styles.txtUserName}>@{user?.name || 'USERNAME'}</Text>
+      <Text style={styles.txtUserName}>@{user?.username || 'USERNAME'}</Text>
       <View style={styles.containerFollow}>
         <View style={styles.itemFollow}>
           <Text style={styles.txtAmountFollow}>{user?.following || 0}</Text>

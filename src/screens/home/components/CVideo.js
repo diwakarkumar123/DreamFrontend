@@ -61,12 +61,11 @@ const CVideo = ({ videoRef, url, isActive, bottomHeight,item }) => {
       <Video
         ref={videoRef}
         source={{
-          uri: `${url}`,
-        }}
+          uri: `${url}`, }}
         style={styles.video}
-        resizeMode="cover"
+        resizeMode="contain"
         paused={!isActive}
-        repeat
+        repeat={true}
         onLoad={data => setDuration(data.duration)}
         onProgress={data => {
           setSliderValue(data.currentTime / duration);
@@ -78,7 +77,7 @@ const CVideo = ({ videoRef, url, isActive, bottomHeight,item }) => {
           width={WIDTH}
           padding={0}
           position="absolute"
-          bottom={-SPACING.S1 - 4}
+          bottom={-SPACING.S1 - 12}
           elevation={100}>
           <Slider
             ref={sliderRef}
@@ -119,8 +118,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     left: 0,
-    bottom: 0,
+    bottom: -5,
     right: 0,
+    // flex: 1,
   },
   uiContainer: {
     height: '100%',

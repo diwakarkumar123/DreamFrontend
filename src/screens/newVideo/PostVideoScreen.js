@@ -1,4 +1,5 @@
 import {
+  Alert,
   Pressable,
   ScrollView,
   StatusBar,
@@ -29,7 +30,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { KEY_STORAGE } from '../../constants/constants';
 import * as videoApi from '../../apis/video.api';
 import ModalLoading from '../../components/modal/ModalLoading';
-
+import { useSelector } from 'react-redux';
+import axios from 'axios';
 const listAddress = [
   'Lahore',
   'Islamabad',
@@ -44,8 +46,12 @@ const PostVideoScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
 
+  const my_data = useSelector(state => state.my_data.my_profile_data)
+
   const [caption, setCaption] = useState('');
   const [privacy, setPrivacy] = useState(false);
+  const [hideComment, setHideComment] = useState(false)
+  const [duet, setDuet] = useState(false)
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
@@ -65,28 +71,61 @@ const PostVideoScreen = () => {
   }, [navigation]);
 
   const handlePostVideo = async () => {
-    try {
+    if(my_profile_data){
+      try {
       setShowModal(true);
-      const token = await AsyncStorage.getItem(KEY_STORAGE.TOKEN);
-      console.log('token handle post video backedn: ', token);
+
       const formData = new FormData();
       formData.append('video', {
         uri: route?.params?.pathVideo,
         name: route?.params?.pathVideo.split('/').reverse()[0],
-        type: 'mp4/*',
+        type: 'video/mp4',
       });
       formData.append('caption', caption);
       formData.append('privacy', privacy);
+      formData.append('hideComment', !hideComment)
+      formData.append('duet', duet)
+      formData.append('user_id', my_data.id)
 
-      const result = await videoApi.postVideo(formData, token);
-      console.log('resultpost vidoe sohail:::', result);
+      const result = await videoApi.postVideo(formData);
+     
       navigation.replace('Index');
     } catch (error) {
       console.log('error during post video: ', error);
     } finally {
       setShowModal(false);
     }
+    } else{
+      Alert.alert("Login required", "please login youerself for uploading a video")
+    }
   };
+
+
+
+
+
+//   const handlePostVideo = ()=>{
+//     console.log("video uri:", route?.params?.pathVideo)
+//     console.log("video name:", route?.params?.pathVideo.split("/").reverse()[0])
+    
+//     // const data = new FormData()
+//     // data.append('video', route?.params?.pathVideo, route?.params?.pathVideo.split('/').reverse()[0])
+//     // data.append('caption', caption)
+//     const data = {
+//       name: 'shubham ghanghotia'
+//     }
+// console.log(data)
+
+
+//     axios.post("http://192.168.0.102:3000/videos/video", data, headers, {
+//       'Content-Type': 'multipart/form-data'
+//     })
+//     .then((res)=>{
+//       console.log(res)
+//     })
+//   }
+
+
 
   const handleClickAddress = e => {
     let txt = caption.trim();
@@ -149,8 +188,9 @@ const PostVideoScreen = () => {
       <ItemChoose
         iconLeft={MESSAGE_OUTLINE_ICON}
         name={'Comments are allowed'}
+        onChange={e => setHideComment(e)}
       />
-      <ItemChoose iconLeft={FIBER_SMART_RECORD_ICON} name={'Allow Duet'} />
+      <ItemChoose iconLeft={FIBER_SMART_RECORD_ICON} name={'Allow Duet'} onChange={e => setDuet(e)} />
       <ItemChoose iconLeft={STITCH_ICON} name={'Allow Stitch'} />
       <ItemChoose
         iconLeft={MORE_HORIZ_ICON}

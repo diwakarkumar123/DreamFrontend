@@ -1,18 +1,43 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { StatusBar } from 'react-native';
 import MainScreen from './main/MainScreen';
 import ProfileScreen from './profile/ProfileScreen';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import ModalSignIn from '../components/modal/ModalSignIn';
 import BottomSheetSignIn from '../components/bottomSheets/BottomSheetSocialAuth';
 import '../utils/pushnotification';
 import BottomSettingProfile from '../components/bottomSheets/BottomSettingProfile';
 import BottomSheetLogout from '../components/bottomSheets/BottomSheetLogout';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {get_data} from './../utilis2/AsyncStorage/Controller'
+import { addIsLogin, add_my_profile_data } from '../store/my_dataSlice';
+
 
 const { Navigator, Screen } = createMaterialTopTabNavigator();
 
 const Index = () => {
+    const dispatch = useDispatch()
+
+    useEffect(()=>{
+      get_data('user')
+      .then((data)=>{
+        if(data){
+          dispatch(add_my_profile_data(data))
+        dispatch(addIsLogin(true))
+        }
+        
+      })
+      .catch((err)=>{
+        console.log(err)
+      })
+    }, [])
+
+
+
+
+
+
   const currentBottomTab = useSelector(state => state.index.currentBottomTab);
   console.log('currentBottomTab:', currentBottomTab);
   return (

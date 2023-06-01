@@ -1,21 +1,17 @@
 import axios from 'axios';
 import { SERVER_API_URL } from '../constants/constants';
 
-const signIn = async (email, password) => {
-  const data = {
-    email,
-    password,
-  };
+const signIn = async (email ) => {
+
   const url = `${SERVER_API_URL}/users/login`;
-  const result = await axios.post(url, JSON.stringify(data));
+  const result = await axios.post(url, {email});
   return result;
 };
 
-const signUp = async (name, email, password) => {
+const signUp = async (name, email) => {
   const data = {
     name,
     email,
-    password,
   };
   const url = `${SERVER_API_URL}/users/signup`;
   const result = await axios.post(url, data);

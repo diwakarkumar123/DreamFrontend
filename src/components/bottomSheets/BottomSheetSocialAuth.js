@@ -59,7 +59,7 @@ const BottomSheetSocialAuth = () => {
 
   const handleClickClose = useCallback(() => {
     bottomSheetRef?.current?.scrollTo(0);
-    setDataSocial([]);
+    setDataSocial([]); 
   }, []);
 
   const onCloseBottomSheet = () => {
@@ -232,6 +232,7 @@ const BottomSheetSocialAuth = () => {
             <FormSignUp
               setCurrentForm={setCurrentForm}
               backToScreenSocial={backToScreenSocial}
+              handleClickClose={handleClickClose}
             />
           )}
         </Container>

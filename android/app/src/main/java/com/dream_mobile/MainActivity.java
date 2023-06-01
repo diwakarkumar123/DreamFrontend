@@ -1,4 +1,4 @@
-package com.dream_mobile;
+package com.nojomalmadina.appdream;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

@@ -4,7 +4,7 @@ import Tab from './Tab';
 import { COLOR, SPACING } from '../../../configs/styles';
 import { STATUSBAR_HEIGHT } from '../../../constants/constants';
 import Indicator from '../../../components/Tabs/Indicator';
-import { LIVE_ICON, SEARCH_IMG } from '../../../configs/source';
+import { LIVE_ICON, LIVE_ICON1, SEARCH_IMG } from '../../../configs/source';
 
 const MyTabBar = ({ state, descriptors, navigation, position }) => {
   const routes = state.routes.map(r => {
@@ -46,10 +46,10 @@ const MyTabBar = ({ state, descriptors, navigation, position }) => {
         alignItems="center"
         paddingHorizontal={SPACING.S4}>
         <Icon
-          source={LIVE_ICON}
-          width={33}
-          height={33}
-          tintColor={COLOR.WHITE}
+          source={LIVE_ICON1}
+          width={50}
+          height={50}
+          // tintColor={COLOR.WHITE}
         />
         <Container flexDirection="row" alignItems="center">
           {routes.map((route, index) => {

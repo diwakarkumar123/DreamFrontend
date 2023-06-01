@@ -1,5 +1,5 @@
 import { StyleSheet, TouchableOpacity } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import CText from '../CText';
 import Container from '../Container';
 import { BORDER, COLOR, SPACING, TEXT } from '../../configs/styles';
@@ -13,9 +13,29 @@ import {
 } from '../../configs/source';
 import * as authApi from '../../apis/auth.api';
 import ModalLoading from '../modal/ModalLoading';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeOut, withRepeat } from 'react-native-reanimated';
+import auth from '@react-native-firebase/auth'
+import { useDispatch, useSelector } from 'react-redux'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {add_my_profile_data, addIsLogin } from '../../store/my_dataSlice'
+import { useNavigation } from '@react-navigation/native';
+import { setModalSignIn, setBottomSheetLogout, setBottomSheetSignIn } from '../../store/indexSlice';
 
-const BottomSheetSignUp = ({ setCurrentForm, backToScreenSocial }) => {
+
+
+
+const save_data = async (key, data) => {
+  try {
+    await AsyncStorage.setItem(key, JSON.stringify(data));
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
+
+const BottomSheetSignUp = ({ setCurrentForm, backToScreenSocial, handleClickClose }) => {
+  const dispatch = useDispatch()
   const [txtName, setTxtName] = useState('');
   const [txtEmail, setTxtEmail] = useState('');
   const [txtPassword, setTxtPassword] = useState('');
@@ -24,27 +44,71 @@ const BottomSheetSignUp = ({ setCurrentForm, backToScreenSocial }) => {
   const [showModal, setShowModal] = useState(false);
   const [isEmpty, setIsEmpty] = useState(false);
   const [isFailure, setIsFailure] = useState(false);
+  const [isFaliure_invalid, setIsFailure_invalid] = useState(false)
+  const navigation = useNavigation()
 
+
+  const handleShowBottomSheetSignIn = useCallback(() => {
+    dispatch(setModalSignIn(false));
+    dispatch(setBottomSheetSignIn(false));
+    dispatch(setBottomSheetLogout(false))
+  }, [dispatch]);
+
+
+
+
+  
   const handleClickSignUp = () => {
     setIsEmpty(false);
     setIsFailure(false);
     setShowModal(true);
+    setIsFailure_invalid(false)
 
     setTimeout(async () => {
       try {
         if (!txtName || !txtEmail || !txtPassword) {
           return setIsEmpty(true);
         }
-        const result = await authApi.signUp(txtName, txtEmail, txtPassword);
-        console.log('sign up result : ',result);
-        setCurrentForm(1);
+        // const result = await authApi.signUp(txtName, txtEmail, txtPassword);
+        // console.log('sign up result : ',result);
+        // setCurrentForm(1);
+        auth()
+        .createUserWithEmailAndPassword(txtEmail, txtPassword)
+        .then((res)=>{
+          const result = authApi.signUp(txtName, res.user.email)
+          result.then((res)=>{
+            console.log(res.data)
+            if(res.data.message == 'user created successfully'){
+              dispatch(add_my_profile_data(res.data.payload))
+              save_data("user", res.data.payload)
+              dispatch(addIsLogin(true))
+              handleClickClose()
+              dispatch(setModalSignIn(false));
+              dispatch(setBottomSheetSignIn(false));
+              dispatch(setBottomSheetLogout(false))
+            }
+          })
+          .catch((err)=>{
+            console.log(err)
+          })
+        })
+        .catch((error)=>{
+          if(error.code == 'auth/invalid-email'){
+            setIsFailure_invalid(true)
+            console.log("email are badly formated")
+          }
+          if(error.code == 'auth/email-already-in-use'){
+            setIsFailure(true)
+            console.log("email already in use")
+          }
+        })
       } catch (error) {
         console.log('sing up erro ',error);
-        setIsFailure(true);
+        // setIsFailure(true);
       } finally {
         setShowModal(false);
       }
-    }, 2000);
+    }, 8000);
   };
 
   return (
@@ -96,7 +160,10 @@ const BottomSheetSignUp = ({ setCurrentForm, backToScreenSocial }) => {
               ? 'You must enter all fields'
               : isFailure
               ? 'Email already exists'
-              : ''}
+              : isFaliure_invalid 
+              ? 'Email are badly formated'
+              : ''
+            }
           </CText>
         </Container>
         <Container

@@ -34,18 +34,14 @@ import { setModalSignIn } from '../../../store/indexSlice';
 import { Image } from 'react-native-svg';
 
 
-
-
 const window = {
-  width: Dimensions.get('window').width,
-  height: Dimensions.get('window').height,
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height
 }
 
 
 
-
-
-const VerticalSecction = React.forwardRef(
+const VerticalLeftSection = React.forwardRef(
   ({ idVideo, like = 0, comment = 0, author }, ref) => {
     const dispatch = useDispatch();
     const [amountLike, setAmountLike] = useState(Number(like));
@@ -114,8 +110,8 @@ const VerticalSecction = React.forwardRef(
         <Container marginBottom={SPACING.S4} alignItems="center">
           <Icon
             source={source}
-            width={32}
-            height={32}
+            width={33}
+            height={33}
             tintColor={tinColor}
             onPress={onPress}
           />
@@ -141,18 +137,45 @@ const VerticalSecction = React.forwardRef(
     }, []);
  
     return (
-      <Container position="absolute" left={SPACING.S4} bottom={window.width * 0.2}>
-        <Container  marginBottom={SPACING.S5} alignItems="center">
-          <Icon
-            source={GIFT_ICON}
-            width={50}
-            height={50}
-            // onPress={onPress}
+      <Container position="absolute" right={SPACING.S2} bottom={window.width * 0.22}>
+       <Container alignItems="center" marginBottom={SPACING.S4} >
+          <ItemVertical
+            source={HEART_IMG}
+            text={19}
+            onPress={() => handleClickHeart(false)}
           />
-          <Text style={{fontSize: 16, color: 'white', fontWeight: '500'}}>Gift</Text>
+          <Animated.View style={[styles.iconHeart, heartStyle]}>
+            <ItemVertical
+              source={HEART_TRUE_IMG}
+              width={'100%'}
+              height={'100%'}
+              onPress={() => handleClickHeart(false)}
+            />
+          </Animated.View>
         </Container>
 
-        <Container
+        <Container marginBottom={SPACING.S4} alignItems="center">
+          <ItemVertical
+            source={COMMENT_ICON_IMG} 
+            width={50}
+            height={50}
+            text={10}
+          />
+        </Container>
+
+        <Container marginBottom={SPACING.S4} alignItems="center">
+          <ItemVertical
+            source={REPLY_FILLED_IMG} 
+            width={60}
+            height={60}
+            text={25}
+            tinColor="#f7f7f7"
+          />
+        </Container>
+
+
+
+        {/* <Container
           marginBottom={SPACING.S5}
           alignItems="center"
           borderRadius={BORDER.PILL}
@@ -168,15 +191,15 @@ const VerticalSecction = React.forwardRef(
           <Container
             position="absolute"
             bottom={-10}
-            width={70}
-            height={70}
+            width={80}
+            height={80}
             borderRadius={BORDER.PILL}
             justifyContent="center"
             alignItems="center">
             <Icon
               source={QUEEN_ICON}
-              width={70}
-              height={70}
+              width={80}
+              height={80}
             />
           </Container>
           <Container
@@ -192,16 +215,16 @@ const VerticalSecction = React.forwardRef(
               +
             </CText>
           </Container>
-        </Container>
-        <Container marginBottom={40} alignItems="center">
+        </Container> */}
+        {/* <Container marginBottom={40} alignItems="center">
           <Icon
             source={DIAMOND_ICON}
-            width={50}
-            height={50}
+            width={60}
+            height={60}
             // onPress={onPress}
           />
-          <Text style={{fontSize: 16, color: 'white', fontWeight: '500', marginTop: -10}}>20</Text>
-        </Container>
+          <Text style={{fontSize: 20, color: 'white', fontWeight: '500', marginTop: -10}}>20</Text>
+        </Container> */}
       
         {/* <Container alignItems="center">
           <ItemVertical
@@ -217,19 +240,19 @@ const VerticalSecction = React.forwardRef(
               onPress={() => handleClickHeart(false)}
             />
           </Animated.View>
-        </Container>
-        <ItemVertical
+        </Container> */}
+        {/* <ItemVertical
           source={COMMENT_ICON_IMG}
           text={20}
           onPress={handleShowComment}
-        />
+        /> */}
         {/* <ItemVertical
           source={BOOKMARK_FILLED_IMG}
           text={'25'}
           tinColor="#f7f7f7"
           onPress={handleShowBottomSheetSignIn}
         /> */}
-        {/* <ItemVertical
+         {/* <ItemVertical
           source={REPLY_FILLED_IMG}
           text={'25'}
           tinColor="#f7f7f7"
@@ -244,7 +267,7 @@ const VerticalSecction = React.forwardRef(
   },
 );
 
-export default React.memo(VerticalSecction);
+export default React.memo(VerticalLeftSection);
 
 const styles = StyleSheet.create({
   iconHeart: {

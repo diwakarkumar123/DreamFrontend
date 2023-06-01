@@ -1,7 +1,10 @@
 import { View, Image, StyleSheet, StatusBar } from 'react-native';
 import React, { useEffect } from 'react';
-import { LOGO_IMG } from '../../configs/source';
+import { LOGO_IMG, SPLASH_SCREEN } from '../../configs/source';
 import { COLOR } from '../../configs/styles/index';
+
+
+
 
 const SplashScreen = ({ navigation }) => {
   useEffect(() => {
@@ -12,10 +15,11 @@ const SplashScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <StatusBar animated={true} backgroundColor="black" hidden={true} />
-      <Image source={LOGO_IMG} style={styles.logo} />
+      <Image source={require('../../assets/images/splash.png')} style={styles.logo} />
     </View>
   );
 };
+
 
 export default SplashScreen;
 
@@ -25,9 +29,11 @@ const styles = StyleSheet.create({
     backgroundColor: COLOR.BLACK,
     justifyContent: 'center',
     alignItems: 'center',
+
   },
   logo: {
-    width: 200,
-    height: 200,
+    width: 120,
+    height: 120,
+    marginBottom: 60
   },
 });

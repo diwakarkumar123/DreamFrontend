@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setBottomSheetLogout, setBottomSheetSignIn } from '../../store/indexSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import { addIsLogin, add_my_profile_data } from '../../store/my_dataSlice';
 
 const BottomSheetLogout = () => {
   const dispatch = useDispatch();
@@ -32,6 +33,8 @@ const BottomSheetLogout = () => {
 
   const handleCancleLogout = () => {
     bottomSheetRef?.current?.scrollTo(0);
+    dispatch(addIsLogin(false))
+    dispatch(add_my_profile_data(null))
   };
 
   const handleLogout = async () => {
@@ -39,6 +42,7 @@ const BottomSheetLogout = () => {
       await AsyncStorage.clear();
       navigation.navigate('Home');
       handleCancleLogout();
+
     } catch (error) {
       console.log(error);
     }

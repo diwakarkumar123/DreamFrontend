@@ -51,6 +51,12 @@ const COPPY_CONTENT_ICON = require('../assets/images/content_copy.png');
 const PHOTO_CAMERA_ICON = require('../assets/images/photo_camera.png');
 const VIDEOCAM_OUTLINE_ICON = require('../assets/images/videocam_outline.png');
 const LOGOUT_ICON = require('../assets/images/logout.png');
+const GIFT_ICON = require('../assets/images/gift.png')
+const QUEEN_ICON = require('../assets/images/queen.png')
+const DIAMOND_ICON = require('../assets/images/diamond.png')
+const LIVE_ICON1 = require('../assets/images/live.png')
+const SPLASH_SCREEN = require('../assets/images/splash.png')
+
 
 const FACEBOOK_ICON = require('../assets/icon-social/facebook.png');
 const INSTAGRAM_ICON = require('../assets/icon-social/instagram.png');
@@ -157,4 +163,8 @@ export {
   PHOTO_CAMERA_ICON,
   VIDEOCAM_OUTLINE_ICON,
   LOGOUT_ICON,
+  GIFT_ICON,
+  QUEEN_ICON,
+  DIAMOND_ICON,
+  LIVE_ICON1
 };

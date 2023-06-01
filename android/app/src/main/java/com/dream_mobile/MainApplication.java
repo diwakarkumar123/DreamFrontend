@@ -1,4 +1,4 @@
-package com.dream_mobile;
+package com.nojomalmadina.appdream;
 
 import android.app.Application;
 import com.facebook.react.PackageList;
