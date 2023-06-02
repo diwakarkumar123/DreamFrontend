@@ -1,4 +1,4 @@
-import { Dimensions, Image, StatusBar, StyleSheet, Text } from 'react-native';
+import { Dimensions, Image, StatusBar, StyleSheet, Text, View } from 'react-native';
 import React, {
   useCallback,
   useImperativeHandle,
@@ -33,6 +33,11 @@ import {
 import { useDispatch } from 'react-redux';
 import VerticalLeftSection from './VerticalLeftSection';
 import { BORDER, COLOR, SPACING } from '../../../configs/styles';
+import { Modal } from 'react-native';
+import GiftSelectionScreen from '../../../components/modal/GiftSelectionScreen';
+import GiftDiamondSelection from '../../../components/modal/GiftDiamondSelection';
+import GiftSendingFinalScreen from '../../../components/modal/GiftSendingFinalScreen';
+import PromoteScreen from '../../../components/modal/PromoteScreen';
 
 
 const { height, width } = Dimensions.get('window');
@@ -159,8 +164,18 @@ const VideoItem = React.forwardRef(({ item, index }, ref) => {
       idVideo={id}
       
     />
-
-
+    <Modal visible={false} transparent={true}>
+        <GiftSelectionScreen />
+    </Modal>
+    <Modal visible={false} transparent={true}>
+        <GiftDiamondSelection />
+    </Modal>
+    <Modal visible={false} transparent={true}>
+       <GiftSendingFinalScreen />
+    </Modal>
+    <Modal visible={true} transparent={true}>
+      <PromoteScreen />
+    </Modal>
     </Container>
   );
 });

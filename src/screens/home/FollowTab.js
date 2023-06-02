@@ -5,6 +5,7 @@ import {
   StyleSheet,
   View,
   Text,
+  Modal,
 } from 'react-native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import VideoItem from './components/VideoItem';
@@ -29,6 +30,7 @@ import {
   STATUSBAR_HEIGHT,
 } from '../../constants/constants';
 import NotFoundData from './components/NotFoundData';
+import GiftSelectionScreen from '../../components/modal/GiftSelectionScreen';
 
 
 const window = {
@@ -199,6 +201,7 @@ const FollowTab = () => {
      ) : (
         <NotFoundData onPress={handleFecthData} />
       )}
+      
     </Animated.View>
   );
 };

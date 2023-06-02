@@ -56,7 +56,9 @@ const QUEEN_ICON = require('../assets/images/queen.png')
 const DIAMOND_ICON = require('../assets/images/diamond.png')
 const LIVE_ICON1 = require('../assets/images/live.png')
 const SPLASH_SCREEN = require('../assets/images/splash.png')
-
+const COIN = require('../assets/images/coin.png')
+const CUT = require('../assets/images/cut.png')
+const QUESTION_MARK = require('../assets/images/question_mark.png')
 
 const FACEBOOK_ICON = require('../assets/icon-social/facebook.png');
 const INSTAGRAM_ICON = require('../assets/icon-social/instagram.png');
@@ -166,5 +168,8 @@ export {
   GIFT_ICON,
   QUEEN_ICON,
   DIAMOND_ICON,
-  LIVE_ICON1
+  LIVE_ICON1,
+  COIN,
+  CUT,
+  QUESTION_MARK
 };

@@ -13,6 +13,7 @@
   "dependencies": {
     "@dicebear/collection": "^5.3.4",
     "@dicebear/core": "^5.3.4",
+    "@miblanchard/react-native-slider": "^2.3.1",
     "@react-native-async-storage/async-storage": "^1.17.7",
     "@react-native-community/slider": "^4.2.4",
     "@react-native-firebase/app": "^15.2.0",
@@ -34,7 +35,9 @@
     "react-native-image-picker": "^4.8.4",
     "react-native-linear-gradient": "^2.6.2",
     "react-native-pager-view": "^5.4.25",
+    "react-native-paper": "^5.8.0",
     "react-native-push-notification": "^7.4.0",
+    "react-native-radio-buttons-group": "^3.0.2",
     "react-native-reanimated": "^2.9.1",
     "react-native-rename": "^3.2.12",
     "react-native-responsive-fontsize": "^0.5.1",
