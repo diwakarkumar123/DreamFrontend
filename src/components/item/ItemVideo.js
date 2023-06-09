@@ -10,9 +10,12 @@ import React from 'react';
 import { LOGO_IMG, PLAY_ARROW_IMG } from '../../configs/source';
 import { COLOR, TEXT } from '../../configs/styles/index';
 import { urlSourceMedia } from '../../utils/utils';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Modal } from 'react-native-paper';
+import Promotion from '../../screens/promotion/Promotion';
 
 const ItemVideo = ({ item, NUM_COLUMS }) => {
-  const { background, like, empty } = item;
+  const { avatarUri, like, empty } = item;
   const { width } = useWindowDimensions();
 
   const styles = StyleSheet.create({
@@ -35,14 +38,16 @@ const ItemVideo = ({ item, NUM_COLUMS }) => {
   });
   if (!empty) {
     return (
-      <ImageBackground
-        source={{ uri: urlSourceMedia(background) }}
-        style={styles.container}>
-        <View style={styles.containerView}>
-          <Image source={PLAY_ARROW_IMG} tintColor={COLOR.WHITE} />
-          <Text style={styles.txtView}>{like}</Text>
-        </View>
-      </ImageBackground>
+     
+        <ImageBackground
+          source={{ uri: avatarUri }}
+          style={styles.container}>
+          <View style={styles.containerView}>
+            <Image source={PLAY_ARROW_IMG} tintColor={COLOR.WHITE} />
+            <Text style={styles.txtView}>{like}</Text>
+          </View>
+        </ImageBackground>
+     
     );
   } else {
     return (

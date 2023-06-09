@@ -15,10 +15,10 @@ const window = {
     height: Dimensions.get('window').height
 }
 
-const GiftSelectionScreen = () => {
+const GiftSelectionScreen = ({ setShowGiftSendingModal, showGiftSendingModal }) => {
 
 
-
+    
     return (
         <View style={{
             width: window.width * 1,
@@ -41,11 +41,25 @@ const GiftSelectionScreen = () => {
             </View>
             <View style={styles.gift_align}>
                 <Image source={COIN} style={{ width: 10, height: 10 }} />
-                <Text style={{ fontSize: 16, fontFamily: "Roboto", fontWeight: '500', marginLeft: 5 }} >259</Text>
+                <Text style={{ fontSize: 16, fontFamily: "Roboto", fontWeight: '500', marginLeft: 5 }} >
+                    {showGiftSendingModal.item.item.coin * showGiftSendingModal.item.diamondX}
+                </Text>
             </View>
-            <View style={{ backgroundColor: 'rgba(217, 217, 217, 0.5)', alignItems: 'center', justifyContent: 'center', width: 120, marginTop: window.height * 0.08, padding: 5 }}>
+            <TouchableOpacity 
+                onPress={()=>{setShowGiftSendingModal(pre => ({
+                    ...pre,
+                    isVisible: false
+                }))}}
+                style={{
+                backgroundColor: 'rgba(217, 217, 217, 0.5)',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: 120,
+                marginTop: window.height * 0.08,
+                padding: 5
+            }}>
                 <Text style={{ color: 'black', margin: 5 }}>Go Back</Text>
-            </View>
+            </TouchableOpacity>
         </View >
     )
 }

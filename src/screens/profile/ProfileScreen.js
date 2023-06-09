@@ -4,7 +4,7 @@ import User from './User';
 import { Tabs } from 'react-native-collapsible-tab-view';
 import ListVideo from './ListVideo';
 import { Container, Icon, Row, CText } from '../../components';
-import { COLOR, SPACING, BORDER, TEXT  } from '../../configs/styles';
+import { COLOR, SPACING, BORDER, TEXT } from '../../configs/styles';
 import {
   ADD_ACCOUNT_ICON_IMG,
   ARROW_BACK_IMG,
@@ -12,7 +12,6 @@ import {
   CLOSE_EYE_ICON,
   CLOSE_IMG,
   TIKTOK_ICON_IMG,
-
 } from '../../configs/source';
 import {
   useIsFocused,
@@ -24,7 +23,7 @@ import * as videoApi from '../../apis/video.api';
 import { useDispatch, useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { KEY_STORAGE } from '../../constants/constants';
-import { setBottomSheetSettingProfile, setModalSignIn, setBottomSheetLogout, setBottomSheetSignIn} from '../../store/indexSlice';
+import { setBottomSheetSettingProfile, setModalSignIn, setBottomSheetLogout, setBottomSheetSignIn } from '../../store/indexSlice';
 
 const statusbarHeight = StatusBar.currentHeight;
 
@@ -52,7 +51,7 @@ const ProfileScreen = () => {
 
   const currentUser = useSelector(state => state.index.currentUser);
 
-  const isLogin = useSelector(state=>state.my_data.isLogin)
+  const isLogin = useSelector(state => state.my_data.isLogin)
 
   const my_data = useSelector(state => state.my_data.my_profile_data)
   const route = useRoute();
@@ -216,8 +215,7 @@ const ProfileScreen = () => {
     },
   ]);
 
-  
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
 
   const handleShowBottomSheetSignIn = useCallback(() => {
     dispatch(setModalSignIn(false));
@@ -273,19 +271,24 @@ const ProfileScreen = () => {
   }, []);
 
 
+  // function for fetching media data from backend
+  const fetch_public_media = ()=>{
+    
+  }
 
 
 
 
-  
+
+
 
   return (
     <>
-    {isLogin ? (
-      <Container
-      flex={1}
-      paddingBottom={!showHeader ? 49.1 : 0}
-      backgroundColor={COLOR.WHITE}>
+      {isLogin ? (
+        <Container
+          flex={1}
+          paddingBottom={!showHeader ? 49.1 : 0}
+          backgroundColor={COLOR.WHITE}>
           <Container
             zIndex={1}
             height={statusbarHeight}
@@ -305,84 +308,84 @@ const ProfileScreen = () => {
                 onPress={() => navigation.goBack()}
               />
               <Icon source={MORE_VERT_IMG} onPress={handleClickMoreOption} />
-              
-            </Row>
+
+            </Row>  
           </Container>
-      <Tabs.Container
-        renderHeader={() => <User user={user} showHeader={showHeader} />}>
-        <Tabs.Tab name="PUBLIC">
-          <ListVideo dataList={videos} />
-        </Tabs.Tab>
+          <Tabs.Container
+            renderHeader={() => <User user={user} showHeader={showHeader} />}>
+            <Tabs.Tab name="PUBLIC">
+              <ListVideo dataList={videos} />
+            </Tabs.Tab>
 
-        {!showHeader ? (
-          <Tabs.Tab name={'PRIVATE'}>
-            <ListVideo dataList={videoPrivate} />
-          </Tabs.Tab>
-        ) : null}
+            {!showHeader ? (
+              <Tabs.Tab name={'PRIVATE'}>
+                <ListVideo dataList={videoPrivate} />
+              </Tabs.Tab>
+            ) : null}
 
-        <Tabs.Tab name={"LIKE"}>
-          <ListVideo dataList={videosLike} />
-        </Tabs.Tab>
-      </Tabs.Container>
-    </Container>
-    ):(
-      
-      <Container
-        flex={1}
-        alignItems="center"
-        justifyContent="center"
-        backgroundColor={COLOR.WHITE}>
+            <Tabs.Tab name={"LIKE"}>
+              <ListVideo dataList={videosLike} />
+            </Tabs.Tab>
+          </Tabs.Container>
+        </Container>
+      ) : (
+
         <Container
-          flexDirection="column"
+          flex={1}
           alignItems="center"
           justifyContent="center"
-          backgroundColor={COLOR.WHITE}
-          padding={SPACING.S3}
-          borderRadius={BORDER.MEDIUM}
-          width={'80%'}>
-          <Container alignSelf="flex-end">
-            <Icon source={CLOSE_IMG} onPress={()=>{navigation.goBack()}} />
-          </Container>
-          <Icon
-            source={TIKTOK_ICON_IMG}
-            width={80}
-            height={95}
-            marginBottom={SPACING.S3}
-          />
-          <CText
-            text={TEXT.H3}
-            color={COLOR.BLACK}
-            marginVertical={SPACING.S1}
-            textAlign="center">
-            Log in to follow the account {'\n'} and like or comment on
-            {'\n'}
-            video
-          </CText>
-          <CText
-            text={TEXT.SUBTITLE}
-            color={COLOR.GRAY}
-            marginVertical={SPACING.S1}
-            textAlign="center"
-            fontSize={13}>
-            The Dream experience is more enjoyable when you {'\n'} follow and share
-            with friends.
-          </CText>
+          backgroundColor={COLOR.WHITE}>
           <Container
-            width={'100%'}
-            borderRadius={BORDER.SMALL}
-            backgroundColor={COLOR.DANGER2}
-            padding={SPACING.S2}
-            justifyContent="center"
+            flexDirection="column"
             alignItems="center"
-            marginTop={SPACING.S3}>
-            <Pressable onPress={handleShowBottomSheetSignIn}>
-              <CText color={COLOR.WHITE}>Sign in or Register</CText>
-            </Pressable>
+            justifyContent="center"
+            backgroundColor={COLOR.WHITE}
+            padding={SPACING.S3}
+            borderRadius={BORDER.MEDIUM}
+            width={'80%'}>
+            <Container alignSelf="flex-end">
+              <Icon source={CLOSE_IMG} onPress={() => { navigation.goBack() }} />
+            </Container>
+            <Icon
+              source={TIKTOK_ICON_IMG}
+              width={80}
+              height={95}
+              marginBottom={SPACING.S3}
+            />
+            <CText
+              text={TEXT.H3}
+              color={COLOR.BLACK}
+              marginVertical={SPACING.S1}
+              textAlign="center">
+              Log in to follow the account {'\n'} and like or comment on
+              {'\n'}
+              video
+            </CText>
+            <CText
+              text={TEXT.SUBTITLE}
+              color={COLOR.GRAY}
+              marginVertical={SPACING.S1}
+              textAlign="center"
+              fontSize={13}>
+              The Dream experience is more enjoyable when you {'\n'} follow and share
+              with friends.
+            </CText>
+            <Container
+              width={'100%'}
+              borderRadius={BORDER.SMALL}
+              backgroundColor={COLOR.DANGER2}
+              padding={SPACING.S2}
+              justifyContent="center"
+              alignItems="center"
+              marginTop={SPACING.S3}>
+              <Pressable onPress={handleShowBottomSheetSignIn}>
+                <CText color={COLOR.WHITE}>Sign in or Register</CText>
+              </Pressable>
+            </Container>
           </Container>
         </Container>
-      </Container>
-    
-    )}
+
+      )}
     </>
   );
 };

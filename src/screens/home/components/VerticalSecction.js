@@ -46,7 +46,7 @@ const window = {
 
 
 const VerticalSecction = React.forwardRef(
-  ({ idVideo, like = 0, comment = 0, author }, ref) => {
+  ({ idVideo, like = 0, comment = 0, author, onGiftPress }, ref) => {
     const dispatch = useDispatch();
     const [amountLike, setAmountLike] = useState(Number(like));
 
@@ -117,7 +117,7 @@ const VerticalSecction = React.forwardRef(
             width={32}
             height={32}
             tintColor={tinColor}
-            onPress={onPress}
+            onPress={onGiftPress}
           />
           <CText color={COLOR.WHITE}>{text}</CText>
         </Container>
@@ -147,7 +147,7 @@ const VerticalSecction = React.forwardRef(
             source={GIFT_ICON}
             width={50}
             height={50}
-            // onPress={onPress}
+            onPress={onGiftPress}
           />
           <Text style={{fontSize: 16, color: 'white', fontWeight: '500'}}>Gift</Text>
         </Container>

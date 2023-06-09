@@ -103,6 +103,7 @@ android {
         versionCode 5
         versionName "1.5"
         missingDimensionStrategy 'react-native-camera', 'general'
+        multiDexEnabled true
     }
 
     splits {
@@ -173,6 +174,7 @@ dependencies {
     // For WebP support, including animated WebP
     implementation 'com.facebook.fresco:animated-webp:2.6.0'
     implementation 'com.facebook.fresco:webpsupport:2.6.0'
+    // implementation project(':react-native-paypal')
 
     implementation project(':react-native-video')
     implementation "androidx.appcompat:appcompat:1.0.0"

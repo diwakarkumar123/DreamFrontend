@@ -69,9 +69,6 @@ const BottomSheetSignUp = ({ setCurrentForm, backToScreenSocial, handleClickClos
         if (!txtName || !txtEmail || !txtPassword) {
           return setIsEmpty(true);
         }
-        // const result = await authApi.signUp(txtName, txtEmail, txtPassword);
-        // console.log('sign up result : ',result);
-        // setCurrentForm(1);
         auth()
         .createUserWithEmailAndPassword(txtEmail, txtPassword)
         .then((res)=>{
@@ -110,6 +107,9 @@ const BottomSheetSignUp = ({ setCurrentForm, backToScreenSocial, handleClickClos
       }
     }, 8000);
   };
+
+
+
 
   return (
     <Animated.View

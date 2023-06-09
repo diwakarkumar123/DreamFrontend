@@ -59,6 +59,10 @@ const SPLASH_SCREEN = require('../assets/images/splash.png')
 const COIN = require('../assets/images/coin.png')
 const CUT = require('../assets/images/cut.png')
 const QUESTION_MARK = require('../assets/images/question_mark.png')
+const GRAPH = require('../assets/images/graph.png')
+
+
+
 
 const FACEBOOK_ICON = require('../assets/icon-social/facebook.png');
 const INSTAGRAM_ICON = require('../assets/icon-social/instagram.png');
@@ -171,5 +175,6 @@ export {
   LIVE_ICON1,
   COIN,
   CUT,
-  QUESTION_MARK
+  QUESTION_MARK,
+  GRAPH
 };

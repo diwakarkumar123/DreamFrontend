@@ -6,7 +6,7 @@ export interface VideoModel extends CommonModel {
   caption: string;
   captionSlug: string;
   background: string;
-  url: string;
+  url: string; 
   author: UserModel;
   audio: AudioModel;
   like: number;

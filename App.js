@@ -13,6 +13,10 @@ import PostVideoScreen from './src/screens/newVideo/PostVideoScreen';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import SettingScreen from './src/screens/setting/SettingScreen';
 import { LogBox } from 'react-native';
+import Promotion from './src/screens/promotion/Promotion';
+import Payments from './src/screens/promotion/Payments';
+
+
 LogBox.ignoreLogs = ['Remote debugger'];
 console.disableYellowBox = true;
 GoogleSignin.configure({
@@ -33,6 +37,15 @@ const App = () => {
             name="Splash"
             component={SplashScreen}
             options={{ headerShown: false }}
+          />
+          <Stack.Screen 
+              name='Promotion'
+              component={Promotion}
+              options={{ headerShown: false}}
+          />
+          <Stack.Screen 
+              name='Payments'
+              component={Payments}
           />
           <Stack.Screen
             name="Index"

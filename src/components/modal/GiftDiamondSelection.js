@@ -2,7 +2,7 @@ import { ScrollView, StyleSheet, Text, View, Image, TouchableOpacity } from 'rea
 import { Modal, Pressable } from 'react-native';
 import React, { useCallback, useState } from 'react';
 import { Container, Icon, CText } from '../';
-import { CLOSE_IMG, TIKTOK_ICON_IMG, COIN, CUT, GIFT_ICON } from '../../configs/source';
+import { CLOSE_IMG, TIKTOK_ICON_IMG, COIN, CUT, GIFT_ICON, FLASH_OFF_IMG } from '../../configs/source';
 import { BORDER, COLOR, SPACING, TEXT } from '../../configs/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { setBottomSheetSignIn, setModalSignIn } from '../../store/indexSlice';
@@ -15,8 +15,40 @@ const window = {
     height: Dimensions.get('window').height
 }
 
-const GiftSelectionScreen = () => {
-
+const GiftSelectionScreen = ({ setShowDimanondSelectionModal, setShowGiftSendingModal, showDimanondSelectionModal,  }) => {
+    const [selected, setSelected] = useState({
+        id: 0,
+        item: showDimanondSelectionModal.item,
+        diamondX: 2
+    })
+    const Data = [
+        {
+            id: 0,
+            item: showDimanondSelectionModal.item,
+            diamondX: 2
+        },
+        {
+            id: 1,
+            item: showDimanondSelectionModal.item,
+            diamondX: 4
+        },
+        {
+            id: 2,
+            item: showDimanondSelectionModal.item,
+            diamondX: 6
+        }
+    ]
+    const sendGift = ()=>{
+        setShowDimanondSelectionModal(pre => ({
+            ...pre,
+            isVisible: false
+        }))
+        setShowGiftSendingModal(pre =>({
+            ...pre,
+            isVisible: true,
+            item: selected
+        }))
+    }
 
 
     return (
@@ -32,56 +64,55 @@ const GiftSelectionScreen = () => {
         }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', width: window.width * 1, marginTop: window.height * 0.015 }}>
                 <Text style={{ fontSize: 20, fontFamily: "Roboto", fontWeight: '900', marginLeft: window.width * 0.32, color: '#000000' }} >Diamond Box</Text>
-                <Image source={CUT} style={{ width: 20, height: 20, marginLeft: window.width * 0.22, tintColor: '#000000' }} />
+                <TouchableOpacity onPress={() => {
+                    setShowDimanondSelectionModal(pre => ({
+                        ...pre,
+                        isVisible: false
+                    }))
+                }}>
+                    <Image source={CUT} style={{ width: 20, height: 20, marginLeft: window.width * 0.22, tintColor: '#000000' }} />
+                </TouchableOpacity>
             </View>
 
-            <View style={styles.gift_main_container}>
+            <FlatList
+                data={Data}
+                renderItem={({ item, index }) => (
+                    <TouchableOpacity
+                        onPress={() => { setSelected(item) }}
+                        style={styles.gift_main_container}>
 
-                <View style={styles.gift_align}>
-                    <Image source={GIFT_ICON} style={{ width: 30, height: 30, }} />
-                    <Text style={{ fontSize: 16, fontFamily: "Roboto", fontWeight: '500', marginLeft: 5, color: '#000000' }} >Diamond 2x</Text>
-                </View>
+                        <View style={styles.gift_align}>
+                            <Image source={GIFT_ICON} style={{ width: 30, height: 30, }} />
+                            <Text style={{ fontSize: 16, fontFamily: "Roboto", fontWeight: '500', marginLeft: 5, color: '#000000' }} >Diamond {item.diamondX}x</Text>
+                        </View>
 
-                <View style={styles.gift_align}>
-                    <Image source={COIN} style={{ width: 10, height: 10 }} />
-                    <Text style={{ fontSize: 16, fontFamily: "Roboto", fontWeight: '500', marginLeft: 5, color: '#000000' }} >99</Text>
-                </View>
+                        <View style={[styles.gift_align, { backgroundColor: index == selected.id ? '#F42020' : 'white', paddingHorizontal: 3, paddingVertical: 2, borderRadius: 4 }]}>
+                            <Image source={COIN} style={{ width: 10, height: 10 }} />
+                            <Text style={{ fontSize: 16, fontFamily: "Roboto", fontWeight: '500', marginLeft: 5, color: '#000000' }} >{item.diamondX * showDimanondSelectionModal.item.coin}</Text>
+                        </View>
+                    </TouchableOpacity>
+                )}
+            />
 
-            </View>
+            <TouchableOpacity
+                onPress={sendGift}
+                style={{
+                    backgroundColor: '#F42020',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: window.width * 0.4,
+                    marginBottom: window.height * 0.1,
+                    padding: 5,
+                    borderRadius: 5
+                }}>
+                <Text style={{ color: 'white', margin: 5 }}>Send</Text>
+            </TouchableOpacity>
 
-            <View style={styles.gift_main_container}>
-
-                <View style={styles.gift_align}>
-                    <Image source={GIFT_ICON} style={{ width: 30, height: 30, }} />
-                    <Text style={{ fontSize: 16, fontFamily: "Roboto", fontWeight: '500', marginLeft: 5, color: '#000000' }} >Diamond 4x</Text>
-                </View>
-
-                <View style={styles.gift_align}>
-                    <Image source={COIN} style={{ width: 10, height: 10 }} />
-                    <Text style={{ fontSize: 16, fontFamily: "Roboto", fontWeight: '500', marginLeft: 5, color: '#000000' }} >159</Text>
-                </View>
-            </View>
-
-            <View style={styles.gift_main_container}>
-
-                <View style={styles.gift_align}>
-                    <Image source={GIFT_ICON} style={{ width: 30, height: 30, }} />
-                    <Text style={{ fontSize: 16, fontFamily: "Roboto", fontWeight: '500', marginLeft: 5, color: '#000000' }} >Diamond 6x</Text>
-                </View>
-
-                <View style={styles.gift_align}>
-                    <Image source={COIN} style={{ width: 10, height: 10 }} />
-                    <Text style={{ fontSize: 16, fontFamily: "Roboto", fontWeight: '500', marginLeft: 5, color: '#000000' }} >259</Text>
-                </View>
-            </View>
-        
-        <View style={{backgroundColor: '#F42020', alignItems: 'center', justifyContent: 'center', width: 120, marginTop: window.height * 0.08, padding: 5}}>
-            <Text style={{color: 'white', margin: 5}}>Send</Text>
-        </View>
-            
         </View>
     )
 }
+
+
 
 export default GiftSelectionScreen
 
@@ -89,13 +120,13 @@ const styles = StyleSheet.create({
     gift_align: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
     gift_main_container: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-evenly',
-        marginTop: window.height * 0.05,
+        marginTop: window.height * 0.04,
         width: window.width * 1,
     }
 })

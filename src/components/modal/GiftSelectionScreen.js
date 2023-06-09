@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
+import { ScrollView, StyleSheet, Text, View, Image, TouchableOpacity, Alert } from 'react-native'
 import { Modal, Pressable } from 'react-native';
 import React, { useCallback, useState } from 'react';
 import { Container, Icon, CText } from '../';
@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setBottomSheetSignIn, setModalSignIn } from '../../store/indexSlice';
 import { Dimensions } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
+import GiftDiamondSelection from '../../components/modal/GiftDiamondSelection';
 
 
 const window = {
@@ -15,7 +16,23 @@ const window = {
     height: Dimensions.get('window').height
 }
 
-const GiftSelectionScreen = () => {
+const GiftSelectionScreen = ({ setShowGiftModal, setShowDimanondSelectionModal }) => {
+    const my_data = useSelector(state => state.my_data.my_profile_data)
+
+    const showModal = (item) => {
+       if(my_data.wallet > item.coin){
+        setShowGiftModal(false)
+        setShowDimanondSelectionModal(pre => ({
+                ...pre,
+                isVisible: true, 
+                item: item
+        }))
+       } else {
+        Alert.alert("Insufficient balance", 'depoite money to continue')
+       }
+        
+    }
+
 
     const gift_data = [
         {
@@ -74,27 +91,65 @@ const GiftSelectionScreen = () => {
         }
     ]
 
+    const type_of_gift = [
+        {   
+            id: 1,
+            type: 'Basic'
+        },
+        {   
+            id: 2,
+            type: 'Economic'
+        },
+        {   
+            id: 3,
+            type: 'Premium'
+        },
+        {   
+            id: 4,
+            type: 'Vip'
+        }
+    ]
+
 
     return (
         <View style={{
             width: window.width * 1,
-            height: window.height * 0.5,
+            height: window.height * 0.6,
             backgroundColor: '#352D2D',
             position: 'absolute',
             bottom: 0,
 
         }}>
-            <View style={{
-                marginTop: 40
-            }}>
-
+            
+        <View style={{alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', width: window.width * 0.94, marginVertical: 25, marginHorizontal: window.width * 0.02}}>
+            <View style={{alignItems: 'center', flexDirection: 'row'}}>
+                <Image 
+                    source={COIN}
+                    style={{width: 15, height: 15}}
+                />
+                <Text style={[styles.txt, {fontSize: 18, marginLeft: 4}]}>{my_data.wallet}</Text>
             </View>
+            <View>
+            <FlatList
+                data={type_of_gift}
+                horizontal={true}
+                renderItem={({item, index})=>(
+                    <TouchableOpacity style={styles.gift_type_conyainers}>
+                        <Text style={styles.txt}>{item.type}</Text>
+                    </TouchableOpacity>
+                )}
+            />
+            </View>
+        </View>
+            
             <FlatList
                 data={gift_data}
                 numColumns={3}
                 renderItem={({ item, index }) => (
-                    <TouchableOpacity style={{ flex: 1, alignItems: 'center', justifyContent: 'center', marginBottom: 40 }}>
-                        <View>
+                    <TouchableOpacity
+                        onPress={()=>{showModal(item)}}
+                        style={{ flex: 1, alignItems: 'center', justifyContent: 'center', marginBottom: 40 }}>
+                        <View style={{alignItems: 'center', justifyContent: 'center'}}>
                             <Image source={{ uri: item.image }} style={{ width: 30, height: 30 }} />
                             <Text style={{ color: 'white' }}>{item.title}</Text>
                             <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
@@ -111,4 +166,20 @@ const GiftSelectionScreen = () => {
 
 export default GiftSelectionScreen
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    gift_type_conyainers: {
+        backgroundColor: 'rgba(255, 255, 255, 0.5)',
+        marginRight: 3,
+        paddingHorizontal: 6,
+        width: 70,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 3
+    },
+    txt: {
+        color: 'white',
+        fontSize: 12,
+        fontWeight: '400'
+        
+    }
+})

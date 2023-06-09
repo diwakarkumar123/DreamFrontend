@@ -1,11 +1,12 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React from 'react';
 import { SPACING, TEXT, COLOR, BORDER } from '../../configs/styles/index';
-import { AVATA_IMG, BOOKMARK_IMG,  } from '../../configs/source';
+import { AVATA_IMG, BOOKMARK_IMG, } from '../../configs/source';
 import { UserModel } from '../../models/User.model';
 import { urlSourceMedia } from '../../utils/utils';
 import { Container } from '../../components';
 import { useNavigation } from '@react-navigation/native';
+import { Modal } from 'react-native-paper';
 
 export type Props = {
   user: UserModel;
@@ -20,8 +21,8 @@ const User: React.FC<Props> = ({ user, showHeader }) => {
 
   const EditProfile = () => {
     return (
-      <TouchableOpacity 
-      onPress={() => navigation.navigate('SettingScreen')}
+      <TouchableOpacity
+        onPress={() => navigation.navigate('SettingScreen')}
       >
         <View style={[styles.buttonStyle, { height: 50 }]}>
           <Text style={styles.txtButon}>Edit information</Text>
@@ -30,7 +31,7 @@ const User: React.FC<Props> = ({ user, showHeader }) => {
     );
   };
 
-  const Follow = () => { 
+  const Follow = () => {
     return (
       <View
         style={[
@@ -48,10 +49,12 @@ const User: React.FC<Props> = ({ user, showHeader }) => {
   };
 
   return (
-    <View style={styles.container}> 
+    <View
+
+      style={styles.container}>
       <Image
-        // source={{ uri: user?.avatar || alt_url}}
-        source={AVATA_IMG}
+        source={user?.profile_pic ? { uri: user?.profile_pic } : AVATA_IMG}
+        // source={AVATA_IMG}
         style={styles.avata}
       />
       <Text style={styles.txtUserName}>@{user?.username || 'USERNAME'}</Text>
