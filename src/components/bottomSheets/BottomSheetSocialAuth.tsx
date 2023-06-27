@@ -253,12 +253,12 @@ const BottomSheetSocialAuth = () => {
               color={COLOR.DANGER2}
               fontSize={16}
               onPress={handleClickText}>
-              {currentForm === 1 ? 'Register' : 'Log in'}
+              {currentForm === 1 ? 'Register' : 'sign in'}
             </CText>
           </CText>
         </Container>
       </Container>
-    </BottomSheet>
+    </BottomSheet> 
   );
 };
 

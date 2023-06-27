@@ -32,6 +32,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { urlSourceMedia } from '../../../utils/utils';
 import { setModalSignIn } from '../../../store/indexSlice';
 import { Image } from 'react-native-svg';
+import Share from 'react-native-share';
+import { useTranslation } from 'react-i18next';
 
 
 const window = {
@@ -42,11 +44,28 @@ const window = {
 
 
 const VerticalLeftSection = React.forwardRef(
-  ({ idVideo, like = 0, comment = 0, author }, ref) => {
+  ({ idVideo, like = 0, comment = 0, author, share }, ref) => {
     const dispatch = useDispatch();
     const [amountLike, setAmountLike] = useState(Number(like));
+    const {t, i18n} = useTranslation()
 
     const navigation = useNavigation();
+
+    const handleShare = () => {
+      const shareOptions = {
+        title: 'Share via',
+        message: 'Check out this awesome video!',
+        url: 'https://your-video-url.com',
+        // You can include more options like email, subject, etc. based on your requirements
+      };
+    
+      Share.open(shareOptions)
+        .then((res) => console.log('Shared successfully:', res))
+        .catch((err) => console.log('Error sharing:', err));
+    };
+
+
+
 
     const heartValue = useSharedValue(0);
 
@@ -127,10 +146,14 @@ const VerticalLeftSection = React.forwardRef(
       });
     };
 
+
+    // function for displaying the comment sections
     const handleShowComment = useCallback(() => {
       dispatch(setIsShowComment(true));
       dispatch(setCurrentComment(idVideo));
     }, [dispatch, idVideo]);
+
+
 
     const handleShowBottomSheetSignIn = useCallback(() => {
       // dispatch(setBottomSheetSignIn(true));
@@ -139,18 +162,20 @@ const VerticalLeftSection = React.forwardRef(
     return (
       <Container position="absolute" right={SPACING.S2} bottom={window.width * 0.22}>
        <Container alignItems="center" marginBottom={SPACING.S4} >
-          <ItemVertical
+        { !like &&  <ItemVertical
             source={HEART_IMG}
-            text={19}
+            text={like}
             onPress={() => handleClickHeart(false)}
-          />
-          <Animated.View style={[styles.iconHeart, heartStyle]}>
-            <ItemVertical
+          /> }
+          {like && <ItemVertical
               source={HEART_TRUE_IMG}
               width={'100%'}
               height={'100%'}
               onPress={() => handleClickHeart(false)}
-            />
+            />}
+         
+          <Animated.View style={[styles.iconHeart, heartStyle]}>
+            
           </Animated.View>
         </Container>
 
@@ -159,7 +184,8 @@ const VerticalLeftSection = React.forwardRef(
             source={COMMENT_ICON_IMG} 
             width={50}
             height={50}
-            text={10}
+            text={comment}
+            onPress={handleShowComment}
           />
         </Container>
 
@@ -168,8 +194,9 @@ const VerticalLeftSection = React.forwardRef(
             source={REPLY_FILLED_IMG} 
             width={60}
             height={60}
-            text={25}
+            text={share}
             tinColor="#f7f7f7"
+            onPress={handleShare}
           />
         </Container>
 

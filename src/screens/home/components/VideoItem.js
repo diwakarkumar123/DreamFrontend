@@ -1,4 +1,4 @@
-import { Dimensions, Image, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, Image, StatusBar, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import React, {
   useCallback,
   useImperativeHandle,
@@ -15,7 +15,6 @@ import {
   STATUSBAR_HEIGHT,
   HEIGHT,
   WIDTH,
-
 } from '../../../constants/constants';
 import CVideo from './CVideo';
 import {
@@ -38,7 +37,6 @@ import GiftSelectionScreen from '../../../components/modal/GiftSelectionScreen';
 import GiftDiamondSelection from '../../../components/modal/GiftDiamondSelection';
 import GiftSendingFinalScreen from '../../../components/modal/GiftSendingFinalScreen';
 import PromoteScreen from '../../../components/modal/PromoteScreen';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import Promotion from '../../promotion/Promotion';
 import { useNavigation } from '@react-navigation/native';
 import { setModalSignIn } from '../../../store/indexSlice';
@@ -48,87 +46,42 @@ import WebView from 'react-native-webview'
 
 const { height, width } = Dimensions.get('window');
 
-const VideoItem = React.forwardRef(({ item, index }, ref) => {
-
+const VideoItem = React.forwardRef(({ item, index, onEnd, flatListRef }, ref) => {
 
   // const { id, caption, url, author, audio, like, comment } = item;
-  const { id, user_id, description, video, thum, gif, view, section, sound_id, privacy_type, allow_comments, allow_duet, block, duet_video_id, old_video_id, duration, promote, created } = item;
+  const { id, user_id, description, video, thum, gif, view, section, sound_id, privacy_type, allow_comments, allow_duet, block, duet_video_id, old_video_id, duration, promote, created, like, comment, shared } = item;
+
   const [showFullText, setShowFullText] = useState(description.length > 60)
-  const url = `https://dreamlived.com/mobileapp_api//${video}`
+
+  const url = `https://dpcst9y3un003.cloudfront.net/${video}`
+
+  const avatar = `https://dpcst9y3un003.cloudfront.net/${thum}`
+
   const des = description.slice(0, 50);
+
   const [showText, setShowText] = useState(false)
+
   const dispatch = useDispatch()
+
   const isLogin = useSelector(state => state.my_data.isLogin)
+
   const navigation = useNavigation()
+
   const my_data = useSelector(state => state.my_data.my_profile_data)
+
   const [showGiftModal, setShowGiftModal] = useState(false)
+
   const [showDimanondSelectionModal, setShowDimanondSelectionModal] = useState({
     isVisible: false,
     item: null
   })
+
   const [showGiftSendingModal, setShowGiftSendingModal] = useState({
     isVisible: false,
     item: null,
   })
-  const [access_token, setAccess_token] = useState(null)
-  const [paypal_url, setPaypal_url] = useState(null)
-  const [showModal, setShowModal] = useState(false)
-  const [promoteModal, setPromoteModal] = useState(false)
-console.log(url)
-  const makePayments = async () => {
-    try {
-      const token = await paymentsApi.generateToken()
-      setAccess_token(token)
-      const res = await paymentsApi.createOrder(token)
-      setPromoteModal(false)
-      if (res?.links) {
-        const findUrl = res.links.find(data => data?.rel === "approve")
-        setPaypal_url(findUrl.href)
-        setShowModal(true)
-        console.log("response after calling create order:", findUrl.href)
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  }
 
-
-  const onUrlChange = (webviewState) => {
-    console.log("web view state change :", webviewState.url)
-    if (webviewState.url.includes('https://example.com/cancel')) {
-        clearPaypalState()
-        return;
-    }
-    if (webviewState.url.includes('https://example.com/return')) {
-
-        const urlValues = queryString.parseUrl(webviewState.url)
-        // console.log("my urls value", urlValues)
-        const { token } = urlValues.query
-        if (!!token) {
-            paymentSucess(token)
-        }
-
-    }
-}
-
-const paymentSucess = async (id) => {
-  try {
-      const res = paymentsApi.capturePayment(id, access_token)
-      console.log("capturePayment res++++", res)
-      alert("Payment sucessfull...!!!")
-      clearPaypalState()
-  } catch (error) {
-      console.log("error raised in payment capture", error)
-  }
-}
-
-const clearPaypalState = () => {
-  setPaypal_url(null)
-  setAccess_token(null)
-  setShowModal(false)
-}
-
-
+const [like1, setLike1] = useState(false)
 
 
   const verticalRef = useRef();
@@ -157,11 +110,11 @@ const clearPaypalState = () => {
 
 
   const onGiftPress = () => {
-    if(isLogin){
+    if (isLogin) {
       setShowGiftModal(pre => !pre)
-    } else{
-      dispatch(setModalSignIn(true));   
-     }
+    } else {
+      dispatch(setModalSignIn(true));
+    }
   }
 
 
@@ -182,7 +135,14 @@ const clearPaypalState = () => {
         url={url}
         videoRef={videoRef}
         bottomHeight={bottomHeight}
+        onEnd={onEnd}
+        avatar={avatar}
+        flatListRef={flatListRef}
+        index={index}
       />
+     
+     
+
 
       {/* <PressContainer
         isActive={isActive}
@@ -226,6 +186,8 @@ const clearPaypalState = () => {
           </Text>
         </Container>
       </Container>
+
+
       {/* container vertical */}
       <VerticalSecction
         ref={verticalRef}
@@ -239,12 +201,13 @@ const clearPaypalState = () => {
 
       <VerticalLeftSection
         ref={verticalRef}
-        like={"like"}
-        comment={'comment'}
+        like={like1}
+        comment={comment}
         author={thum}
         idVideo={id}
-
+        share={shared}
       />
+
       <Modal visible={showGiftModal} transparent={true} animationType='slide'>
         <GiftSelectionScreen setShowGiftModal={setShowGiftModal} setShowDimanondSelectionModal={setShowDimanondSelectionModal} />
       </Modal>
@@ -264,17 +227,19 @@ const clearPaypalState = () => {
           showGiftSendingModal={showGiftSendingModal}
         />
       </Modal>
-      <Modal visible={promoteModal} transparent={true}>
-       <Promotion makePayments={makePayments} />
+
+      
+      {/* <Modal visible={promoteModal} transparent={true}>
+        <Promotion makePayments={makePayments} />
       </Modal>
       <Modal visible={showModal}>
         <View style={{ flex: 1, }}>
-            <WebView
-                source={{uri: paypal_url}}
-                onNavigationStateChange={onUrlChange}
-            />
+          <WebView
+            source={{ uri: paypal_url }}
+            onNavigationStateChange={onUrlChange}
+          />
         </View>
-      </Modal>
+      </Modal> */}
 
     </Container>
   );

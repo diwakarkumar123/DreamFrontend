@@ -8,10 +8,12 @@ const signIn = async (email ) => {
   return result;
 };
 
-const signUp = async (name, email) => {
+const signUp = async (name, email, firebase_uid) => {
   const data = {
     name,
     email,
+    firebase_uid,
+    // profile_pic,
   };
   const url = `${SERVER_API_URL}/users/signup`;
   const result = await axios.post(url, data);

@@ -1,4 +1,4 @@
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React, { useEffect, useState, useCallback } from 'react';
 import CText from '../CText';
 import Container from '../Container';
@@ -16,13 +16,24 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { KEY_STORAGE } from '../../constants/constants';
 import auth from '@react-native-firebase/auth'
-import {save_data} from '../../utilis2/AsyncStorage/Controller'
-import {addIsLogin, add_my_profile_data} from '../../store/my_dataSlice'
+import { save_data } from '../../utilis2/AsyncStorage/Controller'
+import { addIsLogin, add_my_profile_data } from '../../store/my_dataSlice'
 import { useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { setModalSignIn, setBottomSheetSignIn, setBottomSheetLogout } from '../../store/indexSlice';
+import { StatusBar } from 'react-native';
 
-const BottomSheetSignIn = ({ handleClickClose }) => {
+
+
+
+
+
+
+const { width, height } = Dimensions.get('window')
+
+
+
+const BottomSheetSignIn = ({ handleClickClose, setCurrentForm, backToScreenSocial }) => {
   const [txtEmail, setTxtEmail] = useState(null);
   const [txtPassword, setTxtPassword] = useState(null);
   const [secureTextEntry, setSecureTextEntry] = useState(true);
@@ -47,13 +58,13 @@ const BottomSheetSignIn = ({ handleClickClose }) => {
     setIsFailure_invalid(false)
     setShowModal(true);
     setTimeout(async () => {
-      if(txtEmail && txtPassword){
+      if (txtEmail && txtPassword) {
         try {
           auth()
-          .signInWithEmailAndPassword(txtEmail, txtPassword)
-          .then((res)=>{
-            const result = authApi.signIn(res.user.email)
-            result.then((res)=>{
+            .signInWithEmailAndPassword(txtEmail, txtPassword)
+            .then((res) => {
+              const result = authApi.signIn(res.user.email)
+              result.then((res) => {
                 dispatch(add_my_profile_data(res.data.payload))
                 save_data("user", res.data.payload)
                 dispatch(addIsLogin(true))
@@ -61,20 +72,20 @@ const BottomSheetSignIn = ({ handleClickClose }) => {
                 dispatch(setBottomSheetSignIn(false));
                 dispatch(setBottomSheetLogout(false))
                 handleClickClose()
+              })
+                .catch((err) => {
+                  console.log("server error:", err)
+                })
             })
-            .catch((err)=>{
-              console.log("server error:", err)
+            .catch((err) => {
+              console.log("error generated while login from firebase:", err)
             })
-          })
-          .catch((err)=>{
-            console.log("error generated while login from firebase:", err)
-          })
         } catch (error) {
           Alert.alert(error.message);
         } finally {
           setShowModal(false);
         }
-      } else{
+      } else {
         setIsEmpty(true)
         setShowModal(false)
       }
@@ -87,12 +98,14 @@ const BottomSheetSignIn = ({ handleClickClose }) => {
       exiting={FadeOut.duration(300).delay(300)}>
       <Container
         backgroundColor={COLOR.WHITE}
-        justifyContent="center"
-        alignItems="center">
+        alignItems="center"
+        height={height}
+        justifyContent='flex-start'
+      >
         {showModal && (
           <ModalLoading visible={showModal} setVisible={setShowModal} />
         )}
-        <CText text={TEXT.H1} textAlign="center" marginVertical={SPACING.S2}>
+        <CText text={TEXT.H1} textAlign="center" marginVertical={SPACING.S1}>
           Dream
         </CText>
         <CText
@@ -100,10 +113,10 @@ const BottomSheetSignIn = ({ handleClickClose }) => {
           textAlign="center"
           marginVertical={SPACING.S2}
           color={COLOR.GRAY}
-          marginBottom={SPACING.S10}>
-          Log in
+        >
+          Log in with email and password
         </CText>
-        <Container marginVertical={SPACING.S2} width="100%">
+        <Container marginVertical={SPACING.S1} width="100%">
           <CInput
             iconLeft={MAIL_OUTLINE_ICON_IMG}
             placeholder="Email"
@@ -122,21 +135,21 @@ const BottomSheetSignIn = ({ handleClickClose }) => {
           />
         </Container>
 
-        <Container padding={SPACING.S3}>
+        <Container padding={SPACING.S1}>
           <CText color={COLOR.DANGER}>
             {isEmpty
               ? 'You must enter all fields'
               : isFailure
-              ? 'Email already exists'
-              : isFaliure_invalid 
-              ? 'Email are badly formated'
-              : ''
+                ? 'Email already exists'
+                : isFaliure_invalid
+                  ? 'Email are badly formated'
+                  : ''
             }
           </CText>
         </Container>
 
         <Container
-          marginTop={SPACING.S5}
+          marginTop={SPACING.S2}
           borderRadius={BORDER.SMALL}
           padding={SPACING.S3}
           backgroundColor={COLOR.DANGER2}
@@ -152,6 +165,44 @@ const BottomSheetSignIn = ({ handleClickClose }) => {
             </CText>
           </TouchableOpacity>
         </Container>
+
+        <Container width="100%" paddingTop={SPACING.S4}>
+          <TouchableOpacity onPress={() => setCurrentForm(0)}>
+            <CText
+              textAlign="center"
+              padding={SPACING.S2}
+              // color={COLOR.WHITE}
+              text={TEXT.STRONG}
+              borderRadius={BORDER.SMALL}
+              // backgroundColor={COLOR.DANGER2}
+              onPress={() => {
+                setCurrentForm(0);
+                backToScreenSocial();
+              }}>
+              Forget password
+            </CText>
+          </TouchableOpacity>
+        </Container>
+
+
+        <Container width="100%" paddingTop={SPACING.S4}>
+          <TouchableOpacity onPress={() => setCurrentForm(0)}>
+            <CText
+              textAlign="center"
+              padding={SPACING.S2}
+              // color={COLOR.WHITE}
+              text={TEXT.STRONG}
+              borderRadius={BORDER.SMALL}
+              // backgroundColor={COLOR.DANGER2}
+              onPress={() => {
+                setCurrentForm(0);
+                backToScreenSocial();
+              }}>
+              Log in with another way
+            </CText>
+          </TouchableOpacity>
+        </Container>
+        
       </Container>
     </Animated.View>
   );

@@ -190,7 +190,7 @@ const BottomSecction = ({ isActive, caption, authorName, audio }) => {
       bottom={0}
       width="100%"
       paddingHorizontal={SPACING.S2}
-      // paddingBottom={SPACING.S4}
+      paddingBottom={SPACING.S4}
       >
       <Row>
         <Container flex={4}>

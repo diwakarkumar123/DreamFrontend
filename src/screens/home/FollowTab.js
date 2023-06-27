@@ -6,6 +6,9 @@ import {
   View,
   Text,
   Modal,
+  ToastAndroid,
+  Alert,
+  TouchableOpacity
 } from 'react-native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import VideoItem from './components/VideoItem';
@@ -38,6 +41,7 @@ const window = {
   height: Dimensions.get('window').height
 }
 
+const { height, width } = Dimensions.get('window');
 
 
 
@@ -49,6 +53,39 @@ const FollowTab = () => {
   const flatListRef = useRef();
 
   const [data, setData] = useState([]);
+
+
+
+
+
+
+
+  const videoData = [
+    {
+      video: 'https://dpcst9y3un003.cloudfront.net/videos/62cf3f5ee912f2black.mp4',
+    },
+    {
+      video: 'https://dpcst9y3un003.cloudfront.net/videos/62c88ae59235f2black.mp4',
+    },
+    {
+      video: 'https://dpcst9y3un003.cloudfront.net/videos/62c965384e3772black.mp4',
+    },
+    {
+      video: 'https://dpcst9y3un003.cloudfront.net/videos/62cabdab721a82black.mp4',
+    },
+    {
+      video: 'https://dpcst9y3un003.cloudfront.net/videos/62cd66413546a10black.mp4',
+    },
+    {
+      video: 'https://dpcst9y3un003.cloudfront.net/videos/62cf3d8b239172black.mp4',
+    },
+    {
+      video: 'https://dpcst9y3un003.cloudfront.net/videos/62cf3dc97cda92black.mp4',
+    }
+  ]
+
+
+
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -114,10 +151,10 @@ const FollowTab = () => {
   const fetchData = useCallback(async () => {
     try {
       const result = await VideoApi.getVideo();
-      
+
       if (result.status == 200) {
         setData([...result.data.videos].reverse());
-        
+
         containerValue.value = withTiming(1, { duration: 1000 });
       }
     } catch (error) {
@@ -135,6 +172,7 @@ const FollowTab = () => {
     }, 3000);
   }, []);
 
+
   useEffect(() => {
     if (isFocused && data.length === 0) handleFecthData();
   }, [handleFecthData, isFocused]);
@@ -150,58 +188,104 @@ const FollowTab = () => {
     },
   });
 
-  BackHandler.addEventListener('hardwareBackPress', function () {
-    const time = Date.now();
-    if (time - timeReloadRef.current > 10000) {
-      setIsRefreshing(true);
-      flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
-      fetchData();
-      timeReloadRef.current = Date.now();
-      return true;
-    }
+  // BackHandler.addEventListener('hardwareBackPress', function () {
+  //   const time = Date.now();
+  //   if (time - timeReloadRef.current > 10000) {
+  //     setIsRefreshing(true);
+  //     flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
+  //     fetchData();
+  //     timeReloadRef.current = Date.now();
+  //     return true;
+  //   }
 
-    return false;
-  });
+  //   return false;
+  // });
+  const [buttonCount, setButtonCount] = useState(0);
+let resetTimeout;
+let buttonClicked = false;
+
+const resetButtonCount = () => {
+  setButtonCount(0);
+};
+
+const handleButtonClick = () => {
+  buttonClicked = true;
+  setButtonCount(prevCount => prevCount + 1);
+
+  clearTimeout(resetTimeout);
+  resetTimeout = setTimeout(() => {
+    resetButtonCount();
+    buttonClicked = false;
+  }, 5000); // Reset to zero after 5 seconds of inactivity
+};
+
+BackHandler.addEventListener('hardwareBackPress', () => {
+  if (!buttonClicked) {
+    handleButtonClick();
+
+    if (buttonCount === 2) {
+      BackHandler.exitApp();
+    } else if (buttonCount === 1) {
+      Alert.alert("Displaying notification");
+    } else if (buttonCount === 0) {
+      flatListRef.current.scrollToIndex({ index: 1 });
+    }
+  }
+});
+
+  
+
+  
+
+
+
+
   return (
     <Animated.View style={[styles.container, containerStyle]}>
       {isLoading ? (
         <Icon source={TIKTOK_LOADER_GIF} width={50} height={50} />
       ) : data.length > 0 ? (
-      <FlatList
-        ref={flatListRef}
-        data={data}
-        pagingEnabled
-        onRefresh={() => setIsRefreshing(true)}
-        refreshing={isRefreshing}
-        renderItem={({ item, index }) => {
-          return (
-            <VideoItem
-              ref={ref => (cellRefs.current[index] = ref)}
-              index={index}
-              item={item}
-            />
-          );
-        }}
-        keyExtractor={(item, index) => index.toString()}
-        scrollEventThrottle={16}
-        showsHorizontalScrollIndicator={false}
-        showsVerticalScrollIndicator={false}
-        initialNumToRender={0}
-        maxToRenderPerBatch={3}
-        removeClippedSubviews={true}
-        windowSize={5}
-        onViewableItemsChanged={onViewableItemsChanged}
-        viewabilityConfig={viewabilityConfig}
-        getItemLayout={(_data, index) => ({
-          length: HEIGHT_ITEM,
-          offset: HEIGHT_ITEM * index,
-          index,
-        })}
-      />
-     ) : (
+        <FlatList
+          ref={flatListRef}
+          data={data}
+          pagingEnabled={true}
+          onRefresh={() => setIsRefreshing(true)}
+          refreshing={isRefreshing}
+          renderItem={({ item, index }) => {
+            return (
+    
+
+              <VideoItem
+                ref={ref => (cellRefs.current[index] = ref)}
+                index={index}
+                item={item}
+
+                flatListRef={flatListRef}
+
+              />
+            
+            );
+          }}
+          keyExtractor={(item, index) => index.toString()}
+          scrollEventThrottle={16}
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+          initialNumToRender={0}
+          maxToRenderPerBatch={3}
+          removeClippedSubviews={true}
+          windowSize={5}
+          onViewableItemsChanged={onViewableItemsChanged}
+          viewabilityConfig={viewabilityConfig}
+          getItemLayout={(_data, index) => ({
+            length: HEIGHT_ITEM,
+            offset: HEIGHT_ITEM * index,
+            index,
+          })}
+        />
+      ) : (
         <NotFoundData onPress={handleFecthData} />
       )}
-      
+
     </Animated.View>
   );
 };

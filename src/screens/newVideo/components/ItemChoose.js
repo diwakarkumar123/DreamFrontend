@@ -11,6 +11,8 @@ const ItemChoose = ({
   type,
   onChange,
   initValue,
+  onPress,
+  value
 }) => {
   const [isEnabled, setIsEnabled] = useState(initValue);
   const toggleSwitch = () => {
@@ -30,13 +32,13 @@ const ItemChoose = ({
         </CText>
         {type && <CText marginRight={SPACING.S2}>{type}</CText>}
         {iconRight ? (
-          <Icon source={iconRight} tintColor={COLOR.GRAY} />
+          <Icon source={iconRight} tintColor={COLOR.GRAY} onPress={onPress} />
         ) : (
           <Switch
             onChange={toggleSwitch}
-            value={isEnabled}
-            trackColor={{ false: '#767577', true: COLOR.LIGHT_GREEN }}
-            thumbColor={isEnabled ? COLOR.GREEN : '#f4f3f4'}
+            value={value}
+            trackColor={{ false: '#767577', true: 'red'}}
+            thumbColor={isEnabled ? 'red' : '#f4f3f4'}
           />
         )}
       </View>

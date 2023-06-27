@@ -11,6 +11,7 @@ import BatchedBridge from 'react-native/Libraries/BatchedBridge/BatchedBridge'
 import { useSelector } from 'react-redux'
 import paymentsApi from '../../apis/paymentsApi'
 import WebView from 'react-native-webview'
+import { useNavigation } from '@react-navigation/native'
 
 
 const { width, height } = Dimensions.get('window')
@@ -18,7 +19,7 @@ const { width, height } = Dimensions.get('window')
 const image = 'https://media.licdn.com/dms/image/D4D03AQFe9vksJNnGiA/profile-displayphoto-shrink_800_800/0/1683797622677?e=2147483647&v=beta&t=jbVEvQ5xMGlW_wzNSt8AiT0Td6C5brUNrdsRAIGfKW4'
 
 
-const Promotion = ({makePayments}) => {
+const Promotion = ({ makePayments, setPromotion }) => {
     const [audience, setAudience] = useState(true)
     const [budget, setBuget] = useState(1)
     const [promotion_time, setPromotion_time] = useState(1)
@@ -27,7 +28,7 @@ const Promotion = ({makePayments}) => {
     const [access_token, setAccess_token] = useState(null)
     const [paypal_url, setPaypal_url] = useState(null)
     const [showModal, setShowModal] = useState(false)
-
+    const navigation = useNavigation()
 
 
     const handleBudgetChange = (value) => {
@@ -40,19 +41,26 @@ const Promotion = ({makePayments}) => {
     const max_reach = budget * 1000
     const min_reach = max_reach - max_reach / 10
 
+
+    const Pressing_cut_button = () => {
+        console.log("pressed")
+        setPromotion(false)
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             {/* upper part */}
             <View style={styles.upper_section}>
                 {/* icon container  */}
 
-                <View style={styles.icon_containers}>
+                <TouchableOpacity onPress={() => { navigation.goBack() }} style={styles.icon_containers}>
+
                     <Icon
                         source={CLOSE_IMG}
                         tintColor={'white'}
                     />
-                </View>
 
+                </TouchableOpacity>
                 {/* picture and title section */}
                 <View style={styles.picture_and_title_section}>
                     <Icon
@@ -74,15 +82,16 @@ const Promotion = ({makePayments}) => {
                         <Text style={styles.txt}>Add topic</Text>
                     </TouchableOpacity>
 
-                    <View style={styles.live_adding}>
-                        <Image
-                            source={LIVE_ICON1}
-                            style={{ width: 20, height: 20, }}
-                        />
-                        <TouchableOpacity>
+                    
+
+                        <TouchableOpacity style={styles.live_adding}>
+                            <Image
+                                source={LIVE_ICON1}
+                                style={{ width: 20, height: 20, }}
+                            />
                             <Text style={styles.txt}>Add a LIVE g.....</Text>
                         </TouchableOpacity>
-                    </View>
+                
                 </View>
             </View>
             {/* upper section completed */}
@@ -92,163 +101,172 @@ const Promotion = ({makePayments}) => {
 
             {/* bottom section start */}
             {/* promote section with two icons */}
-            <View style={styles.promote_with_two_icon}>
-                <Image source={ARROW_BACK_IOS_ICON} />
-                <Text style={{ fontSize: 20, color: '#000000', fontWeight: '700', fontFamily: 'Roboto' }}>Promote</Text>
-                <Image source={QUESTION_MARK} />
+            <View style={{
+                flex: 1,
+                width: width,
+                alignItems: 'center',
+                backgroundColor: '#fff',
+                borderTopLeftRadius: 10,
+                borderTopRightRadius: 10
+            }}>
+                <View style={styles.promote_with_two_icon}>
+                    <Image source={ARROW_BACK_IOS_ICON} />
+                    <Text style={{ fontSize: 20, color: '#000000', fontWeight: '700', fontFamily: 'Roboto' }}>Promote</Text>
+                    <Image source={QUESTION_MARK} />
+                </View>
+
+
+
+                <ScrollView
+                    showsHorizontalScrollIndicator={false}
+                    showsVerticalScrollIndicator={false}
+                    keyboardDismissMode={'on-drag'}
+                >
+                    {/* choose way to promote */}
+                    <View style={styles.way_to_promote}>
+
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+
+                            <Text style={[styles.txt, { color: 'rgba(0, 0, 0, 1)' }]}>
+                                Choose Way to promote
+                            </Text>
+                            <Icon
+                                source={ARROW_BACK_IOS_ICON}
+                                style={{ transform: [{ rotate: '180deg' }], width: 14, height: 14 }}
+                            />
+                        </View>
+
+
+
+                        <View style={styles.dream_app_choose_for_you}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', }}>
+                                <Image
+                                    source={GRAPH}
+                                    tintColor={'black'}
+                                    style={{ marginRight: 6 }}
+                                />
+                                <Text>
+                                    Promote LIVE With real-time screen
+                                </Text>
+                            </View>
+                            <RadioButton
+                                status={promotion_way === 'real time screen' ? 'checked' : 'unchecked'}
+                                onPress={() => { setPromotion_way('real time screen') }}
+                                color='#FA3E60'
+                            />
+                        </View>
+
+                        <View style={styles.dream_app_choose_for_you}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', }}>
+                                <Image
+                                    source={VIDEOCAMR_IMG}
+                                    tintColor={'black'}
+                                    style={{ marginRight: 6 }}
+                                />
+                                <Text>
+                                    Promote LIVE With Video
+                                </Text>
+                            </View>
+                            <RadioButton
+                                status={promotion_way === 'with live video' ? 'checked' : 'unchecked'}
+                                onPress={() => { setPromotion_way('with live video') }}
+                                color='#FA3E60'
+                            />
+                        </View>
+                    </View>
+
+
+                    <View style={{
+                        width: width * 0.9,
+                        height: 2,
+                        backgroundColor: '#D9D9D9',
+                        marginTop: 8
+                    }}>
+                    </View>
+
+                    {/* defining audience */}
+                    <View style={styles.defining_audience} >
+
+                        <Text style={[styles.txt, { color: 'rgba(0, 0, 0, 1)' }]}>Define Your audience</Text>
+
+                        <View style={styles.dream_app_choose_for_you}>
+                            <Text>
+                                Default audience ( Dream app choose for you )
+                            </Text>
+                            <RadioButton
+                                status={audience ? 'checked' : 'unchecked'}
+                                onPress={() => { setAudience(pre => !pre) }}
+                                color='#FA3E60'
+                            />
+                        </View>
+
+                        <View style={styles.dream_app_choose_for_you}>
+                            <Text>Custom</Text>
+                            <Icon onPress={() => { navigation.navigate('CustomAudienceScreen') }} source={ARROW_BACK_IOS_ICON} style={{ transform: [{ rotate: '180deg' }] }} />
+                        </View>
+                    </View>
+
+                    {/* Bidget and duration */}
+                    <View style={styles.defining_audience} >
+
+                        <Text style={[styles.txt, { color: 'rgba(0, 0, 0, 1)' }]}>
+                            Budget and duration
+                        </Text>
+                        <View style={styles.live_viewers}>
+                            <Text style={[styles.txt, { color: '#000' }]}>{min_reach} - {max_reach}</Text>
+                            <Text>ESTIMATED LIVE Viewers</Text>
+                        </View>
+                    </View>
+
+                    <View style={{
+                        width: width * 0.9,
+                        height: 2,
+                        backgroundColor: '#D9D9D9',
+                        marginTop: 8
+                    }}>
+                    </View>
+
+                    {/* Total budget section */}
+                    <View style={{ marginTop: height * 0.03 }}>
+                        <Text style={{ fontSize: 16, marginBottom: 10 }}>What is your total budget?</Text>
+                        <Slider
+                            value={budget}
+                            onValueChange={handleBudgetChange}
+                            minimumValue={0}
+                            maximumValue={100}
+                            step={1}
+                            minimumTrackTintColor="#FA3E60"
+                            maximumTrackTintColor="rgba(0, 0, 0, 0.2)"
+                            thumbTintColor="#C9B5B5"
+                            renderThumbComponent={() => (
+                                <CustomThumb value={budget} />
+                            )}
+                        />
+                    </View>
+
+                    {/* total time of promotion  */}
+                    <View style={{ marginTop: height * 0.03 }}>
+                        <Text style={{ fontSize: 16, marginBottom: 10 }}>How long would you like to promote?</Text>
+                        <Slider
+                            value={promotion_time}
+                            onValueChange={handleTimeChange}
+                            minimumValue={0}
+                            maximumValue={100}
+                            step={1}
+                            minimumTrackTintColor="#FA3E60"
+                            maximumTrackTintColor="rgba(0, 0, 0, 0.2)"
+                            thumbTintColor="#C9B5B5"
+                            renderThumbComponent={() => (
+                                <CustomThumb value={promotion_time} />
+                            )}
+                        />
+                    </View>
+                </ScrollView>
             </View>
 
 
-
-            <ScrollView
-                showsHorizontalScrollIndicator={false}
-                showsVerticalScrollIndicator={false}
-                keyboardDismissMode={'on-drag'}
-            >
-                {/* choose way to promote */}
-                <View style={styles.way_to_promote}>
-
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-
-                        <Text style={[styles.txt, { color: 'rgba(0, 0, 0, 1)' }]}>
-                            Choose Way to promote
-                        </Text>
-                        <Icon
-                            source={ARROW_BACK_IOS_ICON}
-                            style={{ transform: [{ rotate: '180deg' }], width: 14, height: 14 }}
-                        />
-                    </View>
-
-
-
-                    <View style={styles.dream_app_choose_for_you}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', }}>
-                            <Image
-                                source={GRAPH}
-                                tintColor={'black'}
-                                style={{ marginRight: 6 }}
-                            />
-                            <Text>
-                                Promote LIVE With real-time screen
-                            </Text>
-                        </View>
-                        <RadioButton
-                            status={promotion_way === 'real time screen' ? 'checked' : 'unchecked'}
-                            onPress={() => { setPromotion_way('real time screen') }}
-                            color='#FA3E60'
-                        />
-                    </View>
-
-                    <View style={styles.dream_app_choose_for_you}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', }}>
-                            <Image
-                                source={VIDEOCAMR_IMG}
-                                tintColor={'black'}
-                                style={{ marginRight: 6 }}
-                            />
-                            <Text>
-                                Promote LIVE With Video
-                            </Text>
-                        </View>
-                        <RadioButton
-                            status={promotion_way === 'with live video' ? 'checked' : 'unchecked'}
-                            onPress={() => { setPromotion_way('with live video') }}
-                            color='#FA3E60'
-                        />
-                    </View>
-                </View>
-
-
-                <View style={{
-                    width: width * 0.9,
-                    height: 2,
-                    backgroundColor: '#D9D9D9',
-                    marginTop: 8
-                }}>
-                </View>
-
-                {/* defining audience */}
-                <View style={styles.defining_audience} >
-
-                    <Text style={[styles.txt, { color: 'rgba(0, 0, 0, 1)' }]}>Define Your audience</Text>
-
-                    <View style={styles.dream_app_choose_for_you}>
-                        <Text>
-                            Default audience ( Dream app choose for you )
-                        </Text>
-                        <RadioButton
-                            status={audience ? 'checked' : 'unchecked'}
-                            onPress={() => { setAudience(pre => !pre) }}
-                            color='#FA3E60'
-                        />
-                    </View>
-
-                    <View style={styles.dream_app_choose_for_you}>
-                        <Text>Custom</Text>
-                        <Icon source={ARROW_BACK_IOS_ICON} style={{ transform: [{ rotate: '180deg' }] }} />
-                    </View>
-                </View>
-
-                {/* Bidget and duration */}
-                <View style={styles.defining_audience} >
-
-                    <Text style={[styles.txt, { color: 'rgba(0, 0, 0, 1)' }]}>
-                        Budget and duration
-                    </Text>
-                    <View style={styles.live_viewers}>
-                        <Text style={[styles.txt, { color: '#000' }]}>{min_reach} - {max_reach}</Text>
-                        <Text>ESTIMATED LIVE Viewers</Text>
-                    </View>
-                </View>
-
-                <View style={{
-                    width: width * 0.9,
-                    height: 2,
-                    backgroundColor: '#D9D9D9',
-                    marginTop: 8
-                }}>
-                </View>
-
-                {/* Total budget section */}
-                <View style={{ marginTop: height * 0.03 }}>
-                    <Text style={{ fontSize: 16, marginBottom: 10 }}>What is your total budget?</Text>
-                    <Slider
-                        value={budget}
-                        onValueChange={handleBudgetChange}
-                        minimumValue={0}
-                        maximumValue={100}
-                        step={1}
-                        minimumTrackTintColor="#FA3E60"
-                        maximumTrackTintColor="rgba(0, 0, 0, 0.2)"
-                        thumbTintColor="#C9B5B5"
-                        renderThumbComponent={() => (
-                            <CustomThumb value={budget} />
-                        )}
-                    />
-                </View>
-
-                {/* total time of promotion  */}
-                <View style={{ marginTop: height * 0.03 }}>
-                    <Text style={{ fontSize: 16, marginBottom: 10 }}>How long would you like to promote?</Text>
-                    <Slider
-                        value={promotion_time}
-                        onValueChange={handleTimeChange}
-                        minimumValue={0}
-                        maximumValue={100}
-                        step={1}
-                        minimumTrackTintColor="#FA3E60"
-                        maximumTrackTintColor="rgba(0, 0, 0, 0.2)"
-                        thumbTintColor="#C9B5B5"
-                        renderThumbComponent={() => (
-                            <CustomThumb value={promotion_time} />
-                        )}
-                    />
-                </View>
-            </ScrollView>
-
-
             {/* Bottomest parts */}
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: width * 0.8, marginBottom: 10 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: width, paddingBottom: 10, backgroundColor: '#fff', paddingHorizontal: width * 0.1 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Image
                         source={COIN}
@@ -310,7 +328,7 @@ const styles1 = StyleSheet.create({
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: COLOR.WHITE,
+        backgroundColor: 'rgba(14, 0, 0, 0.9)',
         flex: 1,
         alignItems: 'center'
     },
@@ -359,7 +377,12 @@ const styles = StyleSheet.create({
     live_adding: {
         flexDirection: 'row',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        backgroundColor: 'rgba(179, 159, 159, 0.2)',
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        borderRadius: 10,
+        marginBottom: 10
     },
     promote_with_two_icon: {
         flexDirection: 'row',
@@ -369,7 +392,8 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         paddingBottom: 10,
         paddingHorizontal: width * 0.05,
-        borderColor: 'rgba(0, 0, 0, 0.4)'
+        borderColor: 'rgba(0, 0, 0, 0.4)',
+
     },
     defining_audience: {
         width: width * 0.9,

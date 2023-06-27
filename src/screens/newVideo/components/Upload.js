@@ -10,7 +10,7 @@ const Upload = ({ endRecord }) => {
       const options = { mediaType: 'video' };
 
       const result = await launchImageLibrary(options);
-      endRecord(result?.assets[0]?.uri);
+      endRecord(result?.assets[0]?.uri, result?.assets[0]?.duration);
     } catch (error) {
       console.log(error);
     }

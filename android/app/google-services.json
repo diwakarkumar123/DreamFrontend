@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "505235781427",
+    "project_id": "dreammobile-a690a",
+    "storage_bucket": "dreammobile-a690a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:505235781427:android:c2c4859a01c8717ac17046",
+        "android_client_info": {
+          "package_name": "com.dream_mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "505235781427-9013t2u2nlkv8mmj3srlca5q4q4kh5lc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6b0NzpJvFHzn8bgRWj-TiPHetQIfkS9E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "505235781427-9013t2u2nlkv8mmj3srlca5q4q4kh5lc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:505235781427:android:77fd2f3fd4a0c702c17046",
+        "android_client_info": {
+          "package_name": "com.nojomalmadina.appdream"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "505235781427-9013t2u2nlkv8mmj3srlca5q4q4kh5lc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6b0NzpJvFHzn8bgRWj-TiPHetQIfkS9E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "505235781427-9013t2u2nlkv8mmj3srlca5q4q4kh5lc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

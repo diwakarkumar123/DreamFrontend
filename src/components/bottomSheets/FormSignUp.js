@@ -1,5 +1,5 @@
 import { StyleSheet, TouchableOpacity } from 'react-native';
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import CText from '../CText';
 import Container from '../Container';
 import { BORDER, COLOR, SPACING, TEXT } from '../../configs/styles';
@@ -14,13 +14,13 @@ import {
 import * as authApi from '../../apis/auth.api';
 import ModalLoading from '../modal/ModalLoading';
 import Animated, { FadeIn, FadeOut, withRepeat } from 'react-native-reanimated';
-import auth from '@react-native-firebase/auth'
+import auth, { firebase } from '@react-native-firebase/auth'
 import { useDispatch, useSelector } from 'react-redux'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {add_my_profile_data, addIsLogin } from '../../store/my_dataSlice'
 import { useNavigation } from '@react-navigation/native';
 import { setModalSignIn, setBottomSheetLogout, setBottomSheetSignIn } from '../../store/indexSlice';
-
+import axios from 'axios';
 
 
 
@@ -55,6 +55,15 @@ const BottomSheetSignUp = ({ setCurrentForm, backToScreenSocial, handleClickClos
   }, [dispatch]);
 
 
+  // function for creating the avatar
+  const fetchAvatar = async (seed)=>{
+    try {
+      const response = await axios.get(`https://avatars.dicebear.com/api/avataaars/${seed}.svg`);
+    return response.request.responseURL; 
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
 
   
@@ -71,8 +80,13 @@ const BottomSheetSignUp = ({ setCurrentForm, backToScreenSocial, handleClickClos
         }
         auth()
         .createUserWithEmailAndPassword(txtEmail, txtPassword)
-        .then((res)=>{
-          const result = authApi.signUp(txtName, res.user.email)
+        .then(async(res)=>{
+          const name = txtName;
+          const email = res.user.email;
+          const firebase_uid = res.user.uid;
+          // const profile_pic = await fetchAvatar(firebase_uid)
+          console.log(res.user)
+          const result = authApi.signUp(name, email, firebase_uid)
           result.then((res)=>{
             console.log(res.data)
             if(res.data.message == 'user created successfully'){
@@ -110,7 +124,6 @@ const BottomSheetSignUp = ({ setCurrentForm, backToScreenSocial, handleClickClos
 
 
 
-
   return (
     <Animated.View
       entering={FadeIn.duration(300).delay(300)}
@@ -118,9 +131,10 @@ const BottomSheetSignUp = ({ setCurrentForm, backToScreenSocial, handleClickClos
       <Container
         backgroundColor={COLOR.WHITE}
         justifyContent="center"
-        alignItems="center">
+        alignItems="center"
+        >
         {showModal && <ModalLoading visible={showModal} />}
-        <CText text={TEXT.H1} textAlign="center" marginVertical={SPACING.S2}>
+        <CText text={TEXT.H1} textAlign="center" marginVertical={SPACING.S1}>
           Dream
         </CText>
         <CText
@@ -128,8 +142,10 @@ const BottomSheetSignUp = ({ setCurrentForm, backToScreenSocial, handleClickClos
           textAlign="center"
           marginVertical={SPACING.S2}
           color={COLOR.GRAY}
-          marginBottom={SPACING.S10}>
-          Register
+          marginBottom={SPACING.S4}
+          
+          >
+          Continue with email and password
         </CText>
         <CInput
           placeholder="Name"
@@ -154,7 +170,7 @@ const BottomSheetSignUp = ({ setCurrentForm, backToScreenSocial, handleClickClos
             onPressIconRight={() => setSecureTextEntry(!secureTextEntry)}
           />
         </Container>
-        <Container padding={SPACING.S3}>
+        <Container padding={SPACING.S2}>
           <CText color={COLOR.DANGER}>
             {isEmpty
               ? 'You must enter all fields'
@@ -167,7 +183,6 @@ const BottomSheetSignUp = ({ setCurrentForm, backToScreenSocial, handleClickClos
           </CText>
         </Container>
         <Container
-          marginTop={SPACING.S1}
           borderRadius={BORDER.SMALL}
           padding={SPACING.S3}
           backgroundColor={COLOR.DANGER2}
@@ -183,7 +198,7 @@ const BottomSheetSignUp = ({ setCurrentForm, backToScreenSocial, handleClickClos
             </CText>
           </TouchableOpacity>
         </Container>
-        <Container padding={SPACING.S2} width="100%" paddingTop={SPACING.S10}>
+        <Container padding={SPACING.S2} width="100%" paddingTop={SPACING.S4}>
         <TouchableOpacity onPress={() => setCurrentForm(0)}>
         <CText
             textAlign="center"
@@ -191,7 +206,7 @@ const BottomSheetSignUp = ({ setCurrentForm, backToScreenSocial, handleClickClos
               setCurrentForm(0);
               backToScreenSocial();
             }}>
-            Sign in another way
+            Continue with another way
           </CText>
           </TouchableOpacity>
         </Container>

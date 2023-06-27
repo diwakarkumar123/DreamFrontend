@@ -26,13 +26,15 @@ import BoxCreateVideo from './components/BoxCreateVideo';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentBottomTab } from '../../store/indexSlice';
 import BottomSheetComment from './components/BottomSheetComment';
+import { useTranslation } from 'react-i18next';
+
 
 const Bottom = createBottomTabNavigator();
 
 const MainScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const currentBottomTab = useSelector(state => state.index.currentBottomTab);
-
+  const {t, i18n} = useTranslation()
   const [theme, setTheme] = useState('dart');
 
   const handleButtonBack = () => navigation.goBack();
@@ -71,7 +73,7 @@ const MainScreen = ({ navigation }) => {
           tabBarInactiveTintColor: COLOR.GRAY,
         }}>
         <Bottom.Screen
-          name="Home"
+          name={t('Home')}
           component={HomeScreen}
           options={{
             tabBarIcon: ({ color, focused }) => {
@@ -96,7 +98,7 @@ const MainScreen = ({ navigation }) => {
           }}
         />
         <Bottom.Screen
-          name="Discover"
+          name={t('Discover')}
           component={DiscoverScreen}
           options={{
             tabBarIcon: ({ color, focused }) => {
@@ -147,7 +149,7 @@ const MainScreen = ({ navigation }) => {
           }}
         />
         <Bottom.Screen
-          name="Inbox"
+          name={t('Inbox')}
           component={InboxScreen}
           options={{
             tabBarIcon: ({ color, focused }) => {
@@ -171,7 +173,7 @@ const MainScreen = ({ navigation }) => {
           }}
         />
         <Bottom.Screen
-          name="Me"
+          name={t('Me')}
           component={ProfileScreen}
           initialParams={{ showHeader: false }}
           options={{

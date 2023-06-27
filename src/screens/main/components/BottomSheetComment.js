@@ -11,24 +11,39 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setIsShowComment } from '../../../store/mainScreenSlice';
 import * as commentApi from '../../../apis/comment.api';
 
-// const data = [
-//   { key: '1' },
-//   { key: '2' },
-//   { key: '3' },
-//   { key: '4' },
-//   { key: '5' },
-//   { key: '6' },
-//   { key: '7' },
-//   { key: '8' },
-//   { key: '9' },
-//   { key: '10' },
-//   { key: '11' },
-//   { key: '6' },
-//   { key: '7' },
-//   { key: '8' },
-//   { key: '9' },
-//   { key: '10' },
-// ];
+const data = [
+  {
+    "_id": 93,
+    "user_id": 367,
+    "video_id": 1132,
+    "comment": "How To Manage video Comment", "created": "2022-11-22T15:40:45.000Z"
+  },
+  {
+    "_id": 94,
+    "user_id": 367,
+    "video_id": 1132,
+    "comment": "How To Manage video Comment", "created": "2022-11-22T15:40:45.000Z"
+  },
+  {
+    "_id": 95,
+    "user_id": 367,
+    "video_id": 1132,
+    "comment": "How To Manage video Comment", "created": "2022-11-22T15:40:45.000Z"
+  },
+  {
+    "_id": 96,
+    "user_id": 367,
+    "video_id": 1132,
+    "comment": "How To Manage video Comment", "created": "2022-11-22T15:40:45.000Z"
+  }
+];
+
+
+
+
+
+
+
 
 const BottomSheetComment = () => {
   const dispatch = useDispatch();
@@ -82,8 +97,8 @@ const BottomSheetComment = () => {
         />
       }
       onCloseBottomSheet={onCloseBottomSheet}>
-      <Container padding={SPACING.S3} height={HEIGHT / 2} marginBottom={68}>
-        {isLoading ? (
+      <Container padding={SPACING.S3} height={HEIGHT / 2} marginBottom={50}>
+        {/* {isLoading ? (
           <Loading />
         ) : (
           <FlatList
@@ -97,7 +112,9 @@ const BottomSheetComment = () => {
             showsVerticalScrollIndicator={false}
             scrollToOverflowEnabled={true}
           />
-        )}
+        )} */}
+
+        <ItemComment item={{}} />
       </Container>
     </BottomSheet>
   );

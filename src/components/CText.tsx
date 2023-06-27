@@ -10,6 +10,7 @@ const CText = (props: TextCustomType) => {
     color = COLOR.BLACK,
     text = TEXT.REGULAR,
     onPress,
+    onLongPress,
     ...style
   } = props;
 
@@ -22,6 +23,7 @@ const CText = (props: TextCustomType) => {
     <Text
       style={[initStyle, style]}
       numberOfLines={numberOfLines}
+      onLongPress={onLongPress}
       onPress={onPress}>
       {children}
     </Text>

@@ -49,13 +49,13 @@ const PreviewVideoScreen = () => {
           translucent={true}
         />
         {isFocused && (
-          <Video
+          <Video 
             style={styles.video}
             source={{ uri: route?.params?.pathVideo }}
-            // resizeMode={'cover'}
+            resizeMode={'cover'}
             paused={pauseVideo}
-            repeat
-            controls
+            repeat={false}
+            controls={false}
           />
         )}
         <Container

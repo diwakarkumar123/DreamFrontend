@@ -1,15 +1,27 @@
 import React from 'react';
 import Container from '../Container';
 import Icon from '../Icon';
-import { HEART_OUTLINE_IMG } from '../../configs/source';
+import { HEART_OUTLINE_IMG, AVATA_IMG } from '../../configs/source';
 import CText from '../CText';
 import { BORDER, COLOR, SPACING, TEXT } from '../../configs/styles';
 import { urlSourceMedia } from '../../utils/utils';
 import moment from 'moment';
 import 'moment/locale/vi';
+import { Text } from 'react-native';
+import Clipboard from '@react-native-clipboard/clipboard';
+import Toast from "react-native-simple-toast";
 
 const ItemComment = ({ item }) => {
-  const { _id, comment, user, updatedAt } = item;
+  const { _id, comment, user,  } = item;
+
+    const updatedAt = new Date()
+
+    const copyToClipboard = (content) => {
+      console.log(content)
+      Clipboard.setString(content);
+      Toast.show(content, Toast.LONG)
+    };
+
 
   return (
     <Container
@@ -17,7 +29,7 @@ const ItemComment = ({ item }) => {
       alignItems="flex-start"
       marginVertical={SPACING.S1}>
       <Icon
-        source={{ uri: urlSourceMedia(user.avatar) }}
+        source={AVATA_IMG}
         width={32}
         height={32}
         borderRadius={BORDER.PILL}
@@ -32,11 +44,16 @@ const ItemComment = ({ item }) => {
           color={COLOR.GRAY}
           fontSize={13}
           lineHeight={13}>
-          {user.name}
+          {/* {user.name} */}
+          shubham1
         </CText>
-        <CText numberOfLines={2} color={COLOR.BLACK} fontSize={15}>
+        {/* <CText numberOfLines={2} color={COLOR.BLACK} fontSize={15}  >
           {comment}
-        </CText>
+          hi there ...
+        </CText> */}
+        <Text onLongPress={()=>{copyToClipboard('Hi there ...')}}>
+          Hi there ....
+        </Text>
         <Container flexDirection="row" alignItems="center">
           <CText color={COLOR.GRAY} fontSize={13} marginRight={SPACING.S2}>
             {moment(updatedAt).fromNow()}

@@ -5,8 +5,14 @@ const Visibility = Object.freeze({
   Visible: 1,
 });
 // 192.168.1.6
-const SERVER_DOMAIN = 'http://3.94.171.233';
-const SERVER_API_URL = 'http://3.94.171.233';
+// const SERVER_DOMAIN = 'http://3.94.171.233';
+// const SERVER_API_URL = 'http://3.94.171.233';
+// const SERVER_DOMAIN = 'http://192.168.43.139:3000';
+// const SERVER_API_URL = 'http://192.168.43.139:3000';
+const SERVER_DOMAIN = 'http://192.168.1.9:3000';
+const SERVER_API_URL = 'http://192.168.1.9:3000';
+
+
 
 const KEY_STORAGE = Object.freeze({
   TOKEN: 'token',

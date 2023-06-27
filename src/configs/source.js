@@ -62,6 +62,12 @@ const QUESTION_MARK = require('../assets/images/question_mark.png')
 const GRAPH = require('../assets/images/graph.png')
 
 
+const LUCKY_WHEEL_ICON = require('../assets/images/spinWheel.png')
+const PICTURE_ICON = require('../assets/images/picture_icon.png')
+const LIKED_POST_NAVIGATION = require('../assets/images/Liked_post_navigation.png') 
+const FAVOURITE = require('../assets/images/favourite.png')
+const LOCK = require('../assets/images/lock.png')
+const VIDEO_POST_NAVIGATION = require('../assets/images/video_post_navigation.png')
 
 
 const FACEBOOK_ICON = require('../assets/icon-social/facebook.png');
@@ -71,6 +77,8 @@ const APPLE_ICON = require('../assets/icon-social/apple-logo.png');
 const KAKAOTALK_ICON = require('../assets/icon-social/kakao-talk.png');
 const LINE_ICON = require('../assets/icon-social/line.png');
 const TWITTER_ICON = require('../assets/icon-social/twitter.png');
+
+
 
 const LOGO_IMG = require('../assets/images/TikTok-Logo.jpg');
 const Illustrations_BG_IMG = require('../assets/images/Illustrations.png');
@@ -89,11 +97,19 @@ const ARROW_BACK_IMG = require('../assets/images/arrow_back.png');
 const ADD_ACCOUNT_ICON_IMG = require('../assets/images/AddAccountIcon.png');
 const MORE_VERT_IMG = require('../assets/images/more_vert.png');
 // gifs
+
 const TIKTOK_LOADER_GIF = require('../assets/gifs/tiktok-loader.gif');
+
 
 export {
   LOGO_IMG,
+  LUCKY_WHEEL_ICON,
+  PICTURE_ICON,
+  LIKED_POST_NAVIGATION,
+  FAVOURITE,
   DISC_IMG,
+  LOCK,
+  VIDEO_POST_NAVIGATION,
   FLOATING_MUSIC_IMG,
   HEART_IMG,
   HOME_IMG,

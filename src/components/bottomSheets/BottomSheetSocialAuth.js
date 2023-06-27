@@ -34,12 +34,20 @@ import Animated, {
   FadeIn,
   FadeOut,
 } from 'react-native-reanimated';
-import { Pressable } from 'react-native';
+import { Dimensions, Pressable, StyleSheet } from 'react-native';
 import { onGoogleButtonPress } from '../../auth/google.auth';
+import {onFacebookButtonPress} from '../../auth/facebook'
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
+
+
+const {width, height} = Dimensions.get('window')
+
 
 const BottomSheetSocialAuth = () => {
   const dispatch = useDispatch();
   const bottomSheetRef = useRef();
+  const navigation = useNavigation()
 
   const [currentForm, setCurrentForm] = useState(0); //0 social, 1 login, 2 register
 
@@ -57,10 +65,9 @@ const BottomSheetSocialAuth = () => {
     }
   }, [bottomSheetSignIn, dataSignInWithSocial]);
 
-  const handleClickClose = useCallback(() => {
-    bottomSheetRef?.current?.scrollTo(0);
-    setDataSocial([]); 
-  }, []);
+  const handleClickClose = ()=>{
+    navigation.goBack()
+  }
 
   const onCloseBottomSheet = () => {
     dispatch(setBottomSheetSignIn(false));
@@ -89,6 +96,9 @@ const BottomSheetSocialAuth = () => {
       {
         icon: FACEBOOK_ICON,
         using: 'Continue with Facebook',
+        onPress: () => onFacebookButtonPress()
+        .then((d) =>{console.log('Logined:', d)})
+        .catch((err)=>{console.log(err)})
       },
       {
         icon: GOOGLE_ICON,
@@ -101,11 +111,12 @@ const BottomSheetSocialAuth = () => {
       {
         icon: TWITTER_ICON,
         using: 'Continue with Twitter',
+        onPress: () => console.log("twitter login pressed")
       },
-      {
-        icon: APPLE_ICON,
-        using: 'Continue with Apple',
-      }
+      // {
+      //   icon: APPLE_ICON,
+      //   using: 'Continue with Apple',
+      // }
     ],
     [],
   );
@@ -146,8 +157,8 @@ const BottomSheetSocialAuth = () => {
   };
 
   return (
-    <BottomSheet ref={bottomSheetRef} onCloseBottomSheet={onCloseBottomSheet}>
-      <Container paddingTop={SPACING.S5} height={HEIGHT - 48}>
+    <SafeAreaView style={styles.main_container}>
+      <Container paddingTop={SPACING.S2} flex={1} >
         <Container
           paddingHorizontal={SPACING.S4}
           flexDirection="row"
@@ -167,11 +178,11 @@ const BottomSheetSocialAuth = () => {
             ?
           </CText>
         </Container>
+
         <Container
-          flex={1}
           paddingHorizontal={SPACING.S5}
-          marginTop={SPACING.S10}
-          marginBottom={SPACING.S5}
+          marginTop={SPACING.S4}
+          marginBottom={SPACING.S4}
           flexDirection="column"
           justifyContent="space-between">
           {currentForm === 0 ? (
@@ -194,9 +205,8 @@ const BottomSheetSocialAuth = () => {
                     Create profiles, follow other accounts, record videos your own and many more.
                   </CText>
                 </Container>
-                <Container marginTop={SPACING.S3} flexGrow={1}>
+                <Container marginTop={SPACING.S2} marginBottom={SPACING.S3}>
                   {dataSocial.map((item, index) => {
-                    console.log('loenght: ',dataSocial.length);
                     return (
                       <ItemSignIn
                         onPress={item.onPress}
@@ -209,14 +219,14 @@ const BottomSheetSocialAuth = () => {
                     );
                   })}
                 </Container>
-                <Container marginBottom={80}>
-                  <CText textAlign="center" color={COLOR.GRAY} fontSize={12}>
+                <Container marginBottom={0}>
+                  <CText textAlign="center" color={COLOR.GRAY} fontSize={13}>
                     By continuing, you agree to Dream’s{' '}
-                    <CText text={TEXT.STRONG} fontSize={12}>
+                    <CText text={TEXT.STRONG} fontSize={13}>
                     Terms of Service
                     </CText>{' '}
                     and confirm that you have read Dream’s{' '}
-                    <CText text={TEXT.STRONG} fontSize={12}>
+                    <CText text={TEXT.STRONG} fontSize={13}>
                     Privacy Policy.
                     </CText>
                   </CText>
@@ -227,6 +237,8 @@ const BottomSheetSocialAuth = () => {
             <FormSignIn
               setCurrentForm={setCurrentForm}
               handleClickClose={handleClickClose}
+              backToScreenSocial={backToScreenSocial}
+
             />
           ) : (
             <FormSignUp
@@ -238,7 +250,7 @@ const BottomSheetSocialAuth = () => {
         </Container>
         <Container
           backgroundColor={COLOR.LIGHT_GRAY2}
-          padding={SPACING.S5}
+          padding={SPACING.S6}
           position="absolute"
           bottom={0}
           left={0}
@@ -250,15 +262,23 @@ const BottomSheetSocialAuth = () => {
             <CText
               text={TEXT.STRONG}
               color={COLOR.DANGER2}
-              fontSize={16}
+              fontSize={18}
               onPress={handleClickText}>
               {currentForm === 1 ? 'Register' : 'Log in'}
             </CText>
           </CText>
         </Container>
       </Container>
-    </BottomSheet>
+      </SafeAreaView>
   );
 };
 
-export default React.memo(BottomSheetSocialAuth);
+export default BottomSheetSocialAuth;
+
+const styles = StyleSheet.create({
+  main_container: {
+    width: width,
+    height: height,
+    backgroundColor: '#fff',
+  }
+})

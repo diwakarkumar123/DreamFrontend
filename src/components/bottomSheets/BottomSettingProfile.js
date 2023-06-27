@@ -17,6 +17,8 @@ import {
   setBottomSheetLogout,
   setBottomSheetSettingProfile,
 } from '../../store/indexSlice';
+import Entypo from 'react-native-vector-icons/Entypo'
+import { useNavigation } from '@react-navigation/native';
 
 const BottomSettingProfile = () => {
   const dispatch = useDispatch();
@@ -24,6 +26,7 @@ const BottomSettingProfile = () => {
     state => state.index.bottomSheetSettingProfile,
   );
   const bottomSheetRef = useRef();
+    const navigation = useNavigation()
 
   useEffect(() => {
     if (bottomSheetSettingProfile) {
@@ -65,13 +68,25 @@ const BottomSettingProfile = () => {
         </Container>
 
         <Container borderBottomWidth={0.2} borderBottomColor={COLOR.LIGHT_GRAY}>
-          <TouchableOpacity onPress={null}>
+          <TouchableOpacity onPress={()=>{navigation.navigate('EditProfile')}}>
             <Container
               paddingVertical={SPACING.S3}
               flexDirection="row"
               alignItems="center">
               <Icon source={SETTING_ICON} />
               <CText marginLeft={SPACING.S2}>Edit profile and setting</CText>
+            </Container>
+          </TouchableOpacity>
+        </Container>
+
+        <Container borderBottomWidth={0.2} borderBottomColor={COLOR.LIGHT_GRAY}>
+          <TouchableOpacity onPress={()=>{navigation.navigate('MainInsightScreen')}}>
+            <Container
+              paddingVertical={SPACING.S3}
+              flexDirection="row"
+              alignItems="center">
+              <Entypo name='area-graph' size={20}  />
+              <CText marginLeft={SPACING.S2}>Analytics</CText>
             </Container>
           </TouchableOpacity>
         </Container>

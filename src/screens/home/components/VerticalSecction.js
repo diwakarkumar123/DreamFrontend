@@ -32,6 +32,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { urlSourceMedia } from '../../../utils/utils';
 import { setModalSignIn } from '../../../store/indexSlice';
 import { Image } from 'react-native-svg';
+import { useTranslation } from 'react-i18next';
 
 
 
@@ -49,7 +50,7 @@ const VerticalSecction = React.forwardRef(
   ({ idVideo, like = 0, comment = 0, author, onGiftPress }, ref) => {
     const dispatch = useDispatch();
     const [amountLike, setAmountLike] = useState(Number(like));
-
+    const {t, i18n} = useTranslation()
     const navigation = useNavigation();
 
     const heartValue = useSharedValue(0);
@@ -149,7 +150,7 @@ const VerticalSecction = React.forwardRef(
             height={50}
             onPress={onGiftPress}
           />
-          <Text style={{fontSize: 16, color: 'white', fontWeight: '500'}}>Gift</Text>
+          <Text style={{fontSize: 16, color: 'white', fontWeight: '500'}}>{t('gift')}</Text>
         </Container>
 
         <Container
@@ -159,7 +160,7 @@ const VerticalSecction = React.forwardRef(
           borderColor={COLOR.BLACK}
           borderWidth={0}>
           <Icon
-            source={{ uri: `https://dreamlived.com/mobileapp_api//${author}` }}
+            source={{ uri: `https://dpcst9y3un003.cloudfront.net/${author}` }}
             width={50}
             height={50}
             borderRadius={BORDER.PILL}

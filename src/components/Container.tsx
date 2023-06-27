@@ -1,4 +1,5 @@
-import { View, SafeAreaView } from 'react-native';
+import { View,  } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import React from 'react';
 import { ContainerType } from '../utils/interfaceStyles';
 
@@ -8,9 +9,9 @@ const Container = React.forwardRef(
 
     return (
 
-      <SafeAreaView ref={ref} style={styles}>
+      <View ref={ref} style={styles}>
         {children}
-      </SafeAreaView>
+      </View>
 
 
     );

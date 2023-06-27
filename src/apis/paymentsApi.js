@@ -3,8 +3,8 @@ import base64 from 'base-64';
 
 
 const baseUrl = 'https://api-m.sandbox.paypal.com'
-const clientId = ''
-const secretKey = ''
+const clientId = 'AbsPwHN0q-w-q98mrqckP87WKNTi8XUA3bVlQr7GRJNnn9tiEVa3bPT_X-Lkrv95miICWEWMT-1n8LH4'
+const secretKey = 'ELrc5WEpHTKO9d5P_0bsyqLe1YG7QJlalNgnsgseHGypc1u_VzpuUPzp7V_p2WPgdp-n-_x8fKdROCwj'
 let orderDetail = {
     "intent": "CAPTURE",
     "purchase_units": [

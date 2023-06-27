@@ -13,6 +13,7 @@ const NewVideoScreen = () => {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const [uri, setUri] = useState('');
+  const [duration, setDuration] = useState('')
 
   const camera = useRef(null);
 
@@ -27,6 +28,7 @@ const NewVideoScreen = () => {
       setTimeout(() => {
         navigation.navigate('PreviewVideoScreen', {
           pathVideo: uri || myUri,
+
         });
       }, 1500);
     },

@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, TurboModuleRegistry, Image } from 'react-native';
 import React from 'react';
 import { CInput, Container, CText } from '../../../components';
 import { BORDER, COLOR, SPACING } from '../../../configs/styles';
@@ -6,10 +6,11 @@ import Video from 'react-native-video';
 import { WIDTH } from '../../../configs/constant';
 import ItemAddCaption from './ItemAddCaption';
 
+
 const listCaption = ['# hashtag', '@ Mention', '▶ Video'];
 const iconCaption = ['#', '@', '▶', '◉'];
 
-const TopPostVideo = ({ pathVideo, caption, setCaption }) => {
+const TopPostVideo = ({ pathVideo, caption, setCaption, image }) => {
   const handleCick = t => {
     let txt = caption.trim();
     if (iconCaption.includes(txt[txt.length - 1])) txt = txt.slice(0, -1);
@@ -24,15 +25,19 @@ const TopPostVideo = ({ pathVideo, caption, setCaption }) => {
           width={90}
           borderRadius={BORDER.SMALL}
           overflow="hidden">
-          <Video
+          {/* <Video
             source={{
-              uri: 'https://v16-webapp.tiktok.com/442bbfd4f13eb153d774e944a0a2c7a9/62c9ec8c/video/tos/useast2a/tos-useast2a-pve-0037-aiso/8206b60058004b99a745210606136dc5/?a=1988&ch=0&cr=0&dr=0&lr=tiktok_m&cd=0%7C0%7C1%7C0&cv=1&br=2112&bt=1056&btag=80000&cs=0&ds=3&ft=eXd.6Hk_Myq8Z3M_ewe2NI7z2l7Gb&mime_type=video_mp4&qs=0&rc=OWhlN2lpN2dmZDRoaDszN0BpajVreDY6ZjhnZTMzZjgzM0BgYjZjYTUvXl4xYF5fLTY1YSNwYnBtcjRfZzBgLS1kL2Nzcw%3D%3D&l=2022070915000501025105814415E6B120',
+              uri: pathVideo,
             }}
             style={styles.video}
             resizeMode="cover"
-            paused={true}
+            paused={false}
             muted={true}
             seek={10}
+          /> */}
+          <Image
+            source={{uri: image}}
+            style={styles.video}
           />
           <Container
             position="absolute"

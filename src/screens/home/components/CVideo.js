@@ -10,7 +10,15 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Fontisto from 'react-native-vector-icons/Fontisto';
-const CVideo = ({ videoRef, url, isActive, bottomHeight,item }) => {
+
+
+
+
+
+const {width, height} = Dimensions.get('window')
+
+
+const CVideo = ({ videoRef, url, isActive, bottomHeight,item, onEnd, avatar, flatListRef, index }) => {
   const sliderRef = useRef();
   // console.log('url to play',url);
   const [duration, setDuration] = useState(0);
@@ -32,6 +40,11 @@ const CVideo = ({ videoRef, url, isActive, bottomHeight,item }) => {
     setPaused(!paused);
   };
 
+  const moveToNext = ()=>{
+    flatListRef.current.scrollToIndex({ index: index + 1 })
+  }
+
+  
   const onLikePress = () => {
     const likesToAdd = isLiked ? -1 : 1;
     setPost({
@@ -65,12 +78,18 @@ const CVideo = ({ videoRef, url, isActive, bottomHeight,item }) => {
         style={styles.video}
         resizeMode="contain"
         paused={!isActive}
-        repeat={true}
-        onLoad={data => setDuration(data.duration)}
+        repeat={false}
+        onLoad={data =>{
+          setDuration(data.duration)
+        }}
         onProgress={data => {
+  
           setSliderValue(data.currentTime / duration);
         }}
+        onEnd={moveToNext}
         seek={seek}
+        poster={avatar}
+        posterResizeMode={'contain'}
       />
       {isActive && (
         <Container
@@ -120,7 +139,9 @@ const styles = StyleSheet.create({
     left: 0,
     bottom: -5,
     right: 0,
-    // flex: 1,
+    flex: 1,
+    width: width,
+    height: height
   },
   uiContainer: {
     height: '100%',
