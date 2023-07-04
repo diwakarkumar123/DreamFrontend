@@ -29,16 +29,25 @@ import TotalSpendedTime from './src/screens/profile/profile/Insights/TotalSpende
 import i18n from './src/locals/i18n';
 import Avatar from './src/screens/profile/profile/screen/Avatar';
 import BottomSheetSocialAuth from './src/components/bottomSheets/BottomSheetSocialAuth';
+import Countries_and_regions from './src/screens/profile/profile/screen/Countries_and_regions';
+import Making_friend_intention from './src/screens/profile/profile/screen/Making_friend_intention';
+import VideoEditorLandingPage from './src/screens/videoEditor/VideoEditorLandingPage';
+import AccountScreen from './src/screens/profile/profile/screen/AccountScreen';
+import ChooseAccount from './src/screens/profile/profile/screen/ChooseAccount';
+import ChooseBasicAccount from './src/screens/profile/profile/screen/ChooseBasicAccount';
+import ChoosePremiumAccount from './src/screens/profile/profile/screen/ChoosePremiumAccount';
+import ChooseBusinessAccount from './src/screens/profile/profile/screen/ChooseBusinessAccount';
 LogBox.ignoreLogs = ['Remote debugger'];
 console.disableYellowBox = true;
-GoogleSignin.configure({
-  webClientId:
-    '505235781427-9013t2u2nlkv8mmj3srlca5q4q4kh5lc.apps.googleusercontent.com',
-});
+
 
 const Stack = createNativeStackNavigator();
 
 const App = () => {
+  GoogleSignin.configure({
+    webClientId:
+      '549099161334-vcrplrh8dmpv3cuij8rmj0m9bf8q44g3.apps.googleusercontent.com',
+  });
   return (
     <Provider store={store}>
       <NavigationContainer>
@@ -164,8 +173,47 @@ const App = () => {
             component={BottomSheetSocialAuth}
             options={{ headerShown: false, animationEnabled: false, title: 'Insight' }}
           />
+          <Stack.Screen
+            name="CountryAndRegion"
+            component={Countries_and_regions}
+            options={{ headerShown: false, animationEnabled: false, title: 'Insight' }}
+          />
+          <Stack.Screen
+            name="MakingFriendIntenttion"
+            component={Making_friend_intention}
+            options={{ headerShown: false, animationEnabled: false, title: 'Insight' }}
+          />
+          <Stack.Screen
+            name="VideoEditorLandingPage"
+            component={VideoEditorLandingPage}
+            options={{ headerShown: false, animationEnabled: false, title: 'Insight' }}
+          />
 
-
+          <Stack.Screen
+            name="AccountScreen"
+            component={AccountScreen}
+            options={{ headerShown: false, animationEnabled: false, title: 'Insight' }}
+          />
+          <Stack.Screen
+            name="ChooseAccount"
+            component={ChooseAccount}
+            options={{ headerShown: false, animationEnabled: false, title: 'Insight' }}
+          />
+          <Stack.Screen
+            name="ChooseBasicAccount"
+            component={ChooseBasicAccount}
+            options={{ headerShown: false, animationEnabled: false, title: 'Insight' }}
+          />
+          <Stack.Screen
+            name="ChoosePremiumAccount"
+            component={ChoosePremiumAccount}
+            options={{ headerShown: false, animationEnabled: false, title: 'Insight' }}
+          />
+          <Stack.Screen
+            name="ChooseBusinessAccount"
+            component={ChooseBusinessAccount}
+            options={{ headerShown: false, animationEnabled: false, title: 'Insight' }}
+          />
           {/* <Stack.Screen name="ProfileScreen" component={ProfileScreen} /> */}
           <Stack.Screen name="SettingScreen" component={SettingScreen} />
         </Stack.Navigator>

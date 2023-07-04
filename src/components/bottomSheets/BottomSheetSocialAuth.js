@@ -39,6 +39,7 @@ import { onGoogleButtonPress } from '../../auth/google.auth';
 import {onFacebookButtonPress} from '../../auth/facebook'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
+import { signUp } from '../../apis/auth.api';
 
 
 const {width, height} = Dimensions.get('window')
@@ -55,15 +56,15 @@ const BottomSheetSocialAuth = () => {
 
   const bottomSheetSignIn = useSelector(state => state.index.bottomSheetSignIn);
 
-  useEffect(() => {
-    if (bottomSheetSignIn) {
-      const heightLayout = bottomSheetRef?.current?.heightLayoutCurrent();
-      bottomSheetRef?.current?.scrollTo(-heightLayout);
-      setTimeout(() => {
-        setDataSocial(dataSignInWithSocial);
-      }, 300);
-    }
-  }, [bottomSheetSignIn, dataSignInWithSocial]);
+  // useEffect(() => {
+  //   if (bottomSheetSignIn) {
+  //     const heightLayout = bottomSheetRef?.current?.heightLayoutCurrent();
+  //     bottomSheetRef?.current?.scrollTo(-heightLayout);
+  //     setTimeout(() => {
+  //       setDataSocial(dataSignInWithSocial);
+  //     }, 300);
+  //   }
+  // }, [bottomSheetSignIn, dataSignInWithSocial]);
 
   const handleClickClose = ()=>{
     navigation.goBack()
@@ -105,8 +106,26 @@ const BottomSheetSocialAuth = () => {
         using: 'Continue with Google',
         onPress: () =>
           onGoogleButtonPress()
-            .then(() => console.log('login success'))
-            .catch(err => console.log('login google error',err)),
+          .then((r)=>{
+            const {displayName, email, uid, photoURL} = r.user;
+            const result = signUp(displayName, email, uid, photoURL)
+            result.then((res)=>{
+              console.log(res.data)
+              if(res.data.message == 'user created successfully'){
+                dispatch(add_my_profile_data(res.data.payload))
+                save_data("user", res.data.payload)
+                dispatch(addIsLogin(true))
+                handleClickClose()
+                dispatch(setModalSignIn(false));
+                dispatch(setBottomSheetSignIn(false));
+                dispatch(setBottomSheetLogout(false))
+              }
+            })
+            .catch((err)=>{
+              console.log(err.message)
+            })
+          })
+          .catch((err)=>{console.log(err)})
       },
       {
         icon: TWITTER_ICON,
@@ -206,7 +225,7 @@ const BottomSheetSocialAuth = () => {
                   </CText>
                 </Container>
                 <Container marginTop={SPACING.S2} marginBottom={SPACING.S3}>
-                  {dataSocial.map((item, index) => {
+                  {dataSignInWithSocial.map((item, index) => {
                     return (
                       <ItemSignIn
                         onPress={item.onPress}

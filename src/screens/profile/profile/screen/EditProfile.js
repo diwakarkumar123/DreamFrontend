@@ -1,5 +1,5 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View, Dimensions, ScrollView, FlatList, Modal, TextInput } from 'react-native'
-import React, { useRef, useState } from 'react'
+import { StyleSheet, Text, TouchableOpacity, View, Dimensions, ScrollView, FlatList, Modal, TextInput, Image } from 'react-native'
+import React, { useEffect, useRef, useState } from 'react'
 import { useNavigation, useNavigationState } from '@react-navigation/native'
 import Body from '../../../../components/Body/Body.components'
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -7,12 +7,24 @@ import DatePicker from 'react-native-date-picker'
 import { Modalize } from 'react-native-modalize';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Entypo from 'react-native-vector-icons/Entypo'
-import { AVATA_IMG } from '../../../../configs/source'
+import { AVATA_IMG, VIDEOCAMR_IMG } from '../../../../configs/source'
+import DisplayProfile from '../../../../components/DisplayProfile'
+import { useSelector } from 'react-redux'
+import { USER_FILLED_IMG } from '../../../../configs/source'
+import { updateProfile } from '../../../../apis/userApi'
+import Toast from "react-native-simple-toast";
+
 
 const { width, height } = Dimensions.get('window')
 
 const EditProfile = () => {
   const navigation = useNavigation()
+  const currentUser = useSelector(state => state.index.currentUser);
+
+  const isLogin = useSelector(state => state.my_data.isLogin)
+
+  const my_data = useSelector(state => state.my_data.my_profile_data)
+
   const uri = 'https://media.licdn.com/dms/image/D4D03AQFe9vksJNnGiA/profile-displayphoto-shrink_800_800/0/1683797622677?e=2147483647&v=beta&t=jbVEvQ5xMGlW_wzNSt8AiT0Td6C5brUNrdsRAIGfKW4'
   const [nickname, setNickname] = useState(null)
   const [show_nickname_modal, setShow_nickname_modal] = useState(false)
@@ -42,6 +54,17 @@ const EditProfile = () => {
   const modalizeRef = useRef(null)
   const modalizeRef1 = useRef(null)
 
+  useEffect(() => {
+    list.forEach((item) => {
+      const fieldName = item?.name?.toLocaleLowerCase()
+      // console.log(fieldName)
+      if (my_data.hasOwnProperty(fieldName)) {
+        item.value = my_data[fieldName]
+      }
+    })
+  }, [])
+
+
 
   const pickImages = () => {
 
@@ -51,112 +74,111 @@ const EditProfile = () => {
 
   }
 
-
   const [list, setList] = useState([
     {
       name: 'Nickname',
-      value: 'Shubham Ghanghotia',
+      value: '',
       onPress: () => {
         setShow_nickname_modal(true)
       }
     },
     {
       name: 'Gender',
-      value: 'Male',
+      value: '',
       onPress: () => {
         setShow_gender_modal(true)
       }
     },
     {
       name: 'Birthday',
-      value: '1.01.2001',
+      value: '',
       onPress: () => {
         setShow_dob_modal(true)
       }
     },
     {
       name: 'Self introduction',
-      value: 'Full stack developer',
+      value: '',
       onPress: () => {
         setshow_self_introduction_modal(true)
       }
     },
     {
       name: 'Country',
-      value: 'India',
+      value: '',
       onPress: () => {
         navigation.navigate('CountryAndRegion', { list, setList })
       }
     },
     {
       name: 'Emotion State',
-      value: 'Sad',
+      value: '',
       onPress: () => {
         setshow_emotion_state_modal(true)
       }
     },
     {
       name: 'Making friend intention',
-      value: 'Hot chat',
+      value: '',
       onPress: () => {
         navigation.navigate('MakingFriendIntenttion', { list, setList })
       }
     },
     {
       name: 'Occupation',
-      value: 'Software Developer',
+      value: '',
       onPress: () => {
         navigation.navigate('Industries', { list, setList })
       }
     },
     {
       name: 'Mastery of language',
-      value: 'English',
+      value: '',
       onPress: ''
     },
     {
       name: 'Hobbies',
-      value: 'Sleeping',
+      value: '',
       onPress: ''
     },
     {
       name: 'Height',
-      value: '1.7 M',
+      value: '',
       onPress: () => {
         setShow_person_height_modal(true)
       }
     },
     {
       name: 'Weight',
-      value: '50 kg',
+      value: '',
       onPress: () => {
         setShow_person_weight_modal(true)
       }
     },
     {
       name: 'Instagram',
-      value: 'shubham_ghanghotia',
+      value: '',
       onPress: () => {
         setShow_instagram_modal(true)
       }
     },
     {
       name: 'Youtube',
-      value: 'suhbham ghanghotia yt',
+      value: '',
       onPress: () => {
         setShow_yt_modal(true)
       }
     },
     {
       name: 'Facebook',
-      value: 'shubhamghanghotia.yt',
+      value: '',
       onPress: () => {
         setShow_facebook_modal(true)
       }
     },
     {
       name: 'Twitter',
-      value: 'shubham_Yt_',
+      value: '',
       onPress: () => {
         setShow_twitter_modal(true)
       }
@@ -168,6 +190,8 @@ const EditProfile = () => {
     },
   ])
 
+
+
   const emotion = [
     { name: 'Single' },
     { name: 'In Love' },
@@ -175,7 +199,19 @@ const EditProfile = () => {
   ]
 
 
-  const handleNicknamePress = (value) => {
+  const handleNicknamePress = async (value) => {
+    const name = 'nickname'
+    const data = {
+      name, value
+    }
+    updateProfile(my_data?.auth_token, data)
+      .then((res) => {
+        Toast.show(res.message, Toast.SHORT)
+      })
+      .catch((err) => {
+        console.log(err.message)
+      })
+
     const updatedList = list.map((item) => {
       if (item.name === 'Nickname') {
         return {
@@ -191,6 +227,17 @@ const EditProfile = () => {
 
   };
   const handleGenderPress = (value) => {
+    const name = 'gender'
+    const data = {
+      name, value
+    }
+    updateProfile(my_data?.auth_token, data)
+      .then((res) => {
+        Toast.show(res.message, Toast.SHORT)
+      })
+      .catch((err) => {
+        console.log(err.message)
+      })
     const updatedList = list.map((item) => {
       if (item.name === 'Gender') {
         return {
@@ -206,6 +253,17 @@ const EditProfile = () => {
   };
 
   const handleSelfIntroductionPress = (value) => {
+    const name = 'bio'
+    const data = {
+      name, value
+    }
+    updateProfile(my_data?.auth_token, data)
+      .then((res) => {
+        Toast.show(res.message, Toast.SHORT)
+      })
+      .catch((err) => {
+        console.log(err.message)
+      })
     const updatedList = list.map((item) => {
       if (item.name === 'Self introduction') {
         return {
@@ -221,6 +279,17 @@ const EditProfile = () => {
   };
 
   const handleEmotionStatePress = (value) => {
+    const name = 'emotion_state'
+    const data = {
+      name, value
+    }
+    updateProfile(my_data?.auth_token, data)
+      .then((res) => {
+        Toast.show(res.message, Toast.SHORT)
+      })
+      .catch((err) => {
+        console.log(err.message)
+      })
     const updatedList = list.map((item) => {
       if (item.name == 'Emotion State') {
         return {
@@ -237,6 +306,17 @@ const EditProfile = () => {
   };
 
   const handleHeightPress = (value) => {
+    const name = 'person_height'
+    const data = {
+      name, value
+    }
+    updateProfile(my_data?.auth_token, data)
+      .then((res) => {
+        Toast.show(res.message, Toast.SHORT)
+      })
+      .catch((err) => {
+        console.log(err.message)
+      })
     const updatedList = list.map((item) => {
       if (item.name == 'Height') {
         return {
@@ -254,6 +334,17 @@ const EditProfile = () => {
 
 
   const handleWeightPress = (value) => {
+    const name = 'person_weight'
+    const data = {
+      name, value
+    }
+    updateProfile(my_data?.auth_token, data)
+      .then((res) => {
+        Toast.show(res.message, Toast.SHORT)
+      })
+      .catch((err) => {
+        console.log(err.message)
+      })
     const updatedList = list.map((item) => {
       if (item.name == 'Weight') {
         return {
@@ -270,6 +361,17 @@ const EditProfile = () => {
   };
 
   const handleInstagramPress = (value) => {
+    const name = 'instagram'
+    const data = {
+      name, value
+    }
+    updateProfile(my_data?.auth_token, data)
+      .then((res) => {
+        Toast.show(res.message, Toast.SHORT)
+      })
+      .catch((err) => {
+        console.log(err.message)
+      })
     const updatedList = list.map((item) => {
       if (item.name == 'Instagram') {
         return {
@@ -286,6 +388,17 @@ const EditProfile = () => {
   };
 
   const handleFacebookPress = (value) => {
+    const name = 'facebook'
+    const data = {
+      name, value
+    }
+    updateProfile(my_data?.auth_token, data)
+      .then((res) => {
+        Toast.show(res.message, Toast.SHORT)
+      })
+      .catch((err) => {
+        console.log(err.message)
+      })
     const updatedList = list.map((item) => {
       if (item.name == 'Facebook') {
         return {
@@ -302,6 +415,17 @@ const EditProfile = () => {
   };
 
   const handleYoutubePress = (value) => {
+    const name = 'you_tube'
+    const data = {
+      name, value
+    }
+    updateProfile(my_data?.auth_token, data)
+      .then((res) => {
+        Toast.show(res.message, Toast.SHORT)
+      })
+      .catch((err) => {
+        console.log(err.message)
+      })
     const updatedList = list.map((item) => {
       if (item.name == 'Youtube') {
         return {
@@ -318,6 +442,17 @@ const EditProfile = () => {
   };
 
   const handleTwitterPress = (value) => {
+    const name = 'twitter'
+    const data = {
+      name, value
+    }
+    updateProfile(my_data?.auth_token, data)
+      .then((res) => {
+        Toast.show(res.message, Toast.SHORT)
+      })
+      .catch((err) => {
+        console.log(err.message)
+      })
     const updatedList = list.map((item) => {
       if (item.name == 'Twitter') {
         return {
@@ -335,6 +470,17 @@ const EditProfile = () => {
 
 
   const handleDobPress = (value) => {
+    const name = 'dob'
+    const data = {
+      name, value
+    }
+    updateProfile(my_data?.auth_token, data)
+      .then((res) => {
+        Toast.show(res.message, Toast.SHORT)
+      })
+      .catch((err) => {
+        console.log(err.message)
+      })
     const updatedList = list.map((item) => {
       if (item.name == 'Birthday') {
         return {
@@ -355,14 +501,55 @@ const EditProfile = () => {
     modalizeRef.current?.open()
   }
 
+  const RenderHeaderItem = () => {
+    return (
+      <Body applyPadding={false}>
+        <Body applyPadding={false} style={styles.firstContainer} >
+          <TouchableOpacity applyPadding={false} style={styles.picView} onPress={open}>
+            <Image
+              source={my_data?.profile_pic ? { uri: my_data?.profile_pic } : USER_FILLED_IMG}
+              style={{
+                width: 55,
+                height: 55,
+                marginBottom: 5,
+                borderWidth: 1,
+                borderRadius: 28,
+                borderColor: my_data?.profile_pic ? '#fff' : 'black'
+              }} />
+            <Text style={[styles.headerText, { fontSize: 16, marginLeft: 0 }]}>Change Photo</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity applyPadding={false} style={styles.picView} onPress={() => { modalizeRef1.current.open() }}>
+            <Image
+              source={my_data?.profile_video ? { uri: my_data?.profile_video } : VIDEOCAMR_IMG}
+              style={{
+                width: 55,
+                height: 55,
+                marginBottom: 5,
+                borderWidth: 1,
+                borderRadius: 28,
+                borderColor: my_data?.profile_pic ? '#fff' : 'black'
+              }} />
+            <Text style={[styles.headerText, { fontSize: 16, marginLeft: 0 }]}>Change Video</Text>
+          </TouchableOpacity>
+        </Body>
+        <Body
+          applyPadding={false}
+          style={{
+            width: width * 0.95,
+            height: 9,
+            backgroundColor: '#D9D9D9',
+            marginTop: 10
+          }}>
+        </Body>
+      </Body>
+    )
+  }
 
 
 
   return (
-    <Body style={{ flex: 1, }}>
-
-      {/* Edit profile Header */}
-
+    <Body style={{ flex: 1 }}>
 
       <Body applyPadding={false} style={styles.header}>
         <TouchableOpacity onPress={() => { navigation.goBack() }}>
@@ -374,60 +561,25 @@ const EditProfile = () => {
       </Body>
 
 
-
       {/* Edit Profile Body section */}
       <Body applyPadding={false} style={styles.bodyContainer} >
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{
-            width: width,
-            alignItems: 'center',
-            marginBottom: 60
-          }}
-          style={{ width: width, }}>
-          <Body applyPadding={false} style={styles.firstContainer} >
-            <TouchableOpacity applyPadding={false} style={styles.picView} onPress={open}>
-              <Image source={{ uri: uri }} style={{ width: 60, height: 60, borderRadius: 30 }} />
-              <Text style={[styles.headerText, { fontSize: 16, marginLeft: 0 }]}>Change Photo</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity applyPadding={false} style={styles.picView} onPress={() => { modalizeRef1.current.open() }}>
-              <Image source={{ uri: uri }} style={{ width: 60, height: 60, borderRadius: 30 }} />
-              <Text style={[styles.headerText, { fontSize: 16, marginLeft: 0 }]}>Change Video</Text>
-            </TouchableOpacity>
-          </Body>
-          <Body
-            applyPadding={false}
-            style={{
-              width: width * 0.95,
-              height: 9,
-              backgroundColor: '#D9D9D9',
-              marginTop: 10
-            }}>
-          </Body>
-
-
-          <FlatList
-            data={list}
-            renderItem={({ item, index }) => (
-              <Body applyPadding={false} style={styles.secondContainer}>
-                <Text style={styles.txt}>{item.name}</Text>
-                <Body applyPadding={false} style={styles.leftContainer}>
-                  <Text style={[styles.txt, { color: 'rgba(0, 0, 0, 0.4)' }]}>{item.value}</Text>
-                  <TouchableOpacity
-                    style={{ marginLeft: 10 }}
-                    onPress={item.onPress}
-
-                  >
-                    <AntDesign name='right' />
-                  </TouchableOpacity>
-                </Body>
+        <FlatList
+          data={list}
+          ListHeaderComponent={RenderHeaderItem}
+          renderItem={({ item, index }) => (
+            <Body applyPadding={false} style={styles.secondContainer}>
+              <Text style={styles.txt}>{item.name}</Text>
+              <Body applyPadding={false} style={styles.leftContainer}>
+                <Text style={[styles.txt, { color: 'rgba(0, 0, 0, 0.4)' }]}>{item.value}</Text>
+                <TouchableOpacity
+                  style={{ marginLeft: 10 }}
+                  onPress={item.onPress}
+                >
+                  <AntDesign name='right' size={16} />
+                </TouchableOpacity>
               </Body>
-            )}
-          />
-
-
-        </ScrollView>
+            </Body>
+          )} />
       </Body>
 
       {/* nickname modal */}
@@ -795,7 +947,7 @@ const EditProfile = () => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={()=>{navigation.navigate('Avatar')}}
+            onPress={() => { navigation.navigate('Avatar') }}
             style={{
               alignItems: 'center',
               justifyContent: 'center',
@@ -915,7 +1067,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#000000',
     marginLeft: 25,
-    marginTop: 5
+    marginTop: 3
   },
   picView: {
     alignItems: 'center'
@@ -927,16 +1079,18 @@ const styles = StyleSheet.create({
 
   },
   bodyContainer: {
-    width: width,
-    alignItems: 'center',
-    marginTop: 20
+    // width: width,
+    // alignItems: 'center',
+    // marginTop: 20
+    flex: 1
   },
   secondContainer: {
     flexDirection: 'row',
-    width: width * 0.9,
+    width: width,
     justifyContent: 'space-between',
     marginTop: 10,
-    marginBottom: 15
+    marginBottom: 15,
+    paddingHorizontal: width * 0.05
   },
   leftContainer: {
     flexDirection: 'row',
@@ -1007,3 +1161,5 @@ const styles = StyleSheet.create({
     marginTop: height * 0.02
   }
 })
+
+

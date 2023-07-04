@@ -68,7 +68,7 @@ const BottomSettingProfile = () => {
         </Container>
 
         <Container borderBottomWidth={0.2} borderBottomColor={COLOR.LIGHT_GRAY}>
-          <TouchableOpacity onPress={()=>{navigation.navigate('EditProfile')}}>
+          <TouchableOpacity onPress={()=>{navigation.navigate('AccountScreen')}}>
             <Container
               paddingVertical={SPACING.S3}
               flexDirection="row"

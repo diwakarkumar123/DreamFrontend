@@ -21,7 +21,9 @@ import {add_my_profile_data, addIsLogin } from '../../store/my_dataSlice'
 import { useNavigation } from '@react-navigation/native';
 import { setModalSignIn, setBottomSheetLogout, setBottomSheetSignIn } from '../../store/indexSlice';
 import axios from 'axios';
-
+import { createAvatar } from '@dicebear/core';
+import { adventurer, notionists, croodles, personas } from '@dicebear/collection';
+import { SvgXml } from 'react-native-svg';
 
 
 const save_data = async (key, data) => {
@@ -55,14 +57,12 @@ const BottomSheetSignUp = ({ setCurrentForm, backToScreenSocial, handleClickClos
   }, [dispatch]);
 
 
-  // function for creating the avatar
-  const fetchAvatar = async (seed)=>{
-    try {
-      const response = await axios.get(`https://avatars.dicebear.com/api/avataaars/${seed}.svg`);
-    return response.request.responseURL; 
-    } catch (error) {
-      console.log(error)
-    }
+  const create_avatar = (seed)=>{
+    const avatar = createAvatar(personas, {
+      "seed": seed
+    });
+    const svg = avatar.toString();
+   return svg;
   }
 
 
@@ -84,9 +84,10 @@ const BottomSheetSignUp = ({ setCurrentForm, backToScreenSocial, handleClickClos
           const name = txtName;
           const email = res.user.email;
           const firebase_uid = res.user.uid;
-          // const profile_pic = await fetchAvatar(firebase_uid)
+          // const profile_pic = await create_avatar(firebase_uid)
+          const profile_pic = ''
           console.log(res.user)
-          const result = authApi.signUp(name, email, firebase_uid)
+          const result = authApi.signUp(name, email, firebase_uid, profile_pic)
           result.then((res)=>{
             console.log(res.data)
             if(res.data.message == 'user created successfully'){
@@ -121,6 +122,12 @@ const BottomSheetSignUp = ({ setCurrentForm, backToScreenSocial, handleClickClos
       }
     }, 8000);
   };
+
+
+
+
+
+
 
 
 

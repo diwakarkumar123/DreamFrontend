@@ -21,6 +21,10 @@ import { Container, CText, Icon } from '../../components';
 import CloseButton from './components/CloseButton';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { STATUSBAR_HEIGHT } from '../../constants/constants';
+import { FFmpegKit } from 'ffmpeg-kit-react-native';
+
+
+
 
 const options = [
   { icon: SPEED_IMG, name: 'Speed', onclick: () => console.log('a') },
@@ -39,6 +43,60 @@ const PreviewVideoScreen = () => {
   const [isFocused, setIsFocused] = useState(true);
   const [pauseVideo, setPauseVideo] = useState(false);
 
+
+//   FFmpegKit.execute(route?.params?.pathVideo)
+//     .then(async (session) => {
+//       // Unique session id created for this execution
+//       const sessionId = session.getSessionId();
+//       console.log('sessionId', sessionId)
+
+//       // Command arguments as a single string
+//       const command = session.getCommand();
+//       console.log('command', command)
+//       // Command arguments
+//       const commandArguments = session.getArguments();
+//       console.log('commandArguments', commandArguments)
+//       // State of the execution. Shows whether it is still running or completed
+//       const state = await session.getState();
+//       console.log('state', state)
+//       // Return code for completed sessions. Will be undefined if session is still running or FFmpegKit fails to run it
+//       const returnCode = await session.getReturnCode()
+//       console.log('returnCode', returnCode)
+//       const startTime = session.getStartTime();
+//       const endTime = await session.getEndTime();
+//       const duration = await session.getDuration();
+//       console.log('startTime', startTime)
+//       console.log('endTime', endTime)
+//       console.log('duration', duration)
+//       // Console output generated for this execution
+//       const output = await session.getOutput();
+//       console.log('outputs', output)
+//       // The stack trace if FFmpegKit fails to run a command
+//       const failStackTrace = await session.getFailStackTrace()
+// console.log('failStackTrace', failStackTrace)
+//       // The list of logs generated for this execution
+//       const logs = await session.getLogs();
+//       console.log('logs', logs)
+//       // The list of statistics generated for this execution (only available on FFmpegSession)
+//       const statistics = await session.getStatistics();
+// console.log('statistics', statistics)
+//     })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   if (isFocused) {
     return (
       <View style={styles.container}>
@@ -49,7 +107,7 @@ const PreviewVideoScreen = () => {
           translucent={true}
         />
         {isFocused && (
-          <Video 
+          <Video
             style={styles.video}
             source={{ uri: route?.params?.pathVideo }}
             resizeMode={'cover'}
@@ -92,8 +150,8 @@ const PreviewVideoScreen = () => {
         <View style={styles.actionBottom}>
           <Pressable
             style={[styles.button, { backgroundColor: COLOR.WHITE }]}
-            onPress={() => navigation.goBack()}>
-            <CText>Back</CText>
+            onPress={() => navigation.navigate('VideoEditorLandingPage', {pathVideo: route?.params?.pathVideo})}>
+            <CText>Edit</CText>
           </Pressable>
           <Pressable
             style={[styles.button, { backgroundColor: COLOR.DANGER }]}

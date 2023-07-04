@@ -1,173 +1,52 @@
-import { FlatList, StyleSheet, Text, View, TouchableOpacity, Dimensions } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import { FlatList, StyleSheet, Text, View, TouchableOpacity, Dimensions, Image, ActivityIndicator } from 'react-native';
+import React, { useEffect, useState, useMemo } from 'react';
 import { createAvatar } from '@dicebear/core';
 import { adventurer, notionists, croodles, personas } from '@dicebear/collection';
-import { SvgXml } from 'react-native-svg';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import SkeletonContent from 'react-native-skeleton-content-nonexpo';
 import { useNavigation } from '@react-navigation/native';
+import { getAvatar } from '../../../../apis/avatarApi';
 
 
 
 const { width, height } = Dimensions.get('window')
 
 const Avatar = () => {
-    const [select_avatar, setSelect_avatar] = useState('')
+    const [select_avatar, setSelect_avatar] = useState({})
     const [loading, setLoading] = useState(true)
     const navigation = useNavigation()
-    const avatars = [];
-    const [fetch_more_data, setFetch_more_data] = useState('')
     const [loaded_avatar, setLoaded_avatar] = useState([])
-    const newAvatar = []
-    const dummyData = [
-        {
-            index: 1,
-            svg: ''
-        },
-        {
-            index: 2,
-            svg: ''
-        },
-        {
-            index: 3,
-            svg: ''
-        },
-        {
-            index: 4,
-            svg: ''
-        },
-        {
-            index: 5,
-            svg: ''
-        },
-        {
-            index: 6,
-            svg: ''
-        },
-        {
-            index: 7,
-            svg: ''
-        },
-        {
-            index: 8,
-            svg: ''
-        },
-        {
-            index: 8,
-            svg: ''
-        },
-        {
-            index: 8,
-            svg: ''
-        },
-        {
-            index: 8,
-            svg: ''
-        },
-        {
-            index: 8,
-            svg: ''
-        },
-        {
-            index: 8,
-            svg: ''
-        },
-        {
-            index: 8,
-            svg: ''
-        },
-        {
-            index: 8,
-            svg: ''
-        },
-        {
-            index: 8,
-            svg: ''
-        },
-        {
-            index: 8,
-            svg: ''
-        },
-        {
-            index: 8,
-            svg: ''
-        },
-        {
-            index: 8,
-            svg: ''
-        },
-        {
-            index: 8,
-            svg: ''
-        },
-        {
-            index: 8,
-            svg: ''
-        },
-        {
-            index: 8,
-            svg: ''
-        },
-        {
-            index: 8,
-            svg: ''
-        },
-        {
-            index: 8,
-            svg: ''
-        },
-        {
-            index: 8,
-            svg: ''
-        },
-        {
-            index: 8,
-            svg: ''
-        },
-        {
-            index: 8,
-            svg: ''
-        },
-        {
-            index: 8,
-            svg: ''
-        }]
-    
 
-    const getAvatar = ()=>{
-        const avatars = [];
-        for (let i = 0; i < 32; i++) {
-            const avatar = createAvatar(personas, {
-                seed: `Avatar ${i + 1}`,
-            });
-            const svg = avatar.toString();
-            avatars.push({
-                index: i,
-                svg: svg,
-            })
-        }
-        return avatars;
-    }
+    const memoizedAvatar = useMemo(async () => {
+        const result = await getAvatar()
+        return result.data.payload;
+      }, []);
+
     useEffect(() => {
-        const fetchData = async () => {
-          setLoading(true);
-        
-          try {
-            const avatars = await getAvatar(); 
-            setLoaded_avatar(avatars)
-          } catch (error) {
-            console.log(error);
-          } finally {
-            setLoading(true);
-          }
-        };
-    
-        fetchData();
-      }, [fetch_more_data]);
+    memoizedAvatar.then((avatarData) => {
+      setLoading(false);
+      setLoaded_avatar(avatarData);
+    });
+  }, [memoizedAvatar])
 
 
-      console.log('newAvatar', loaded_avatar)
+    const RenderItem = ({ item, index }) => {
+        const uri = `https://dpcst9y3un003.cloudfront.net/${item.avatar_url}`;
+
+        return (
+            <TouchableOpacity
+                onPress={() => { setSelect_avatar(item) }}
+                style={[styles.avatar, { borderWidth: select_avatar.id - 1 === index ? 1 : 0 }]}>
+
+                <Image
+                    source={{ uri: uri }}
+                    style={styles.avatar_image}
+                />
+            </TouchableOpacity>
+        )
+    }
+
 
     return (
         <SafeAreaView style={{
@@ -187,35 +66,37 @@ const Avatar = () => {
                 </TouchableOpacity>
             </View>
 
-            <View style={{ flex: 1, }}>
-                <FlatList
-                    data={dummyData}
+            <View style={{ flex: 1, alignItems: 'center' }}>
+                {!loading && <FlatList
+                    data={loaded_avatar}
                     numColumns={4}
-                    onEndReached={()=>{setFetch_more_data(p => !p)}}
+                    // onEndReached={() => { setFetch_more_data(p => !p) }}
                     showsVerticalScrollIndicator={false}
                     keyExtractor={(item, index) => index.toString()}
-                    contentContainerStyle={{
-                        width: width,
-                        justifyContent: 'space-between'
-                    }}
+                    initialNumToRender={24}
+                    // contentContainerStyle={{
+                    //     width: width,
+                    //     justifyContent: 'space-between'
+                    // }}
+                    renderItem={({ item, index }) => (
+                        <RenderItem item={item} index={index} />
+                    )}
+                />}
+
+                {loading && <FlatList
+                    data={[{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}]}
+                    numColumns={4}
                     renderItem={({ item, index }) => (
                         <SkeletonContent
                             containerStyle={styles.avatar}
                             isLoading={loading}
+                            keyExtractor={(item, index) => index.toString()}
                             layout={[
                                 { key: 'title', width: 70, height: 70, },
                             ]}
-                        >
-                        
-                            <TouchableOpacity
-                                onPress={() => { setSelect_avatar(item) }}
-                                style={[styles.avatar, { backgroundColor: select_avatar.index === index ? 'red' : 'white' }]}>
-                                <SvgXml xml={item.svg} width={70} height={70} />
-                            </TouchableOpacity>
-                        </SkeletonContent>
+                        ></SkeletonContent>
                     )}
-
-                />
+                />}
 
             </View>
         </SafeAreaView>
@@ -240,11 +121,19 @@ const styles = StyleSheet.create({
         color: '#000000',
     },
     avatar: {
-        flex: 1,
         marginHorizontal: 10,
         marginVertical: 10,
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         alignItems: 'center',
-        borderRadius: 15
+        flexDirection: 'row',
+        width: 70,
+        height: 70,
+        borderColor: 'red',
+        padding: 2
+    },
+    avatar_image: {
+        width: 65,
+        height: 65,
+  
     }
 });

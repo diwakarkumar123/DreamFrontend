@@ -411,6 +411,13 @@ import {
   CLOSE_IMG,
   TIKTOK_ICON_IMG,
   AVATA_IMG,
+  PROFILE_IMAGE,
+  USER_IMG,
+  USER_FILLED_IMG,
+  LIKED_POST_NAVIGATION,
+  FAVOURITE,
+  LOCK,
+  VIDEO_POST_NAVIGATION
 } from '../../configs/source';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Octicons from 'react-native-vector-icons/Octicons'
@@ -423,6 +430,15 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Container, Icon, Row, CText } from '../../components';
 import { COLOR, SPACING, BORDER, TEXT } from '../../configs/styles';
 import axios from 'axios';
+import DisplayProfile from '../../components/DisplayProfile'
+import { Tabs } from 'react-native-collapsible-tab-view'
+import PicPost from './profile/screen/PicPost';
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import LikedPost from './profile/screen/LikedPost';
+import FavouritePost from './profile/screen/FavouritePost';
+import PrivatePost from './profile/screen/PrivatePost';
+import VideoPost from './profile/screen/VideoPost';
+
 
 
 const { width, height } = Dimensions.get('window')
@@ -448,19 +464,19 @@ const ProfileScreen = () => {
   };
   const seed = '3827637b2ryxnheudwr3r343cr'
 
-// // creating avatar from here 
-// useEffect(() => {
-//   const fetchAvatar = async () => {
-//     try {
-//       const response = await axios.get(`https://avatars.dicebear.com/api/avataaars/${seed}.svg`);
-//       console.log(response.request.responseURL); // Get the actual image URL
-//     } catch (error) {
-//       console.error('Error fetching avatar:', error);
-//     }
-//   };
+  // // creating avatar from here 
+  // useEffect(() => {
+  //   const fetchAvatar = async () => {
+  //     try {
+  //       const response = await axios.get(`https://avatars.dicebear.com/api/avataaars/${seed}.svg`);
+  //       console.log(response.request.responseURL); // Get the actual image URL
+  //     } catch (error) {
+  //       console.error('Error fetching avatar:', error);
+  //     }
+  //   };
 
-//   fetchAvatar();
-// }, [seed]);
+  //   fetchAvatar();
+  // }, [seed]);
 
 
   const currentUser = useSelector(state => state.index.currentUser);
@@ -469,139 +485,180 @@ const ProfileScreen = () => {
 
   const my_data = useSelector(state => state.my_data.my_profile_data)
 
-  console.log(my_data)
 
   const handleShowBottomSheetSignIn = useCallback(() => {
     dispatch(setModalSignIn(false));
     dispatch(setBottomSheetSignIn(true));
   }, [dispatch]);
-  
-
-  return (
-
-    <ScrollView contentContainerStyle={{
-      flex: 1,
-      // alignItems: 'center',
-      justifyContent: 'center'
-    }}>
-      {
-        isLogin ? (
-          <>
-            <Body style={styles.mainContainer}>
-              <ImageBackground
-                source={my_data?.profile_pic ? {uri: my_data?.profile_pic} : AVATA_IMG}
-                resizeMode='cover'
-                style={{ width: width, height: 240, }}>
-
-                <BlurView blurType="light" blurAmount={5}  >
-                  <Body applyPadding={false} style={styles.blurContainer}>
 
 
 
-                    {/* top container */}
-                    <Body
-                      applyPadding={false}
-                      style={styles.topContainer}
-                    >
-                      <Body
-                        applyPadding={false}
-                        style={styles.iconContainer}>
-                        <Image source={GIFT_ICON} style={{ width: 20, height: 20 }} />
-                        <Text>{t('gift')}</Text>
-                      </Body>
+  const RenderProfile = () => {
+    return (
+      <Body style={styles.mainContainer}>
+        <ImageBackground
+          source={my_data?.profile_pic ? { uri: my_data?.profile_pic } : { uri: 'https://' }}
+          resizeMode='cover'
+          style={{ width: width, height: 220, }}>
 
-                      <Body
-                        applyPadding={false}
-                        style={styles.iconContainer}>
-                        <Image source={DIAMOND_ICON} style={{ width: 20, height: 20 }} />
-                        <Text>26</Text>
-                      </Body>
+          <BlurView blurType="light" blurAmount={10}  >
+            <Body applyPadding={false} style={styles.blurContainer}>
+              {/* top container */}
+              <Body
+                applyPadding={false}
+                style={styles.topContainer}
+              >
+                <Body
+                  applyPadding={false}
+                  style={styles.iconContainer}>
+                  <Image source={GIFT_ICON} style={{ width: 30, height: 30 }} />
+                  <Text>{t('gift')}</Text>
+                </Body>
 
-                      <Body
-                        applyPadding={false}
-                        style={styles.iconContainer}
-                      >
-                        {/* <Image source={GIFT_ICON} style={{ width: 20, height: 20 }} /> */}
-                        <Text>{my_data?.nickname}</Text>
-                      </Body>
+                <Body
+                  applyPadding={false}
+                  style={styles.iconContainer}>
+                  <Image source={DIAMOND_ICON} style={{ width: 30, height: 30 }} />
+                  <Text>26</Text>
+                </Body>
 
-                      <Body
-                        applyPadding={false}
-                        style={styles.iconContainer}>
-                        <Image source={LUCKY_WHEEL_ICON} style={{ width: 20, height: 20 }} />
-                        <Text>{t('Lucky Wheel')}</Text>
-                      </Body>
+                <Body
+                  applyPadding={false}
+                  style={styles.iconContainer}
+                >
+                  {/* <Image source={GIFT_ICON} style={{ width: 20, height: 20 }} /> */}
+                  <Text>{my_data?.nickname}</Text>
+                </Body>
 
-                      <Body
-                        applyPadding={false}
-                        style={styles.iconContainer}>
-                        <TouchableOpacity onPress={handleClickMoreOption}>
-                          <MaterialCommunityIcons name='dots-vertical' size={20} />
-                        </TouchableOpacity>
-                      </Body>
-                    </Body>
+                <Body
+                  applyPadding={false}
+                  style={styles.iconContainer}>
+                  <Image source={LUCKY_WHEEL_ICON} style={{ width: 20, height: 20 }} />
+                  <Text>{t('Lucky Wheel')}</Text>
+                </Body>
 
-
-                    {/* middle container  */}
-                    <Body applyPadding={false} style={styles.middleContainer}>
-                      <Image
-                        source={STAR_ICON}
-                      />
-                      <Body applyPadding={false} style={styles.profileImageContainer}>
-                        <Image source={my_data?.profile_pic ? {uri: my_data?.profile_pic} : AVATA_IMG} style={styles.profileImage} />
-                        <Text>@{my_data.username}</Text>
-                      </Body>
-                    </Body>
-
-
-                    {/* Bottom container */}
-
-                    <Body applyPadding={false} style={styles.bottomContainer}>
-
-                      <Body applyPadding={false} style={styles.followSection}>
-                        <Text>512</Text>
-                        <Text>{t('Followings')}</Text>
-                      </Body>
-
-                      <Body applyPadding={false} style={styles.followSection}>
-                        <Text>22.2M</Text>
-                        <Text>{t('Followers')}</Text>
-                      </Body>
-
-                      <Body applyPadding={false} style={styles.followSection}>
-                        <Text>9.9M</Text>
-                        <Text>{t('Likes')}</Text>
-                      </Body>
-
-                    </Body>
-                  </Body>
-                </BlurView>
-              </ImageBackground>
-
-              {/* Edit profile section */}
-              <TouchableOpacity style={styles.button} onPress={() => { navigation.navigate("EditProfile") }}>
-                <Text style={styles.textButton}>{t('EditProfile')}</Text>
-              </TouchableOpacity>
-
-              {/* showing profile information */}
-              <Body applyPadding={false} style={styles.aboutMainContainer}>
-                <Text onLongPress={() => { copyToClipboard(t('Description')) }}>{my_data?.bio}</Text>
-                <Text>{my_data?.website}</Text>
-                <Body applyPadding={false} style={styles.aboutContainer}>
-                  <TouchableOpacity>
-                    <Image
-                      source={PICTURE_ICON}
-                    />
-                  </TouchableOpacity>
-                  <Text>Q&A</Text>
-                  <TouchableOpacity>
-                    <Octicons size={20} color={'black'} name='video' />
+                <Body
+                  applyPadding={false}
+                  style={styles.iconContainer}>
+                  <TouchableOpacity onPress={handleClickMoreOption}>
+                    <MaterialCommunityIcons name='dots-vertical' size={30} />
                   </TouchableOpacity>
                 </Body>
               </Body>
+
+
+              {/* middle container  */}
+              <Body applyPadding={false} style={styles.middleContainer}>
+                {/* <Image
+                        source={STAR_ICON}
+                      /> */}
+                <Body applyPadding={false} style={styles.profileImageContainer}>
+
+                  <Image
+                    source={my_data?.profile_pic ? { uri: my_data?.profile_pic } : USER_FILLED_IMG}
+                    style={{
+                      width: 55,
+                      height: 55,
+                      marginBottom: 5,
+                      borderWidth: 1,
+                      borderRadius: 28,
+                      borderColor: my_data?.profile_pic ? '#fff' : 'black'
+                    }} />
+
+                  <Text>@{my_data?.username}</Text>
+                  <Text>{my_data?.nickname}</Text>
+                </Body>
+              </Body>
+
+
+              {/* Bottom container */}
+
+              <Body applyPadding={false} style={styles.bottomContainer}>
+
+                <Body applyPadding={false} style={styles.followSection}>
+                  <Text>512</Text>
+                  <Text>{t('Followings')}</Text>
+                </Body>
+
+                <Body applyPadding={false} style={styles.followSection}>
+                  <Text>22.2M</Text>
+                  <Text>{t('Followers')}</Text>
+                </Body>
+
+                <Body applyPadding={false} style={styles.followSection}>
+                  <Text>9.9M</Text>
+                  <Text>{t('Likes')}</Text>
+                </Body>
+
+              </Body>
             </Body>
-            <PostNavigation />
-          </>
+          </BlurView>
+        </ImageBackground>
+
+        {/* Edit profile section */}
+        <TouchableOpacity style={styles.button} onPress={() => { navigation.navigate("EditProfile") }}>
+          <Text style={styles.textButton}>{t('EditProfile')}</Text>
+        </TouchableOpacity>
+
+        {/* showing profile information */}
+        <Body applyPadding={false} style={styles.aboutMainContainer}>
+          {my_data?.bio && <Text onLongPress={() => { copyToClipboard(t('Description')) }}>
+            {my_data?.bio}</Text>}
+          {my_data?.website && <Text>{my_data?.website}</Text>}
+          <Body applyPadding={false} style={styles.aboutContainer}>
+            <TouchableOpacity>
+              <Image
+                source={PICTURE_ICON}
+              />
+            </TouchableOpacity>
+            <Text>Q&A</Text>
+            <TouchableOpacity>
+              <Octicons size={20} color={'black'} name='video' />
+            </TouchableOpacity>
+          </Body>
+        </Body>
+      </Body>
+    )
+  }
+
+
+  return (
+    <>
+      {
+        isLogin ? (
+          <Tabs.Container
+            renderHeader={RenderProfile}>
+            <Tabs.Tab
+              label={()=>(<Image source={LIKED_POST_NAVIGATION} style={styles.icon_size} />)}
+              name={"like post"}>
+                <LikedPost />
+            </Tabs.Tab>
+          
+            <Tabs.Tab
+              label={()=>(<Ionicons name="swap-vertical" size={26}  />)}
+              name={"pic post"}>
+                <PicPost />
+            </Tabs.Tab>
+
+            <Tabs.Tab
+              label={()=>( <Image source={FAVOURITE} style={styles.icon_size} />)}
+              name={"favourite post"}>
+                <FavouritePost />
+            </Tabs.Tab>
+
+            <Tabs.Tab
+              label={()=>(<Image source={LOCK} style={styles.icon_size} />)}
+              name={"private post"}>
+                <PrivatePost />
+            </Tabs.Tab>
+
+            <Tabs.Tab
+              label={()=>(<Image source={VIDEO_POST_NAVIGATION} style={styles.icon_size} />)}
+              name={"video post"}>
+                <VideoPost />
+            </Tabs.Tab>
+
+          </Tabs.Container>
         ) : (
           <Container
             flex={1}
@@ -655,7 +712,7 @@ const ProfileScreen = () => {
                 justifyContent="center"
                 alignItems="center"
                 marginTop={SPACING.S3}>
-                <Pressable onPress={()=>{navigation.navigate('BottomSheetSocialAuth')}}>
+                <Pressable onPress={() => { navigation.navigate('BottomSheetSocialAuth') }}>
                   <CText color={COLOR.WHITE}>Sign in or Register</CText>
                 </Pressable>
               </Container>
@@ -663,10 +720,8 @@ const ProfileScreen = () => {
           </Container>
         )
       }
-
-
-
-    </ScrollView>
+      
+    </>
   );
 };
 
@@ -676,12 +731,13 @@ export default ProfileScreen;
 const styles = StyleSheet.create({
   topContainer: {
     position: 'absolute',
-    top: 15,
+    top: 2,
     width: width,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-evenly',
-    backgroundColor: 'transparent'
+    justifyContent: 'space-between',
+    backgroundColor: 'transparent',
+    paddingHorizontal: 10
   },
   iconContainer: {
     flexDirection: 'column',
@@ -691,11 +747,11 @@ const styles = StyleSheet.create({
   },
   middleContainer: {
     position: 'absolute',
-    top: 70,
-    flexDirection: 'row',
-    width: width * 0.65,
+    top: 60,
+    width: width,
     backgroundColor: 'transparent',
-    justifyContent: 'space-between'
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   profileImage: {
     width: 60,
@@ -706,7 +762,8 @@ const styles = StyleSheet.create({
   },
   profileImageContainer: {
     backgroundColor: 'transparent',
-    alignItems: 'center'
+    alignItems: 'center',
+
   },
   bottomContainer: {
     position: 'absolute',
@@ -724,7 +781,7 @@ const styles = StyleSheet.create({
   },
   blurContainer: {
     width: width,
-    height: 240,
+    height: 220,
     backgroundColor: 'transparent',
   },
   mainContainer: {
@@ -752,5 +809,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between'
 
+  },
+  icon_size: {
+    width: 26,
+    height: 26
   }
 })

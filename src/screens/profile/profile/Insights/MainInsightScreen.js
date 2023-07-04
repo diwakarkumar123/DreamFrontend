@@ -72,7 +72,7 @@ const MainInsightScreen = () => {
                         <AntDesign name='arrowleft' size={20} />
                     </TouchableOpacity>
                     <Text style={[styles.headerText, { marginTop: 0 }]}>
-                        Insight
+                      Analytics
                     </Text>
                 </Body>
                 <TouchableOpacity

@@ -60,7 +60,21 @@ const COIN = require('../assets/images/coin.png')
 const CUT = require('../assets/images/cut.png')
 const QUESTION_MARK = require('../assets/images/question_mark.png')
 const GRAPH = require('../assets/images/graph.png')
-
+const PROFILE_IMAGE = require('../assets/images/profile_image.png')
+const PROMOTION_PROFILE_ICON = require('../assets/images/promotion_profile_icon.png')
+const PROMOTION_ANALYTICS = require('../assets/images/promotion_analytics.png')
+const PROMOTION_BALANCE = require('../assets/images/promotion_balance.png')
+const PROMOTION_PAYOUTS_SETTINGS = require('../assets/images/promotion_payout_setting.png')
+const PROMOTION_PRIVACY = require('../assets/images/promotion_privacy.png')
+const PROMOTION_BLOG = require('../assets/images/promotion_blog.png')
+const PROMOTION_LANGUAGE = require('../assets/images/promotion_language.png')
+const PROMOTION_DIARY = require('../assets/images/promotion_diary.png')
+const PROMOTION_ACTIVITIES = require('../assets/images/promotion_activities.png')
+const PROMOTION_DOWNLOAD = require('../assets/images/promotion_download.png')
+const PROMOTION_SHARE = require('../assets/images/promotion_share_profile.png')
+const PROMOTION_VERIFICATION = require('../assets/images/promotion_verification.png')
+const PROMOTION_SECURITY = require('../assets/images/promotion_security.png')
+const PROMOTION_NOTIFICATION = require('../assets/images/promotion_notification.png')
 
 const LUCKY_WHEEL_ICON = require('../assets/images/spinWheel.png')
 const PICTURE_ICON = require('../assets/images/picture_icon.png')
@@ -77,7 +91,6 @@ const APPLE_ICON = require('../assets/icon-social/apple-logo.png');
 const KAKAOTALK_ICON = require('../assets/icon-social/kakao-talk.png');
 const LINE_ICON = require('../assets/icon-social/line.png');
 const TWITTER_ICON = require('../assets/icon-social/twitter.png');
-
 
 
 const LOGO_IMG = require('../assets/images/TikTok-Logo.jpg');
@@ -192,5 +205,20 @@ export {
   COIN,
   CUT,
   QUESTION_MARK,
-  GRAPH
+  GRAPH,
+  PROFILE_IMAGE,
+  PROMOTION_PROFILE_ICON,
+  PROMOTION_ANALYTICS,
+  PROMOTION_BALANCE,
+  PROMOTION_PAYOUTS_SETTINGS,
+  PROMOTION_PRIVACY,
+  PROMOTION_BLOG,
+  PROMOTION_LANGUAGE,
+  PROMOTION_DIARY,
+  PROMOTION_ACTIVITIES,
+  PROMOTION_DOWNLOAD,
+  PROMOTION_VERIFICATION,
+  PROMOTION_SHARE,
+  PROMOTION_SECURITY,
+  PROMOTION_NOTIFICATION
 };

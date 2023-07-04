@@ -1,10 +1,9 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image, FlatList, Dimensions } from 'react-native'
 import React, { useState } from 'react'
-import Body from '../../../components/Body/Body.components'
+import Body from '../../../../components/Body/Body.components'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import EvilIcons from 'react-native-vector-icons/EvilIcons'
 import { useNavigation } from '@react-navigation/native'
-import { FlashList } from '@shopify/flash-list'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
 
@@ -250,7 +249,7 @@ const Countries_and_regions = ({ route }) => {
 
 
     return (
-        <Body applyPadding={false} style={{ flex: 1, }}>
+        <Body style={{ flex: 1, }}>
             <Body applyPadding={false} style={styles.header}>
                 <TouchableOpacity onPress={() => { navigation.goBack() }}>
                     <AntDesign name='arrowleft' size={20} />

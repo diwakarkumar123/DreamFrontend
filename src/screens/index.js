@@ -10,28 +10,31 @@ import '../utils/pushnotification';
 import BottomSettingProfile from '../components/bottomSheets/BottomSettingProfile';
 import BottomSheetLogout from '../components/bottomSheets/BottomSheetLogout';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {get_data} from './../utilis2/AsyncStorage/Controller'
+import { get_data } from './../utilis2/AsyncStorage/Controller'
 import { addIsLogin, add_my_profile_data } from '../store/my_dataSlice';
-
+import { getUserInfo } from '../apis/userApi'
 
 const { Navigator, Screen } = createMaterialTopTabNavigator();
 
 const Index = () => {
-    const dispatch = useDispatch()
+  const dispatch = useDispatch()
 
-    useEffect(()=>{
-      get_data('user')
-      .then((data)=>{
-        if(data){
-          dispatch(add_my_profile_data(data))
-        dispatch(addIsLogin(true))
+  useEffect(() => {
+    get_data('user')
+      .then((data) => {
+        if (data) {
+          dispatch(addIsLogin(true))
+          getUserInfo(data.auth_token)
+            .then((res) => {
+              dispatch(add_my_profile_data(res.payload))
+            })
+            .catch((err)=>{console.log(err)})
         }
-        
       })
-      .catch((err)=>{
+      .catch((err) => {
         console.log(err)
       })
-    }, [])
+  }, [])
 
 
 
@@ -39,7 +42,6 @@ const Index = () => {
 
 
   const currentBottomTab = useSelector(state => state.index.currentBottomTab);
-  console.log('currentBottomTab:', currentBottomTab);
   return (
     <>
       <Navigator tabBar={() => <></>} initialRouteName="MainScreen">
@@ -60,7 +62,7 @@ const Index = () => {
         )}
       </Navigator>
       <ModalSignIn />
-      <BottomSheetSignIn />
+      {/* <BottomSheetSignIn /> */}
       <BottomSettingProfile />
       <BottomSheetLogout />
     </>
