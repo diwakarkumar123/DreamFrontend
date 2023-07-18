@@ -303,6 +303,7 @@ const CustomThumb = ({ value }) => {
         </View>
     );
 };
+
 const styles1 = StyleSheet.create({
     thumbContainer: {
         width: 20,

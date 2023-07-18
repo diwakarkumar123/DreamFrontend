@@ -522,13 +522,12 @@ const ProfileScreen = () => {
                   <Text>26</Text>
                 </Body>
 
-                <Body
+                {/* <Body
                   applyPadding={false}
                   style={styles.iconContainer}
                 >
-                  {/* <Image source={GIFT_ICON} style={{ width: 20, height: 20 }} /> */}
                   <Text>{my_data?.nickname}</Text>
-                </Body>
+                </Body> */}
 
                 <Body
                   applyPadding={false}
@@ -629,33 +628,33 @@ const ProfileScreen = () => {
           <Tabs.Container
             renderHeader={RenderProfile}>
             <Tabs.Tab
-              label={()=>(<Image source={LIKED_POST_NAVIGATION} style={styles.icon_size} />)}
+              label={() => (<Image source={LIKED_POST_NAVIGATION} style={styles.icon_size} />)}
               name={"like post"}>
-                <LikedPost />
+              <LikedPost />
             </Tabs.Tab>
-          
+
             <Tabs.Tab
-              label={()=>(<Ionicons name="swap-vertical" size={26}  />)}
+              label={() => (<Ionicons name="swap-vertical" size={26} />)}
               name={"pic post"}>
-                <PicPost />
+              <PicPost />
             </Tabs.Tab>
 
             <Tabs.Tab
-              label={()=>( <Image source={FAVOURITE} style={styles.icon_size} />)}
+              label={() => (<Image source={FAVOURITE} style={styles.icon_size} />)}
               name={"favourite post"}>
-                <FavouritePost />
+              <FavouritePost />
             </Tabs.Tab>
 
             <Tabs.Tab
-              label={()=>(<Image source={LOCK} style={styles.icon_size} />)}
+              label={() => (<Image source={LOCK} style={styles.icon_size} />)}
               name={"private post"}>
-                <PrivatePost />
+              <PrivatePost />
             </Tabs.Tab>
 
             <Tabs.Tab
-              label={()=>(<Image source={VIDEO_POST_NAVIGATION} style={styles.icon_size} />)}
+              label={() => (<Image source={VIDEO_POST_NAVIGATION} style={styles.icon_size} />)}
               name={"video post"}>
-                <VideoPost />
+              <VideoPost />
             </Tabs.Tab>
 
           </Tabs.Container>
@@ -704,23 +703,23 @@ const ProfileScreen = () => {
                 The Dream experience is more enjoyable when you {'\n'} follow and share
                 with friends.
               </CText>
+              <Pressable onPress={()=>{navigation.navigate('ChooseAccount')}}>
               <Container
-                width={'100%'}
+                width={width * 0.7}
                 borderRadius={BORDER.SMALL}
                 backgroundColor={COLOR.DANGER2}
                 padding={SPACING.S2}
                 justifyContent="center"
                 alignItems="center"
                 marginTop={SPACING.S3}>
-                <Pressable onPress={() => { navigation.navigate('BottomSheetSocialAuth') }}>
                   <CText color={COLOR.WHITE}>Sign in or Register</CText>
-                </Pressable>
               </Container>
+              </Pressable>
             </Container>
           </Container>
         )
       }
-      
+
     </>
   );
 };

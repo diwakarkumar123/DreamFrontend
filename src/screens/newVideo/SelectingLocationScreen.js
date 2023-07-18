@@ -38,7 +38,7 @@ const SelectingLocationScreen = ({ route }) => {
 
 
     const fetchCountry = () => {
-        axios.get('http://192.168.43.139:3000/country/allCountry')
+        axios.get('http://192.168.1.8:3000/country/allCountry')
             .then((res) => {
                 setFilteredUsers(res.data)
                 setData(res.data)

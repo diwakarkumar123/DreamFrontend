@@ -20,4 +20,11 @@ const signUp = async (name, email, firebase_uid, profile_pic) => {
   return result;
 };
 
-export { signIn, signUp };
+const user_exist = async (data)=>{
+  const email = {email: data}
+  const url = `${SERVER_API_URL}/users/userExist`;
+  const result = await axios.post(url, email)
+  return result.data;
+}
+
+export { signIn, signUp, user_exist };

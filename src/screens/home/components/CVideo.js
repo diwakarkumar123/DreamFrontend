@@ -75,23 +75,28 @@ const CVideo = ({ videoRef, url, isActive, bottomHeight,item, onEnd, avatar, fla
         ref={videoRef}
         source={{
           uri: `${url}`, }}
-        style={styles.video}
-        resizeMode="contain"
+        // style={styles.video}
+        style={{
+          width: width,
+          height: height,
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+        resizeMode="cover"
         paused={!isActive}
         repeat={false}
         onLoad={data =>{
           setDuration(data.duration)
         }}
         onProgress={data => {
-  
           setSliderValue(data.currentTime / duration);
         }}
         onEnd={moveToNext}
         seek={seek}
         poster={avatar}
-        posterResizeMode={'contain'}
+        posterResizeMode={'cover'}
       />
-      {isActive && (
+      {/* {isActive && (
         <Container
           width={WIDTH}
           padding={0}
@@ -116,7 +121,7 @@ const CVideo = ({ videoRef, url, isActive, bottomHeight,item, onEnd, avatar, fla
             }}
           />
         </Container>
-      )}
+      )} */}
     </>
   );
 };

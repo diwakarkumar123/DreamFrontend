@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import 'intl-pluralrules';
+import PropTypes from 'deprecated-react-native-prop-types';
 import SplashScreen from './src/screens/splash/SplashScreen';
 import NewVideoScreen from './src/screens/newVideo/NewVideoScreen';
 import PreviewVideoScreen from './src/screens/newVideo/PreviewVideoScreen';
@@ -11,7 +13,7 @@ import Index from './src/screens';
 import PostVideoScreen from './src/screens/newVideo/PostVideoScreen';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import SettingScreen from './src/screens/setting/SettingScreen';
-import { LogBox } from 'react-native';
+import { LogBox, NativeModules } from 'react-native';
 import Promotion from './src/screens/promotion/Promotion';
 import Payments from './src/screens/promotion/Payments';
 import ProfileScreen from './src/profile/ProfileScreen'
@@ -37,6 +39,16 @@ import ChooseAccount from './src/screens/profile/profile/screen/ChooseAccount';
 import ChooseBasicAccount from './src/screens/profile/profile/screen/ChooseBasicAccount';
 import ChoosePremiumAccount from './src/screens/profile/profile/screen/ChoosePremiumAccount';
 import ChooseBusinessAccount from './src/screens/profile/profile/screen/ChooseBusinessAccount';
+import Userprofile from './src/screens/other_user/UserProfileMainPage';
+import SearchScreen from './src/screens/home/search/SearchScreen';
+import { Easing } from 'react-native';
+import RNBootSplash from "react-native-bootsplash";
+import BasicAccount from './src/screens/profile/profile/screen/BasicAccount';
+import PremiumAccount from './src/screens/profile/profile/screen/PremiumAccount';
+import BusinessAccount from './src/screens/profile/profile/screen/BusinessAccount';
+import { NativeMethods } from 'react-native'
+import VideoGift from './src/screens/gift/VideoGift';
+
 LogBox.ignoreLogs = ['Remote debugger'];
 console.disableYellowBox = true;
 
@@ -48,17 +60,30 @@ const App = () => {
     webClientId:
       '549099161334-vcrplrh8dmpv3cuij8rmj0m9bf8q44g3.apps.googleusercontent.com',
   });
+
+  // const { RNTwitterSignIn } = NativeModules
+
+  // RNTwitterSignIn.init('4lYiTuDOnwHD0oAIRh6Iwan03', 'Xy5Jts4KoZVC14AsIu5vXUUKT0qAtu1BzPvA0FxFj6lI5j4Psi').then(() =>
+  //   console.log('Twitter SDK initialized'),
+  // );
+
+
+
+
+
+
+
   return (
     <Provider store={store}>
-      <NavigationContainer>
+      <NavigationContainer onReady={() => { RNBootSplash.hide() }}>
         <Stack.Navigator
-          initialRouteName="Splash"
+          initialRouteName="Index"
           screenOptions={{ animation: 'none' }}>
-          <Stack.Screen
+          {/* <Stack.Screen
             name="Splash"
             component={SplashScreen}
             options={{ headerShown: false }}
-          />
+          /> */}
           {/* <Stack.Screen
             name="Video"
             component={VideoPlay}
@@ -214,6 +239,57 @@ const App = () => {
             component={ChooseBusinessAccount}
             options={{ headerShown: false, animationEnabled: false, title: 'Insight' }}
           />
+
+          <Stack.Screen
+            name="UserProfileMainPage"
+            component={Userprofile}
+            options={{ headerShown: false, animationEnabled: false, title: 'Insight' }}
+          />
+
+          <Stack.Screen
+            name="SearchScreen"
+            component={SearchScreen}
+            options={{
+              headerShown: false,
+              animationEnabled: true,
+              animationType: 'slide_from_bottom',
+              title: 'Search',
+            }} />
+
+
+          <Stack.Screen
+            name="BasicAccount"
+            component={BasicAccount}
+            options={{
+              headerShown: false,
+              animationEnabled: false,
+            }} />
+
+          <Stack.Screen
+            name="PremiumAccount"
+            component={PremiumAccount}
+            options={{
+              headerShown: false,
+              animationEnabled: false,
+            }} />
+
+          <Stack.Screen
+            name="BusinessAccount"
+            component={BusinessAccount}
+            options={{
+              headerShown: false,
+              animationEnabled: false,
+            }} />
+            <Stack.Screen
+            name="VideoGift"
+            component={VideoGift}
+            options={{
+              headerShown: false,
+              animationEnabled: false,
+            }} />
+
+
+
           {/* <Stack.Screen name="ProfileScreen" component={ProfileScreen} /> */}
           <Stack.Screen name="SettingScreen" component={SettingScreen} />
         </Stack.Navigator>

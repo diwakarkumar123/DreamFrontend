@@ -68,10 +68,11 @@ const BottomSheetSignIn = ({ handleClickClose, setCurrentForm, backToScreenSocia
                 dispatch(add_my_profile_data(res.data.payload))
                 save_data("user", res.data.payload)
                 dispatch(addIsLogin(true))
-                dispatch(setModalSignIn(false));
-                dispatch(setBottomSheetSignIn(false));
-                dispatch(setBottomSheetLogout(false))
-                handleClickClose()
+                // dispatch(setModalSignIn(false));
+                // dispatch(setBottomSheetSignIn(false));
+                // dispatch(setBottomSheetLogout(false))
+                // handleClickClose()
+                navigation.navigate('Me')
               })
                 .catch((err) => {
                   console.log("server error:", err)

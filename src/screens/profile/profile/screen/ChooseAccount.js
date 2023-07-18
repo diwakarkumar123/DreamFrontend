@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, FlatList, Dimensions } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, FlatList, Dimensions, StatusBar } from 'react-native'
 import React from 'react'
 import Body from '../../../../components/Body/Body.components'
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -13,19 +13,19 @@ const ChooseAccount = () => {
         {
             account_type: 'Basic account',
             onPress: () => {
-                navigation.navigate('ChooseBasicAccount')
+                navigation.navigate('BasicAccount')
             }
         },
         {
             account_type: 'Premium account',
             onPress: () => {
-                navigation.navigate('ChoosePremiumAccount')
+                navigation.navigate('PremiumAccount')
             }
         },
         {
             account_type: 'Business account',
             onPress: () => {
-                navigation.navigate('ChooseBusinessAccount')
+                navigation.navigate('BusinessAccount')
             }
         }
     ]
@@ -55,6 +55,7 @@ const ChooseAccount = () => {
                     )}
                 />
             </Body>
+            <StatusBar hidden={true} />
         </Body>
     )
 }

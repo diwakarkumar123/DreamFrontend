@@ -20,5 +20,12 @@ const updateProfile = async (token, data) => {
     return result.data
 }
 
+const user_exist = async (data)=>{
+    const email = {email: data}
+    const url = `${SERVER_API_URL}/users/userExist`;
+    const result = await axios.get(url, email)
+    return result.data;
+}
 
-export { updateProfile, getUserInfo }
+
+export { updateProfile, getUserInfo, user_exist }

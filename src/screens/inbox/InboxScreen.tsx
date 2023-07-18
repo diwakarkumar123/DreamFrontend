@@ -6,12 +6,14 @@ import { InboxStackParamlist } from './InboxStack';
 
 interface Props extends NativeStackScreenProps<InboxStackParamlist, "Inbox"> {}
 const Inbox: React.FC<Props> = (props) => {
+
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <RText fontSize={18} style='bold'>Inbox</RText>
       </View>
-      <ScrollView >
+      {/* <ScrollView >
         {props.route.params.chats.map((chat) => (
           <TouchableOpacity key={chat.id} style={styles.chatContainer} onPress={() => props.navigation.navigate("Chat", { chat })}>
             <Image source={{ uri: chat.image }} style={styles.chatImage} />
@@ -22,7 +24,7 @@ const Inbox: React.FC<Props> = (props) => {
             <RText fontSize={14} style='light'>{chat.timestamp}</RText>
           </TouchableOpacity>
         ))}
-      </ScrollView>
+      </ScrollView> */}
     </View>
   );
 };

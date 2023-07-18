@@ -111,7 +111,7 @@ const [like1, setLike1] = useState(false)
 
   const onGiftPress = () => {
     if (isLogin) {
-      setShowGiftModal(pre => !pre)
+      navigation.navigate('VideoGift')
     } else {
       dispatch(setModalSignIn(true));
     }
@@ -122,13 +122,14 @@ const [like1, setLike1] = useState(false)
 
   return (
     <Container
-      width={width}
+      // width={width}
       // height={height}
-      height={
-        width > 450
-          ? height - bottomHeight.toFixed() - 25
-          : height - bottomHeight.toFixed() - 25
-      }
+      flex={1}
+      // height={
+      //   width > 450
+      //     ? height - bottomHeight.toFixed() - 25
+      //     : height - bottomHeight.toFixed() - 25
+      // }
       backgroundColor="black">
       <CVideo
         isActive={isActive}
@@ -167,25 +168,25 @@ const [like1, setLike1] = useState(false)
       </Container>
 
 
-
+{/* 
       <Container position="absolute" bottom={40} width={width} height={height} alignItems='center'>
         <Container marginBottom={40} width={width * 0.4}>
 
-          {showText && <Text style={{ fontSize: 12, color: 'white', fontWeight: '500', backgroundColor: 'rgba(0, 0, 0, 0.5)' }} >{description}</Text>}
+          {showText && <Text style={{ fontSize: 12, color: 'white', fontWeight: '500', backgroundColor: 'transparent' }} >{description}</Text>}
 
 
 
-          {!showText && <Text style={{ fontSize: 12, color: 'white', fontWeight: '500', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>{des} {showFullText && <Text style={{ fontSize: 12, color: 'white', fontWeight: '500', }} onPress={() => { setShowText(true) }}>more...</Text>}</Text>}
+          {!showText && <Text style={{ fontSize: 12, color: 'white', fontWeight: '500', backgroundColor: 'transparent' }}>{des} {showFullText && <Text style={{ fontSize: 12, color: 'white', fontWeight: '500', }} onPress={() => { setShowText(true) }}>more...</Text>}</Text>}
         </Container>
-      </Container>
-
+      </Container> */}
+{/* 
       <Container position="absolute" left={width * 0.4} bottom={-10}>
         <Container marginBottom={40} alignItems="center" justifyContent='center' flexDirection='row'>
-          <Text style={{ fontSize: 6, color: 'white', fontWeight: '500', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+          <Text style={{ fontSize: 10, color: 'white', fontWeight: '500', backgroundColor: 'transparent' }}>
             See Original Song
           </Text>
         </Container>
-      </Container>
+      </Container> */}
 
 
       {/* container vertical */}

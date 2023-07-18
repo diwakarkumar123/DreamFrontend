@@ -93,11 +93,12 @@ const BottomSheetSignUp = ({ setCurrentForm, backToScreenSocial, handleClickClos
             if(res.data.message == 'user created successfully'){
               dispatch(add_my_profile_data(res.data.payload))
               save_data("user", res.data.payload)
+              navigation.navigate('Me')
               dispatch(addIsLogin(true))
-              handleClickClose()
-              dispatch(setModalSignIn(false));
-              dispatch(setBottomSheetSignIn(false));
-              dispatch(setBottomSheetLogout(false))
+              // handleClickClose()
+              // dispatch(setModalSignIn(false));
+              // dispatch(setBottomSheetSignIn(false));
+              // dispatch(setBottomSheetLogout(false))
             }
           })
           .catch((err)=>{

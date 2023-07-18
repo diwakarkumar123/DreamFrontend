@@ -9,6 +9,7 @@ import { setBottomSheetSignIn, setModalSignIn } from '../../store/indexSlice';
 import { Dimensions } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import GiftDiamondSelection from '../../components/modal/GiftDiamondSelection';
+import Entypo from 'react-native-vector-icons/Entypo'
 
 
 const window = {
@@ -20,17 +21,17 @@ const GiftSelectionScreen = ({ setShowGiftModal, setShowDimanondSelectionModal }
     const my_data = useSelector(state => state.my_data.my_profile_data)
 
     const showModal = (item) => {
-       if(my_data.wallet > item.coin){
-        setShowGiftModal(false)
-        setShowDimanondSelectionModal(pre => ({
+        if (my_data.wallet < item.coin) {
+            setShowGiftModal(false)
+            setShowDimanondSelectionModal(pre => ({
                 ...pre,
-                isVisible: true, 
+                isVisible: true,
                 item: item
-        }))
-       } else {
-        Alert.alert("Insufficient balance", 'depoite money to continue')
-       }
-        
+            }))
+        } else {
+            Alert.alert("Insufficient balance", 'depoite money to continue')
+        }
+
     }
 
 
@@ -92,19 +93,19 @@ const GiftSelectionScreen = ({ setShowGiftModal, setShowDimanondSelectionModal }
     ]
 
     const type_of_gift = [
-        {   
+        {
             id: 1,
             type: 'Basic'
         },
-        {   
+        {
             id: 2,
             type: 'Economic'
         },
-        {   
+        {
             id: 3,
             type: 'Premium'
         },
-        {   
+        {
             id: 4,
             type: 'Vip'
         }
@@ -120,36 +121,45 @@ const GiftSelectionScreen = ({ setShowGiftModal, setShowDimanondSelectionModal }
             bottom: 0,
 
         }}>
-            
-        <View style={{alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', width: window.width * 0.94, marginVertical: 25, marginHorizontal: window.width * 0.02}}>
-            <View style={{alignItems: 'center', flexDirection: 'row'}}>
-                <Image 
-                    source={COIN}
-                    style={{width: 15, height: 15}}
-                />
-                <Text style={[styles.txt, {fontSize: 18, marginLeft: 4}]}>{my_data.wallet}</Text>
-            </View>
-            <View>
-            <FlatList
-                data={type_of_gift}
-                horizontal={true}
-                renderItem={({item, index})=>(
-                    <TouchableOpacity style={styles.gift_type_conyainers}>
-                        <Text style={styles.txt}>{item.type}</Text>
+
+            <View style={{ alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', width: window.width * 0.94, marginVertical: 25, marginHorizontal: window.width * 0.02 }}>
+                <View style={{ alignItems: 'center', flexDirection: 'row', width: 45 }}>
+                    <Image
+                        source={COIN}
+                        style={{ width: 15, height: 15 }}
+                    />
+                    <Text style={[styles.txt, { fontSize: 18, marginLeft: 4 }]}>{my_data.wallet}</Text>
+                </View>
+                <View style={{flex: 1}}>
+                    <FlatList
+                        data={type_of_gift}
+                        horizontal={true}
+                        renderItem={({ item, index }) => (
+                            <TouchableOpacity style={styles.gift_type_conyainers}>
+                                <Text style={styles.txt}>{item.type}</Text>
+                            </TouchableOpacity>
+                        )}
+                    />
+                </View>
+                
+                    <TouchableOpacity 
+                    onPress={()=>{setShowGiftModal(false)}}
+                    style={{
+                        width: 25,
+                        height: 25
+                    }}>
+                        <Entypo name='cross' size={25} color={'white'} />
                     </TouchableOpacity>
-                )}
-            />
             </View>
-        </View>
-            
+
             <FlatList
                 data={gift_data}
                 numColumns={3}
                 renderItem={({ item, index }) => (
                     <TouchableOpacity
-                        onPress={()=>{showModal(item)}}
+                        onPress={() => { showModal(item) }}
                         style={{ flex: 1, alignItems: 'center', justifyContent: 'center', marginBottom: 40 }}>
-                        <View style={{alignItems: 'center', justifyContent: 'center'}}>
+                        <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                             <Image source={{ uri: item.image }} style={{ width: 30, height: 30 }} />
                             <Text style={{ color: 'white' }}>{item.title}</Text>
                             <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
@@ -174,12 +184,13 @@ const styles = StyleSheet.create({
         width: 70,
         alignItems: 'center',
         justifyContent: 'center',
-        paddingVertical: 3
+        paddingVertical: 3,
+        marginHorizontal: 5
     },
     txt: {
         color: 'white',
         fontSize: 12,
         fontWeight: '400'
-        
+
     }
 })

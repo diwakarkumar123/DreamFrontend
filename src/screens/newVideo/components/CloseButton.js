@@ -1,15 +1,18 @@
-import { StyleSheet, Image, Pressable } from 'react-native';
+import { StyleSheet, Image, Pressable, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { CLOSE_IMG } from '../../../configs/source';
 import { COLOR, SPACING } from '../../../configs/styles';
 import { STATUSBAR_HEIGHT } from '../../../constants/constants';
+import { useNavigation } from '@react-navigation/native';
 
-const CloseButton = ({ navigation, icon = CLOSE_IMG }) => {
-  const handleClick = () => navigation.goBack();
+const CloseButton = ({ icon = CLOSE_IMG }) => {
+  const navigation = useNavigation()
+
+  
   return (
-    <Pressable onPress={handleClick} style={styles.container}>
+    <TouchableOpacity onPress={()=>{navigation.goBack()}} style={styles.container}>
       <Image source={icon} style={styles.icon} />
-    </Pressable>
+    </TouchableOpacity>
   );
 };
 

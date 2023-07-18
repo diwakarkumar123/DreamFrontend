@@ -13,7 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { get_data } from './../utilis2/AsyncStorage/Controller'
 import { addIsLogin, add_my_profile_data } from '../store/my_dataSlice';
 import { getUserInfo } from '../apis/userApi'
-
+import RechargeBottomSheet from '../components/bottomSheets/RechargeBottomSheet'
 const { Navigator, Screen } = createMaterialTopTabNavigator();
 
 const Index = () => {
@@ -28,7 +28,7 @@ const Index = () => {
             .then((res) => {
               dispatch(add_my_profile_data(res.payload))
             })
-            .catch((err)=>{console.log(err)})
+            .catch((err) => { console.log(err) })
         }
       })
       .catch((err) => {
@@ -65,6 +65,7 @@ const Index = () => {
       {/* <BottomSheetSignIn /> */}
       <BottomSettingProfile />
       <BottomSheetLogout />
+      <RechargeBottomSheet />
     </>
   );
 };

@@ -27,7 +27,7 @@ const SelectingCitiesScreen = ({ route }) => {
 
 
     const fetchCities = () => {
-        axios.get(`http://192.168.43.139:3000/country/getCitiesByCode?q=${country_code}`)
+        axios.get(`http://192.168.1.8:3000/country/getCitiesByCode?q=${country_code}`)
             .then((res) => {
 
                 setFilteredUsers(res.data)

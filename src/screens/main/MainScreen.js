@@ -16,10 +16,11 @@ import {
   NEW_VIDEO_DART_IMG,
   DISCOVER_IMG,
   SEARCH_IMG,
-  HOME_FILLED_IMG, 
+  HOME_FILLED_IMG,
   MESSAGE_FILLED_IMG,
   USER_FILLED_IMG,
   USER_IMG,
+  HOME_NEW_VIDEO
 } from '../../configs/source';
 import BoxCreateVideo from './components/BoxCreateVideo';
 
@@ -34,7 +35,7 @@ const Bottom = createBottomTabNavigator();
 const MainScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const currentBottomTab = useSelector(state => state.index.currentBottomTab);
-  const {t, i18n} = useTranslation()
+  const { t, i18n } = useTranslation()
   const [theme, setTheme] = useState('dart');
 
   const handleButtonBack = () => navigation.goBack();
@@ -129,8 +130,8 @@ const MainScreen = ({ navigation }) => {
             tabBarIcon: () => {
               return (
                 <Image
-                  // source={theme === 'dart' ? NEW_VIDEO_IMG : NEW_VIDEO_DART_IMG}
-                  source={theme === 'dart' ? NEW_VIDEO_IMG : NEW_VIDEO_IMG}
+                    source={HOME_NEW_VIDEO}
+                  // source={theme === 'dart' ? NEW_VIDEO_IMG : NEW_VIDEO_IMG}
                   // source={NEW_VIDEO_IMG}
                   style={styles.newVideoTabIcon}
                 />

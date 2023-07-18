@@ -225,6 +225,9 @@ const EditProfile = () => {
     setList(updatedList);
     setShow_nickname_modal(false)
 
+
+
+
   };
   const handleGenderPress = (value) => {
     const name = 'gender'

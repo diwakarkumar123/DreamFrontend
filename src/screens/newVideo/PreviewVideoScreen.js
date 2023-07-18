@@ -5,6 +5,7 @@ import {
   Pressable,
   Image,
   StatusBar,
+  TouchableOpacity,
 } from 'react-native';
 import React, { useState } from 'react';
 import Video from 'react-native-video';
@@ -44,43 +45,43 @@ const PreviewVideoScreen = () => {
   const [pauseVideo, setPauseVideo] = useState(false);
 
 
-//   FFmpegKit.execute(route?.params?.pathVideo)
-//     .then(async (session) => {
-//       // Unique session id created for this execution
-//       const sessionId = session.getSessionId();
-//       console.log('sessionId', sessionId)
+  //   FFmpegKit.execute(route?.params?.pathVideo)
+  //     .then(async (session) => {
+  //       // Unique session id created for this execution
+  //       const sessionId = session.getSessionId();
+  //       console.log('sessionId', sessionId)
 
-//       // Command arguments as a single string
-//       const command = session.getCommand();
-//       console.log('command', command)
-//       // Command arguments
-//       const commandArguments = session.getArguments();
-//       console.log('commandArguments', commandArguments)
-//       // State of the execution. Shows whether it is still running or completed
-//       const state = await session.getState();
-//       console.log('state', state)
-//       // Return code for completed sessions. Will be undefined if session is still running or FFmpegKit fails to run it
-//       const returnCode = await session.getReturnCode()
-//       console.log('returnCode', returnCode)
-//       const startTime = session.getStartTime();
-//       const endTime = await session.getEndTime();
-//       const duration = await session.getDuration();
-//       console.log('startTime', startTime)
-//       console.log('endTime', endTime)
-//       console.log('duration', duration)
-//       // Console output generated for this execution
-//       const output = await session.getOutput();
-//       console.log('outputs', output)
-//       // The stack trace if FFmpegKit fails to run a command
-//       const failStackTrace = await session.getFailStackTrace()
-// console.log('failStackTrace', failStackTrace)
-//       // The list of logs generated for this execution
-//       const logs = await session.getLogs();
-//       console.log('logs', logs)
-//       // The list of statistics generated for this execution (only available on FFmpegSession)
-//       const statistics = await session.getStatistics();
-// console.log('statistics', statistics)
-//     })
+  //       // Command arguments as a single string
+  //       const command = session.getCommand();
+  //       console.log('command', command)
+  //       // Command arguments
+  //       const commandArguments = session.getArguments();
+  //       console.log('commandArguments', commandArguments)
+  //       // State of the execution. Shows whether it is still running or completed
+  //       const state = await session.getState();
+  //       console.log('state', state)
+  //       // Return code for completed sessions. Will be undefined if session is still running or FFmpegKit fails to run it
+  //       const returnCode = await session.getReturnCode()
+  //       console.log('returnCode', returnCode)
+  //       const startTime = session.getStartTime();
+  //       const endTime = await session.getEndTime();
+  //       const duration = await session.getDuration();
+  //       console.log('startTime', startTime)
+  //       console.log('endTime', endTime)
+  //       console.log('duration', duration)
+  //       // Console output generated for this execution
+  //       const output = await session.getOutput();
+  //       console.log('outputs', output)
+  //       // The stack trace if FFmpegKit fails to run a command
+  //       const failStackTrace = await session.getFailStackTrace()
+  // console.log('failStackTrace', failStackTrace)
+  //       // The list of logs generated for this execution
+  //       const logs = await session.getLogs();
+  //       console.log('logs', logs)
+  //       // The list of statistics generated for this execution (only available on FFmpegSession)
+  //       const statistics = await session.getStatistics();
+  // console.log('statistics', statistics)
+  //     })
 
 
 
@@ -116,13 +117,15 @@ const PreviewVideoScreen = () => {
             controls={false}
           />
         )}
+
         <Container
           marginTop={STATUSBAR_HEIGHT}
           position={'absolute'}
-          backgroundColor="red"
           zIndex={100}>
-          <CloseButton navigation={navigation} icon={ARROW_BACK_IMG} />
+            <CloseButton icon={ARROW_BACK_IMG} />
         </Container>
+
+
         <View style={styles.audioTop}>
           <View style={styles.containerAudio}>
             <Icon
@@ -134,6 +137,7 @@ const PreviewVideoScreen = () => {
             <Text style={styles.txtAudio}>More sounds</Text>
           </View>
         </View>
+
         <View style={styles.actionRight}>
           {options.map((option, index) => {
             return (
@@ -150,7 +154,7 @@ const PreviewVideoScreen = () => {
         <View style={styles.actionBottom}>
           <Pressable
             style={[styles.button, { backgroundColor: COLOR.WHITE }]}
-            onPress={() => navigation.navigate('VideoEditorLandingPage', {pathVideo: route?.params?.pathVideo})}>
+            onPress={() => navigation.navigate('VideoEditorLandingPage', { pathVideo: route?.params?.pathVideo })}>
             <CText>Edit</CText>
           </Pressable>
           <Pressable
@@ -167,7 +171,7 @@ const PreviewVideoScreen = () => {
             <CText color={COLOR.WHITE}>Continue</CText>
           </Pressable>
         </View>
-      </View>
+      </View >
     );
   } else {
     <View style={styles.container} />;
@@ -189,7 +193,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
-    zIndex: 100,
+    zIndex: 99,
     marginTop: SPACING.S4 + STATUSBAR_HEIGHT,
     justifyContent: 'center',
     alignItems: 'center',

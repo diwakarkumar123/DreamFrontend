@@ -180,8 +180,8 @@ const FollowTab = () => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      paddingTop: STATUSBAR_HEIGHT,
-      paddingBottom: bottomHeight,
+      // paddingTop: STATUSBAR_HEIGHT,
+      // paddingBottom: bottomHeight,
       backgroundColor: COLOR.BACKGROUND_LOADING,
       justifyContent: 'center',
       alignItems: 'center',
@@ -253,13 +253,10 @@ BackHandler.addEventListener('hardwareBackPress', () => {
           refreshing={isRefreshing}
           renderItem={({ item, index }) => {
             return (
-    
-
               <VideoItem
                 ref={ref => (cellRefs.current[index] = ref)}
                 index={index}
                 item={item}
-
                 flatListRef={flatListRef}
 
               />

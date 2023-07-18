@@ -37,11 +37,6 @@ const Layeranimation = () => {
                 transform: [{translateY: buttonTranslate}],
               },
             ]}>
-            {/* <Button
-              title="Button 1"
-              onPress={() => console.log('Button 1 pressed')}
-            /> */}
-           
             <TouchableOpacity>
               <Pic name="photo-video"  color="white"  size={20}/>
             </TouchableOpacity>

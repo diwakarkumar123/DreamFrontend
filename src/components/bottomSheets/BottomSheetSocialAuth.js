@@ -28,7 +28,7 @@ import FormSignIn from './FormSignIn';
 import FormSignUp from './FormSignUp';
 import Animated, {
   LightSpeedInRight,
-  LightSpeedInLeft,
+  LightSpeedInLeft, 
   LightSpeedOutRight,
   LightSpeedOutLeft,
   FadeIn,
@@ -39,8 +39,8 @@ import { onGoogleButtonPress } from '../../auth/google.auth';
 import {onFacebookButtonPress} from '../../auth/facebook'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { signUp } from '../../apis/auth.api';
-
+import { signIn, signUp, user_exist  } from '../../apis/auth.api';
+// import {user_exist} from '../../apis/auth.api'
 
 const {width, height} = Dimensions.get('window')
 
@@ -106,26 +106,20 @@ const BottomSheetSocialAuth = () => {
         using: 'Continue with Google',
         onPress: () =>
           onGoogleButtonPress()
-          .then((r)=>{
+          .then(async(r)=>{
             const {displayName, email, uid, photoURL} = r.user;
-            const result = signUp(displayName, email, uid, photoURL)
-            result.then((res)=>{
-              console.log(res.data)
-              if(res.data.message == 'user created successfully'){
-                dispatch(add_my_profile_data(res.data.payload))
-                save_data("user", res.data.payload)
-                dispatch(addIsLogin(true))
-                handleClickClose()
-                dispatch(setModalSignIn(false));
-                dispatch(setBottomSheetSignIn(false));
-                dispatch(setBottomSheetLogout(false))
+             signIn(email)
+             .then((r)=>{
+              if(r.data.message === 'user not found'){
+
+              } else{
+                
               }
-            })
-            .catch((err)=>{
-              console.log(err.message)
-            })
+             })
+            
+            
           })
-          .catch((err)=>{console.log(err)})
+          .catch((err)=>{console.log(err.message)})
       },
       {
         icon: TWITTER_ICON,

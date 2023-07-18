@@ -75,14 +75,41 @@ const PROMOTION_SHARE = require('../assets/images/promotion_share_profile.png')
 const PROMOTION_VERIFICATION = require('../assets/images/promotion_verification.png')
 const PROMOTION_SECURITY = require('../assets/images/promotion_security.png')
 const PROMOTION_NOTIFICATION = require('../assets/images/promotion_notification.png')
+const VIDEO_SETTING = require('../assets/images/video_setting.png')
+const VIDEO_ANTICLOCKWISE = require('../assets/images/video_anticlockwise.png')
+const VIDEO_CLOCKWISE = require('../assets/images/video_clockwise.png')
+const VIDEO_SCALE = require('../assets/images/video_scale.png')
+const VIDEO_FRAME = require('../assets/images/video_frame.png')
+const VIDEO_EXPORT = require('../assets/images/video_export.png')
+const VIDEO_SLIP_ICON = require('../assets/images/slip_icon.png')
+const VIDEO_TRIM = require('../assets/images/video_trim.png')
+const VIDEO_REPLACE = require('../assets/images/video_replace.png')
+const VIDEO_MIRRORING = require('../assets/images/rotate-smartphone.png')
+const HOME_NEW_VIDEO = require('../assets/images/new_video_images.png')
 
-const LUCKY_WHEEL_ICON = require('../assets/images/spinWheel.png')
+
+const LUCKY_WHEEL_ICON = require('../assets/images/lucky_wheel.png')
 const PICTURE_ICON = require('../assets/images/picture_icon.png')
 const LIKED_POST_NAVIGATION = require('../assets/images/Liked_post_navigation.png') 
 const FAVOURITE = require('../assets/images/favourite.png')
 const LOCK = require('../assets/images/lock.png')
 const VIDEO_POST_NAVIGATION = require('../assets/images/video_post_navigation.png')
-
+const VIDEO_VOLUME = require('../assets/images/volume.png')
+const VIDEO_SPEEDOMETER = require('../assets/images/speedometer.png')
+const VIDEO_HISTORY = require('../assets/images/history.png')
+const VIDEO_ZOOM = require('../assets/images/zoom.png')
+const VIDEO_FILTER = require('../assets/images/filter.png')
+const VIDEO_ADJUSTMENT = require('../assets/images/filter1.png')
+const VIDEO_CLIP_GRAPHIC = require('../assets/images/premiere-clip.png')
+const VIDEO_VIGNETTE = require('../assets/images/vignette.png')
+const VIDEO_ENVELOPE = require('../assets/images/mail.png')
+const VIDEO_VOICE_CHANGER = require('../assets/images/voice.png')
+const VIDEO_VOICE_EXTRACTER = require('../assets/images/extract_audio.png')
+const VIDEO_TRANSCODE = require('../assets/images/transcode.png')
+const VIDEO_INFORMATION = require('../assets/images/info.png')
+const VIDEO_SLIP = require('../assets/images/shift.png')
+const VIDEO_EDITING_MIRRORING = require('../assets/images/mirroring.png')
+const SIGNUP_USER = require('../assets/images/Ellipse.png')
 
 const FACEBOOK_ICON = require('../assets/icon-social/facebook.png');
 const INSTAGRAM_ICON = require('../assets/icon-social/instagram.png');
@@ -112,6 +139,20 @@ const MORE_VERT_IMG = require('../assets/images/more_vert.png');
 // gifs
 
 const TIKTOK_LOADER_GIF = require('../assets/gifs/tiktok-loader.gif');
+
+
+const Eclipes = require('../assets/images/Eclips_icon.png');
+const well_icon = require('../assets/images/well_icon.png');
+const Certified = require('../assets/images/cirtified_icon.png');
+const youtube = require('../assets/images/youtube_icon.png');
+const Facebook = require('../assets/images/facebook_icon.png');
+const instagram = require('../assets/images/instagram_icon.png');
+const photo_icon = require('../assets/images/photo_icon.png');
+const diamond = require('../assets/images/diamond.png');
+const Fac_icon = require('../assets/images//fav_icon.png');
+const stak_icon = require('../assets/images/stack_icon.png');
+const Like_post = require('../assets/images/Liked_post_navigation.png');
+
 
 
 export {
@@ -220,5 +261,44 @@ export {
   PROMOTION_VERIFICATION,
   PROMOTION_SHARE,
   PROMOTION_SECURITY,
-  PROMOTION_NOTIFICATION
+  PROMOTION_NOTIFICATION,
+  VIDEO_SETTING,
+  VIDEO_ANTICLOCKWISE,
+  VIDEO_CLOCKWISE,
+  VIDEO_SCALE,
+  VIDEO_FRAME,
+  VIDEO_EXPORT,
+  VIDEO_SLIP_ICON,
+  VIDEO_TRIM,
+  VIDEO_REPLACE,
+
+  Eclipes,
+  well_icon,
+  Certified,
+  youtube,
+  Facebook,
+  instagram,
+  photo_icon,
+  diamond,
+  Fac_icon,
+  stak_icon,
+  Like_post,
+  VIDEO_VOLUME,
+  VIDEO_SPEEDOMETER,
+  VIDEO_HISTORY,
+  VIDEO_ZOOM,
+  VIDEO_MIRRORING,
+  VIDEO_FILTER,
+  VIDEO_ADJUSTMENT,
+  VIDEO_CLIP_GRAPHIC,
+  VIDEO_VIGNETTE,
+  VIDEO_ENVELOPE,
+  VIDEO_VOICE_CHANGER,
+  VIDEO_VOICE_EXTRACTER,
+  VIDEO_TRANSCODE,
+  VIDEO_INFORMATION,
+  VIDEO_SLIP,
+  VIDEO_EDITING_MIRRORING,
+  HOME_NEW_VIDEO,
+  SIGNUP_USER
 };

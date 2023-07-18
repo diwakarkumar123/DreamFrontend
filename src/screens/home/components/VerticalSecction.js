@@ -126,10 +126,8 @@ const VerticalSecction = React.forwardRef(
     };
 
     const handleClickAvatar = () => {
-      navigation.navigate('ProfileScreenTab', {
-        showHeader: true,
-        currentUser: author._id,
-      });
+      navigation.navigate('UserProfileMainPage');
+      console.log("pressed")
     };
 
     const handleShowComment = useCallback(() => {
@@ -143,15 +141,7 @@ const VerticalSecction = React.forwardRef(
  
     return (
       <Container position="absolute" left={SPACING.S4} bottom={window.width * 0.2}>
-        <Container  marginBottom={SPACING.S5} alignItems="center">
-          <Icon
-            source={GIFT_ICON}
-            width={50}
-            height={50}
-            onPress={onGiftPress}
-          />
-          <Text style={{fontSize: 16, color: 'white', fontWeight: '500'}}>{t('gift')}</Text>
-        </Container>
+       
 
         <Container
           marginBottom={SPACING.S5}
@@ -164,7 +154,7 @@ const VerticalSecction = React.forwardRef(
             width={50}
             height={50}
             borderRadius={BORDER.PILL}
-            onPress={handleClickAvatar}
+            
           />
           <Container
             position="absolute"
@@ -178,6 +168,7 @@ const VerticalSecction = React.forwardRef(
               source={QUEEN_ICON}
               width={70}
               height={70}
+              onPress={handleClickAvatar}
             />
           </Container>
           <Container
@@ -194,6 +185,19 @@ const VerticalSecction = React.forwardRef(
             </CText>
           </Container>
         </Container>
+
+        <Container  marginBottom={SPACING.S5} alignItems="center">
+          <Icon
+            source={GIFT_ICON}
+            width={50}
+            height={50}
+            onPress={onGiftPress}
+          />
+          <Text style={{fontSize: 16, color: 'white', fontWeight: '500'}}>{t('gift')}</Text>
+        </Container>
+
+        
+
         <Container marginBottom={40} alignItems="center">
           <Icon
             source={DIAMOND_ICON}
