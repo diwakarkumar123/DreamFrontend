@@ -44,20 +44,19 @@ import paymentsApi from '../../../apis/paymentsApi';
 import WebView from 'react-native-webview'
 
 
-const { height, width } = Dimensions.get('window');
+const { height, width } = Dimensions.get('screen');
 
 const VideoItem = React.forwardRef(({ item, index, onEnd, flatListRef }, ref) => {
 
   // const { id, caption, url, author, audio, like, comment } = item;
-  const { id, user_id, description, video, thum, gif, view, section, sound_id, privacy_type, allow_comments, allow_duet, block, duet_video_id, old_video_id, duration, promote, created, like, comment, shared } = item;
+  const { id, user_id, description, video, thum, gif, view, section, sound_id, privacy_type, allow_comments, allow_duet, block, duet_video_id, old_video_id, duration, promote, created, like, comment, shared, diamond_value, profile_pic, user } = item;
 
-  const [showFullText, setShowFullText] = useState(description.length > 60)
-
+  const [showFullText, setShowFullText] = useState(description?.length > 60)
   const url = `https://dpcst9y3un003.cloudfront.net/${video}`
 
   const avatar = `https://dpcst9y3un003.cloudfront.net/${thum}`
 
-  const des = description.slice(0, 50);
+  const des = description?.slice(0, 50);
 
   const [showText, setShowText] = useState(false)
 
@@ -76,12 +75,15 @@ const VideoItem = React.forwardRef(({ item, index, onEnd, flatListRef }, ref) =>
     item: null
   })
 
+  
+
+
   const [showGiftSendingModal, setShowGiftSendingModal] = useState({
     isVisible: false,
     item: null,
   })
 
-const [like1, setLike1] = useState(false)
+  const [like1, setLike1] = useState(false)
 
 
   const verticalRef = useRef();
@@ -111,24 +113,23 @@ const [like1, setLike1] = useState(false)
 
   const onGiftPress = () => {
     if (isLogin) {
-      navigation.navigate('VideoGift')
+      navigation.navigate('VideoGift', { id, user_id })
     } else {
       dispatch(setModalSignIn(true));
     }
   }
 
 
-
-
   return (
     <Container
-      // width={width}
-      // height={height}
-      flex={1}
+      width={width}
+      height={height}
+      // marginBottom={bottomHeight}
+      // flex={1}
       // height={
       //   width > 450
-      //     ? height - bottomHeight.toFixed() - 25
-      //     : height - bottomHeight.toFixed() - 25
+      //     ? height - bottomHeight.toFixed() 
+      //     : height - bottomHeight.toFixed()
       // }
       backgroundColor="black">
       <CVideo
@@ -137,12 +138,12 @@ const [like1, setLike1] = useState(false)
         videoRef={videoRef}
         bottomHeight={bottomHeight}
         onEnd={onEnd}
-        avatar={avatar}
+        avatar={profile_pic}
         flatListRef={flatListRef}
         index={index}
       />
-     
-     
+
+
 
 
       {/* <PressContainer
@@ -160,7 +161,7 @@ const [like1, setLike1] = useState(false)
         audio={'audio'}
       /> */}
 
-      <Container position="absolute" right={16} bottom={30}>
+      <Container position="absolute" right={10} bottom={80}>
         <Image
           source={DISC_IMG}
           style={{ width: 40, height: 40 }}
@@ -168,25 +169,23 @@ const [like1, setLike1] = useState(false)
       </Container>
 
 
-{/* 
-      <Container position="absolute" bottom={40} width={width} height={height} alignItems='center'>
+
+      <Container position="absolute" bottom={80} left={width * 0.3} alignItems='center'>
         <Container marginBottom={40} width={width * 0.4}>
 
           {showText && <Text style={{ fontSize: 12, color: 'white', fontWeight: '500', backgroundColor: 'transparent' }} >{description}</Text>}
 
-
-
           {!showText && <Text style={{ fontSize: 12, color: 'white', fontWeight: '500', backgroundColor: 'transparent' }}>{des} {showFullText && <Text style={{ fontSize: 12, color: 'white', fontWeight: '500', }} onPress={() => { setShowText(true) }}>more...</Text>}</Text>}
         </Container>
-      </Container> */}
-{/* 
-      <Container position="absolute" left={width * 0.4} bottom={-10}>
+      </Container>
+
+      <Container position="absolute" left={width * 0.4} bottom={60}>
         <Container marginBottom={40} alignItems="center" justifyContent='center' flexDirection='row'>
           <Text style={{ fontSize: 10, color: 'white', fontWeight: '500', backgroundColor: 'transparent' }}>
             See Original Song
           </Text>
         </Container>
-      </Container> */}
+      </Container>
 
 
       {/* container vertical */}
@@ -197,6 +196,8 @@ const [like1, setLike1] = useState(false)
         author={thum}
         idVideo={id}
         onGiftPress={onGiftPress}
+        diamond_value={diamond_value}
+        user={user}
       // avatar={thum}
       />
 
@@ -207,6 +208,7 @@ const [like1, setLike1] = useState(false)
         author={thum}
         idVideo={id}
         share={shared}
+        item={item}
       />
 
       <Modal visible={showGiftModal} transparent={true} animationType='slide'>
@@ -229,7 +231,7 @@ const [like1, setLike1] = useState(false)
         />
       </Modal>
 
-      
+
       {/* <Modal visible={promoteModal} transparent={true}>
         <Promotion makePayments={makePayments} />
       </Modal>

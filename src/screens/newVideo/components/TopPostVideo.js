@@ -1,4 +1,4 @@
-import { StyleSheet, TurboModuleRegistry, Image } from 'react-native';
+import { StyleSheet, TurboModuleRegistry, Image, TextInput, Text } from 'react-native';
 import React from 'react';
 import { CInput, Container, CText } from '../../../components';
 import { BORDER, COLOR, SPACING } from '../../../configs/styles';
@@ -17,6 +17,16 @@ const TopPostVideo = ({ pathVideo, caption, setCaption, image }) => {
     console.log(txt);
     setCaption(txt.trim() + ' ' + t.split(' ')[0]);
   };
+
+
+  const renderText = () => {
+    if (caption.includes('#')) {
+      return <Text style={styles.hashtagText}>{caption}</Text>;
+    }
+    return <Text style={styles.normalText}>{caption}</Text>;
+  };
+
+
   return (
     <Container>
       <Container flexDirection="row" height={140}>
@@ -36,7 +46,7 @@ const TopPostVideo = ({ pathVideo, caption, setCaption, image }) => {
             seek={10}
           /> */}
           <Image
-            source={{uri: image}}
+            source={{ uri: image }}
             style={styles.video}
           />
           <Container
@@ -48,7 +58,7 @@ const TopPostVideo = ({ pathVideo, caption, setCaption, image }) => {
             paddingVertical={SPACING.S2}
             overflow="hidden">
             <CText color={COLOR.WHITE} textAlign="center" fontSize={12}>
-            Edit cover photo
+              Edit cover photo
             </CText>
           </Container>
         </Container>
@@ -63,6 +73,16 @@ const TopPostVideo = ({ pathVideo, caption, setCaption, image }) => {
             onChangeText={setCaption}
             multiline={true}
           />
+          {/* <TextInput
+            style={styles.input}
+            placeholder={
+              'Describe the post, add a hashtag, or hit the creators who inspire you'
+            }
+            textAlignVertical="top"
+            onChangeText={setCaption}
+            multiline={true}>
+            {renderText()}
+          </TextInput> */}
         </Container>
       </Container>
       <Container flexDirection="row" marginTop={SPACING.S4}>
@@ -88,5 +108,12 @@ const styles = StyleSheet.create({
     backgroundColor: COLOR.WHITE,
     height: 200,
     padding: 0,
+  },
+  normalText: {
+    fontSize: 16,
+  },
+  hashtagText: {
+    fontSize: 20,
+    fontWeight: 'bold',
   },
 });

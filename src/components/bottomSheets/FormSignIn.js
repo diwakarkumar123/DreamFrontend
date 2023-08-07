@@ -63,34 +63,31 @@ const BottomSheetSignIn = ({ handleClickClose, setCurrentForm, backToScreenSocia
           auth()
             .signInWithEmailAndPassword(txtEmail, txtPassword)
             .then((res) => {
+              dispatch(addIsLogin(true))
+              navigation.navigate('Me')
               const result = authApi.signIn(res.user.email)
               result.then((res) => {
                 dispatch(add_my_profile_data(res.data.payload))
                 save_data("user", res.data.payload)
-                dispatch(addIsLogin(true))
-                // dispatch(setModalSignIn(false));
-                // dispatch(setBottomSheetSignIn(false));
-                // dispatch(setBottomSheetLogout(false))
-                // handleClickClose()
-                navigation.navigate('Me')
               })
                 .catch((err) => {
                   console.log("server error:", err)
                 })
             })
             .catch((err) => {
-              console.log("error generated while login from firebase:", err)
+              console.log("error generated while login from firebase:", err.message)
+              setIsFailure(true)
+              setShowModal(false)
             })
         } catch (error) {
           Alert.alert(error.message);
-        } finally {
           setShowModal(false);
         }
       } else {
         setIsEmpty(true)
         setShowModal(false)
       }
-    }, 4000);
+    }, 2000);
   };
 
   return (
@@ -141,7 +138,7 @@ const BottomSheetSignIn = ({ handleClickClose, setCurrentForm, backToScreenSocia
             {isEmpty
               ? 'You must enter all fields'
               : isFailure
-                ? 'Email already exists'
+                ? 'Wrong Email or Password'
                 : isFaliure_invalid
                   ? 'Email are badly formated'
                   : ''

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, Dimensions, ScrollView, FlatList, Modal, TextInput, Image } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Dimensions, ScrollView, FlatList, Modal, TextInput, Image, Pressable, } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import { useNavigation, useNavigationState } from '@react-navigation/native'
 import Body from '../../../../components/Body/Body.components'
@@ -9,10 +9,40 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Entypo from 'react-native-vector-icons/Entypo'
 import { AVATA_IMG, VIDEOCAMR_IMG } from '../../../../configs/source'
 import DisplayProfile from '../../../../components/DisplayProfile'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { USER_FILLED_IMG } from '../../../../configs/source'
 import { updateProfile } from '../../../../apis/userApi'
 import Toast from "react-native-simple-toast";
+import {
+  add_my_profile_data,
+  addIsLogin,
+  update_wallet_diamond,
+  update_nickname,
+  update_gender,
+  update_bio,
+  update_website,
+  update_dob,
+  update_profile_pic,
+  update_lat,
+  update_lang,
+  update_online,
+  update_verified,
+  update_city,
+  update_country,
+  update_fb_id,
+  update_emotion_state,
+  update_making_friend_intention,
+  update_hobbies,
+  update_person_height,
+  update_person_weight,
+  update_instagram,
+  update_you_tube,
+  update_facebook,
+  update_occupation,
+  update_profile_video,
+  update_twitter
+} from '../../../../store/my_dataSlice'
+import * as ImagePicker from 'react-native-image-picker'
 
 
 const { width, height } = Dimensions.get('window')
@@ -20,7 +50,7 @@ const { width, height } = Dimensions.get('window')
 const EditProfile = () => {
   const navigation = useNavigation()
   const currentUser = useSelector(state => state.index.currentUser);
-
+  const dispatch = useDispatch()
   const isLogin = useSelector(state => state.my_data.isLogin)
 
   const my_data = useSelector(state => state.my_data.my_profile_data)
@@ -50,83 +80,119 @@ const EditProfile = () => {
   const [show_person_weight_modal, setShow_person_weight_modal] = useState(false)
   const [show_dob_modal, setShow_dob_modal] = useState(false)
   const [date, setDate] = useState(new Date())
+  const [pic_modal, setPic_modal] = useState(false)
+  const [video_modal, setVideo_modal] = useState(false)
+  const [picture, setPicture] = useState('')
+  const [video, setvideo] = useState('')
 
-  const modalizeRef = useRef(null)
-  const modalizeRef1 = useRef(null)
 
-  useEffect(() => {
-    list.forEach((item) => {
-      const fieldName = item?.name?.toLocaleLowerCase()
-      // console.log(fieldName)
-      if (my_data.hasOwnProperty(fieldName)) {
-        item.value = my_data[fieldName]
-      }
+
+  const pickImages = async () => {
+    const result = await ImagePicker.launchImageLibrary({
+      mediaType: 'photo',
+      quality: 1,
     })
-  }, [])
+    if (!result.didCancel) {
+      setPicture(result.assets[0].uri)
+      setPic_modal(false)
+    }
+
+  }
+
+  const clickImage = async () => {
+    const result = await ImagePicker.launchCamera({
+      mediaType: 'photo',
+      quality: 1,
+    })
+    if (!result.didCancel) {
+      setPicture(result.assets[0].uri)
+      setPic_modal(false)
+    }
+  }
 
 
-
-  const pickImages = () => {
+  const pickVideo = async () => {
+    const result = await ImagePicker.launchImageLibrary({
+      mediaType: 'video',
+      quality: 1,
+      durationLimit: 10
+      
+    })
+    console.log(result)
+    if (!result.didCancel) {
+      setPicture(result.assets[0].uri)
+      setPic_modal(false)
+    }
 
   }
 
-  const clickImage = () => {
-
+  const clickVideo = async () => {
+    const result = await ImagePicker.launchCamera({
+      mediaType: 'video',
+      quality: 1,
+      durationLimit: 10
+    })
+    console.log(result)
+    if (!result.didCancel) {
+      setPicture(result.assets[0].uri)
+      setPic_modal(false)
+    }
   }
+
 
   const [list, setList] = useState([
     {
-      name: 'Nickname',
-      value: '',
+      name: `Nickname`,
+      value: my_data?.nickname,
       onPress: () => {
         setShow_nickname_modal(true)
       }
     },
     {
       name: 'Gender',
-      value: '',
+      value: my_data?.gender,
       onPress: () => {
         setShow_gender_modal(true)
       }
     },
     {
       name: 'Birthday',
-      value: '',
+      value: my_data?.dob?.split("T")[0],
       onPress: () => {
         setShow_dob_modal(true)
       }
     },
     {
       name: 'Self introduction',
-      value: '',
+      value: my_data?.bio,
       onPress: () => {
         setshow_self_introduction_modal(true)
       }
     },
     {
       name: 'Country',
-      value: '',
+      value: my_data?.country,
       onPress: () => {
         navigation.navigate('CountryAndRegion', { list, setList })
       }
     },
     {
       name: 'Emotion State',
-      value: '',
+      value: my_data?.emotion_state,
       onPress: () => {
         setshow_emotion_state_modal(true)
       }
     },
     {
       name: 'Making friend intention',
-      value: '',
+      value: my_data?.making_friend_intention,
       onPress: () => {
         navigation.navigate('MakingFriendIntenttion', { list, setList })
       }
     },
     {
       name: 'Occupation',
-      value: '',
+      value: my_data?.occupation,
       onPress: () => {
         navigation.navigate('Industries', { list, setList })
       }
@@ -134,59 +200,58 @@ const EditProfile = () => {
     {
       name: 'Mastery of language',
       value: '',
-      onPress: ''
+      onPress: () => {
+        console.log("mastery of language pressed")
+      }
     },
     {
       name: 'Hobbies',
-      value: '',
-      onPress: ''
+      value: my_data?.hobbies,
+      onPress: () => {
+        console.log("hibbies pressed")
+      }
     },
     {
       name: 'Height',
-      value: '',
+      value: my_data?.person_height,
       onPress: () => {
         setShow_person_height_modal(true)
       }
     },
     {
       name: 'Weight',
-      value: '',
+      value: my_data?.person_weight,
       onPress: () => {
         setShow_person_weight_modal(true)
       }
     },
     {
       name: 'Instagram',
-      value: '',
+      value: my_data?.instagram,
       onPress: () => {
         setShow_instagram_modal(true)
       }
     },
     {
       name: 'Youtube',
-      value: '',
+      value: my_data?.you_tube,
       onPress: () => {
         setShow_yt_modal(true)
       }
     },
     {
       name: 'Facebook',
-      value: '',
+      value: my_data?.facebook,
       onPress: () => {
         setShow_facebook_modal(true)
       }
     },
     {
       name: 'Twitter',
-      value: '',
+      value: my_data?.twitter,
       onPress: () => {
         setShow_twitter_modal(true)
       }
-    },
-    {
-      name: 'More information',
-      value: '',
-      onPress: ''
     },
   ])
 
@@ -206,29 +271,15 @@ const EditProfile = () => {
     }
     updateProfile(my_data?.auth_token, data)
       .then((res) => {
+        dispatch(update_nickname(value))
         Toast.show(res.message, Toast.SHORT)
       })
       .catch((err) => {
         console.log(err.message)
       })
-
-    const updatedList = list.map((item) => {
-      if (item.name === 'Nickname') {
-        return {
-          ...item,
-          value: value,
-        };
-      }
-      return item;
-    });
-
-    setList(updatedList);
     setShow_nickname_modal(false)
-
-
-
-
   };
+
   const handleGenderPress = (value) => {
     const name = 'gender'
     const data = {
@@ -236,24 +287,15 @@ const EditProfile = () => {
     }
     updateProfile(my_data?.auth_token, data)
       .then((res) => {
+        dispatch(update_gender(value))
         Toast.show(res.message, Toast.SHORT)
       })
       .catch((err) => {
         console.log(err.message)
       })
-    const updatedList = list.map((item) => {
-      if (item.name === 'Gender') {
-        return {
-          ...item,
-          value: value,
-        };
-      }
-      return item;
-    });
-
-    setList(updatedList);
     setShow_gender_modal(false)
   };
+
 
   const handleSelfIntroductionPress = (value) => {
     const name = 'bio'
@@ -262,24 +304,15 @@ const EditProfile = () => {
     }
     updateProfile(my_data?.auth_token, data)
       .then((res) => {
+        dispatch(update_bio(value))
         Toast.show(res.message, Toast.SHORT)
       })
       .catch((err) => {
         console.log(err.message)
       })
-    const updatedList = list.map((item) => {
-      if (item.name === 'Self introduction') {
-        return {
-          ...item,
-          value: value,
-        };
-      }
-      return item;
-    });
-
-    setList(updatedList);
     setshow_self_introduction_modal(false)
   };
+
 
   const handleEmotionStatePress = (value) => {
     const name = 'emotion_state'
@@ -288,25 +321,16 @@ const EditProfile = () => {
     }
     updateProfile(my_data?.auth_token, data)
       .then((res) => {
+        dispatch(update_emotion_state(value))
         Toast.show(res.message, Toast.SHORT)
       })
       .catch((err) => {
         console.log(err.message)
       })
-    const updatedList = list.map((item) => {
-      if (item.name == 'Emotion State') {
-        return {
-          ...item,
-          value: value,
-        };
-      }
-      return item;
-    });
-
-    setList(updatedList);
     setshow_emotion_state_modal(false)
-
   };
+
+
 
   const handleHeightPress = (value) => {
     const name = 'person_height'
@@ -316,25 +340,14 @@ const EditProfile = () => {
     updateProfile(my_data?.auth_token, data)
       .then((res) => {
         Toast.show(res.message, Toast.SHORT)
+        dispatch(update_person_height(value))
       })
       .catch((err) => {
         console.log(err.message)
       })
-    const updatedList = list.map((item) => {
-      if (item.name == 'Height') {
-        return {
-          ...item,
-          value: value,
-        };
-      }
-      return item;
-    });
-
-    setList(updatedList);
     setShow_person_height_modal(false)
 
   };
-
 
   const handleWeightPress = (value) => {
     const name = 'person_weight'
@@ -344,21 +357,11 @@ const EditProfile = () => {
     updateProfile(my_data?.auth_token, data)
       .then((res) => {
         Toast.show(res.message, Toast.SHORT)
+        dispatch(update_person_weight(value))
       })
       .catch((err) => {
         console.log(err.message)
       })
-    const updatedList = list.map((item) => {
-      if (item.name == 'Weight') {
-        return {
-          ...item,
-          value: value,
-        };
-      }
-      return item;
-    });
-
-    setList(updatedList);
     setShow_person_weight_modal(false)
 
   };
@@ -371,21 +374,11 @@ const EditProfile = () => {
     updateProfile(my_data?.auth_token, data)
       .then((res) => {
         Toast.show(res.message, Toast.SHORT)
+        dispatch(update_instagram(value))
       })
       .catch((err) => {
         console.log(err.message)
       })
-    const updatedList = list.map((item) => {
-      if (item.name == 'Instagram') {
-        return {
-          ...item,
-          value: value,
-        };
-      }
-      return item;
-    });
-
-    setList(updatedList);
     setShow_instagram_modal(false)
 
   };
@@ -398,21 +391,11 @@ const EditProfile = () => {
     updateProfile(my_data?.auth_token, data)
       .then((res) => {
         Toast.show(res.message, Toast.SHORT)
+        dispatch(update_facebook(value))
       })
       .catch((err) => {
         console.log(err.message)
       })
-    const updatedList = list.map((item) => {
-      if (item.name == 'Facebook') {
-        return {
-          ...item,
-          value: value,
-        };
-      }
-      return item;
-    });
-
-    setList(updatedList);
     setShow_facebook_modal(false)
 
   };
@@ -425,21 +408,11 @@ const EditProfile = () => {
     updateProfile(my_data?.auth_token, data)
       .then((res) => {
         Toast.show(res.message, Toast.SHORT)
+        dispatch(update_you_tube(value))
       })
       .catch((err) => {
         console.log(err.message)
       })
-    const updatedList = list.map((item) => {
-      if (item.name == 'Youtube') {
-        return {
-          ...item,
-          value: value,
-        };
-      }
-      return item;
-    });
-
-    setList(updatedList);
     setShow_yt_modal(false)
 
   };
@@ -452,21 +425,11 @@ const EditProfile = () => {
     updateProfile(my_data?.auth_token, data)
       .then((res) => {
         Toast.show(res.message, Toast.SHORT)
+        dispatch(update_twitter(value))
       })
       .catch((err) => {
         console.log(err.message)
       })
-    const updatedList = list.map((item) => {
-      if (item.name == 'Twitter') {
-        return {
-          ...item,
-          value: value,
-        };
-      }
-      return item;
-    });
-
-    setList(updatedList);
     setShow_twitter_modal(false)
 
   };
@@ -480,35 +443,20 @@ const EditProfile = () => {
     updateProfile(my_data?.auth_token, data)
       .then((res) => {
         Toast.show(res.message, Toast.SHORT)
+        dispatch(update_dob(value))
       })
       .catch((err) => {
         console.log(err.message)
       })
-    const updatedList = list.map((item) => {
-      if (item.name == 'Birthday') {
-        return {
-          ...item,
-          value: value,
-        };
-      }
-      return item;
-    });
-
-    setList(updatedList);
     setShow_dob_modal(false)
-
   };
 
-
-  const open = () => {
-    modalizeRef.current?.open()
-  }
 
   const RenderHeaderItem = () => {
     return (
       <Body applyPadding={false}>
         <Body applyPadding={false} style={styles.firstContainer} >
-          <TouchableOpacity applyPadding={false} style={styles.picView} onPress={open}>
+          <TouchableOpacity applyPadding={false} style={styles.picView} onPress={() => { setPic_modal(true) }}>
             <Image
               source={my_data?.profile_pic ? { uri: my_data?.profile_pic } : USER_FILLED_IMG}
               style={{
@@ -522,7 +470,7 @@ const EditProfile = () => {
             <Text style={[styles.headerText, { fontSize: 16, marginLeft: 0 }]}>Change Photo</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity applyPadding={false} style={styles.picView} onPress={() => { modalizeRef1.current.open() }}>
+          <TouchableOpacity applyPadding={false} style={styles.picView} onPress={() => { setVideo_modal(true) }}>
             <Image
               source={my_data?.profile_video ? { uri: my_data?.profile_video } : VIDEOCAMR_IMG}
               style={{
@@ -573,12 +521,12 @@ const EditProfile = () => {
             <Body applyPadding={false} style={styles.secondContainer}>
               <Text style={styles.txt}>{item.name}</Text>
               <Body applyPadding={false} style={styles.leftContainer}>
-                <Text style={[styles.txt, { color: 'rgba(0, 0, 0, 0.4)' }]}>{item.value}</Text>
+                <Text style={[styles.txt, { color: 'rgba(0, 0, 0, 0.4)' }]}>{item?.value?.slice(0, 25)}</Text>
                 <TouchableOpacity
-                  style={{ marginLeft: 10 }}
+                  style={{ marginLeft: 5 }}
                   onPress={item.onPress}
                 >
-                  <AntDesign name='right' size={16} />
+                  <AntDesign name='right' size={25} color={'#020202'} />
                 </TouchableOpacity>
               </Body>
             </Body>
@@ -617,9 +565,8 @@ const EditProfile = () => {
             <Body
               applyPadding={false}
               style={{
-                flexDirection: 'row',
-                width: 60,
-                justifyContent: 'space-between'
+                width: 55,
+                alignItems: 'center'
               }}
             >
               <TouchableOpacity
@@ -628,7 +575,7 @@ const EditProfile = () => {
                   width: 20,
                   height: 20,
                   borderWidth: 0.3,
-                  backgroundColor: gender == 'Male' ? '#1A94EC' : 'white',
+                  backgroundColor: gender == 'Male' ? 'red' : 'white',
                 }}
                 onPress={() => { setGender("Male") }}
               >
@@ -638,9 +585,8 @@ const EditProfile = () => {
             <Body
               applyPadding={false}
               style={{
-                flexDirection: 'row',
-                width: 75,
-                justifyContent: 'space-between'
+                width: 55,
+                alignItems: 'center'
               }}
             >
               <TouchableOpacity
@@ -649,13 +595,35 @@ const EditProfile = () => {
                   width: 20,
                   height: 20,
                   borderWidth: 0.3,
-                  backgroundColor: gender == 'Female' ? '#1A94EC' : 'white'
+                  backgroundColor: gender == 'Female' ? 'red' : 'white'
                 }}
                 onPress={() => { setGender("Female") }}
               >
               </TouchableOpacity>
               <Text>Female</Text>
             </Body>
+
+            <Body
+              applyPadding={false}
+              style={{
+                alignItems: 'center',
+                width: 55,
+              }}
+            >
+              <TouchableOpacity
+                applyPadding={false}
+                style={{
+                  width: 20,
+                  height: 20,
+                  borderWidth: 0.3,
+                  backgroundColor: gender == 'Other' ? 'red' : 'white'
+                }}
+                onPress={() => { setGender("Other") }}
+              >
+              </TouchableOpacity>
+              <Text>Other</Text>
+            </Body>
+
           </Body>
           <TouchableOpacity
             onPress={() => { handleGenderPress(gender) }}
@@ -885,6 +853,8 @@ const EditProfile = () => {
         </Body>
       </Modal>
 
+
+
       {/* modal for picking date of birth */}
       <DatePicker
         modal
@@ -892,13 +862,7 @@ const EditProfile = () => {
         date={date}
         mode="date"
         onConfirm={(date) => {
-          const dateObj = new Date(date);
-          const formattedDate = dateObj.toLocaleDateString("en-GB", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-          });
-          handleDobPress(formattedDate)
+          handleDobPress(date)
         }}
         onCancel={() => {
           setShow_dob_modal(false)
@@ -906,43 +870,15 @@ const EditProfile = () => {
 
       {/* modal for profile picture */}
 
-      <Modalize
-        ref={modalizeRef}
-        snapPoint={80}
-        handlePosition='inside'
-        velocity={5500}
-        openAnimationConfig={{
-          spring: {
-            speed: 10,
-            bounciness: 4,
-
-          },
-          timing: {
-            duration: 50
-          }
-        }}
-        modalStyle={{
-          backgroundColor: 'white',
-          justifyContent: 'center'
-        }}
-      >
-        <View style={{
-          flexDirection: 'row',
-          justifyContent: 'space-evenly',
-          width: width * 1,
-          paddingVertical: 15,
-        }}>
-
-
+      <Modal visible={pic_modal} transparent={true} animationType='slide'>
+        <Pressable onPress={() => {
+          setPic_modal(false
+          )
+        }} style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.4)' }} />
+        <View style={styles.modal_main_view}>
           <TouchableOpacity
             onPress={pickImages}
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingHorizontal: 20,
-              borderRightWidth: 1,
-              borderColor: 'black'
-            }}>
+            style={styles.modal_button1}>
             <MaterialIcons name='photo-library' color={'black'} size={35} />
             <Text style={{
               color: 'black'
@@ -951,13 +887,7 @@ const EditProfile = () => {
 
           <TouchableOpacity
             onPress={() => { navigation.navigate('Avatar') }}
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingHorizontal: 20,
-              borderRightWidth: 1,
-              borderColor: 'black'
-            }}>
+            style={styles.modal_button1}>
             <Image
               source={AVATA_IMG}
               style={{
@@ -974,60 +904,23 @@ const EditProfile = () => {
 
           <TouchableOpacity
             onPress={clickImage}
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingHorizontal: 20
-            }}>
+            style={styles.modal_button1}>
             <Entypo name='camera' color={'black'} size={35} />
             <Text style={{
               color: 'black'
             }}>
               Camera</Text>
           </TouchableOpacity>
-
         </View>
-
-      </Modalize>
+      </Modal>
 
       {/* profile video section */}
-      <Modalize
-        ref={modalizeRef1}
-        snapPoint={80}
-        handlePosition='inside'
-        velocity={5500}
-        openAnimationConfig={{
-          spring: {
-            speed: 10,
-            bounciness: 4,
-
-          },
-          timing: {
-            duration: 50
-          }
-        }}
-        modalStyle={{
-          backgroundColor: 'white',
-          justifyContent: 'center'
-        }}
-      >
-        <View style={{
-          flexDirection: 'row',
-          justifyContent: 'space-evenly',
-          width: width * 1,
-          paddingVertical: 15,
-        }}>
-
-
+      <Modal visible={video_modal} transparent={true} animationType='slide'>
+        <Pressable onPress={() => { setVideo_modal(false) }} style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.4)' }} />
+        <View style={styles.modal_main_view}>
           <TouchableOpacity
-            onPress={pickImages}
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingHorizontal: 20,
-              borderRightWidth: 1,
-              borderColor: 'black'
-            }}>
+            onPress={pickVideo}
+            style={styles.modal_button1}>
             <MaterialIcons name='photo-library' color={'black'} size={35} />
             <Text style={{
               color: 'black'
@@ -1035,12 +928,8 @@ const EditProfile = () => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={clickImage}
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingHorizontal: 20
-            }}>
+            onPress={clickVideo}
+            style={styles.modal_button1}>
             <Entypo name='camera' color={'black'} size={35} />
             <Text style={{
               color: 'black'
@@ -1049,8 +938,7 @@ const EditProfile = () => {
           </TouchableOpacity>
 
         </View>
-
-      </Modalize>
+      </Modal>
 
     </Body>
   )
@@ -1114,7 +1002,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(0, 0, 0, 0.2)',
     alignItems: 'center',
-    paddingTop: 5
+    paddingTop: 5,
   },
   modal_text: {
     fontSize: 18,
@@ -1127,7 +1015,7 @@ const styles = StyleSheet.create({
     marginTop: height * 0.03
   },
   modal_button: {
-    backgroundColor: '#1A94EC',
+    backgroundColor: 'red',
     width: width * 0.55,
     alignItems: 'center',
     justifyContent: 'center',
@@ -1162,6 +1050,38 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     width: width * 0.5,
     marginTop: height * 0.02
+  },
+  modal_main_view: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    width: width * 1,
+    paddingVertical: 15,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: '#fff',
+    borderTopEndRadius: 20,
+    borderTopStartRadius: 20,
+    zIndex: 1000
+  },
+  modal_button: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    backgroundColor: 'red',
+    width: '100%',
+    paddingVertical: 5,
+    position: 'absolute',
+    bottom: 5
+  },
+  modal_button1: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    borderRightWidth: 0.5,
+    borderColor: 'black',
+    borderLeftWidth: 0.5
   }
 })
 

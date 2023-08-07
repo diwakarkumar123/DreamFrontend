@@ -3,40 +3,9 @@ import base64 from 'base-64';
 
 
 const baseUrl = 'https://api-m.sandbox.paypal.com'
-const clientId = 'AbsPwHN0q-w-q98mrqckP87WKNTi8XUA3bVlQr7GRJNnn9tiEVa3bPT_X-Lkrv95miICWEWMT-1n8LH4'
-const secretKey = 'ELrc5WEpHTKO9d5P_0bsyqLe1YG7QJlalNgnsgseHGypc1u_VzpuUPzp7V_p2WPgdp-n-_x8fKdROCwj'
-let orderDetail = {
-    "intent": "CAPTURE",
-    "purchase_units": [
-        {
-            "items": [
-                {
-                    "name": "T-Shirt",
-                    "description": "Green XL",
-                    "quantity": "1",
-                    "unit_amount": {
-                        "currency_code": "USD",
-                        "value": "20.00"
-                    }
-                }
-            ],
-            "amount": {
-                "currency_code": "USD",
-                "value": "20.00",
-                "breakdown": {
-                    "item_total": {
-                        "currency_code": "USD",
-                        "value": "20.00"
-                    }
-                }
-            }
-        }
-    ],
-    "application_context": {
-        "return_url": "https://example.com/return",
-        "cancel_url": "https://example.com/cancel"
-    }
-}
+const clientId = 'ATRpxXW2lofjfsLkxJjtlt-Z9IXWJTtIQgjja0rlJRz8gCJXQtyxxYAQOn7KaagtfsfIiSpS_7DLyPZR'
+const secretKey = 'EHwatjN-VXVCKAZhFOn4b9myk7JeCJH5Z_JZwhJHYoZBUc1ol2ABB08vQNRPQwhOeHmr4CbbD-h03hp6'
+
 
 // function for generating the access token 
 const generateToken = () => {
@@ -63,7 +32,39 @@ const generateToken = () => {
 }
 
 // function for creating order
-const createOrder = (token = '') => {
+const createOrder = (token = '', value) => {
+    let orderDetail = {
+        "intent": "CAPTURE",
+        "purchase_units": [
+            {
+                "items": [
+                    {
+                        "name": "T-Shirt",
+                        "description": "Green XL",
+                        "quantity": "1",
+                        "unit_amount": {
+                            "currency_code": "USD",
+                            "value": `${value}`
+                        }
+                    }
+                ],
+                "amount": {
+                    "currency_code": "USD",
+                    "value": `${value}`,
+                    "breakdown": {
+                        "item_total": {
+                            "currency_code": "USD",
+                            "value": `${value}`
+                        }
+                    }
+                }
+            }
+        ],
+        "application_context": {
+            "return_url": "https://example.com/return",
+            "cancel_url": "https://example.com/cancel"
+        }
+    }
     var requestOptions = {
         method: 'POST',
         headers: {

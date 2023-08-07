@@ -1,20 +1,156 @@
-import { Dimensions, FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native'
+import { Alert, Dimensions, FlatList, Image, Modal, Pressable, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import BottomSheet from './BottomSheet'
-import { QUESTION_MARK, COIN } from '../../configs/source'
+import { QUESTION_MARK, COIN, DIAMOND_ICON, TIKTOK_LOADER_GIF } from '../../configs/source'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigation } from '@react-navigation/native'
+import { setRechargeSheet } from '../../store/indexSlice'
+import paymentsApi from '../../apis/paymentsApi'
+import WebView from 'react-native-webview'
+import queryString from 'query-string';
+import { storePayments } from '../../apis/userApi'
+import {add_my_profile_data, update_wallet_diamond} from '../../store/my_dataSlice'
+import Toast from 'react-native-simple-toast'
 
 
 const { width, height } = Dimensions.get('window')
 
 const RechargeBottomSheet = () => {
-    const rechargeModalRef = useRef(null)
     const [selected_price, setSelected_price] = useState('')
+    const [access_token, setAccess_token] = useState(null)
+    const [paypal_url, setPaypal_url] = useState(null)
+    const [showModal, setShowModal] = useState(false)
+    const [loading, setloading] = useState(false)
 
-    useEffect(() => {
-        heightLayout = rechargeModalRef?.current?.heightLayoutCurrent();
-        rechargeModalRef?.current?.scrollTo(-heightLayout);
-        console.log(heightLayout)
-    }, [])
+    const dispatch = useDispatch();
+
+    const bottomSheetSettingProfile = useSelector(
+        state => state.index.rechargeSheet,
+    );
+    const my_data = useSelector(state => state.my_data.my_profile_data)
+
+
+    const handlePayments = () => {
+        makePayments()
+    }
+
+
+    const makePayments = async () => {
+        setloading(true)
+        try {
+            const token = await paymentsApi.generateToken()
+            setAccess_token(token)
+            const price = parseFloat(priceDetails[selected_price].price.replace(/[^0-9.]/g, ""))
+            const res = await paymentsApi.createOrder(token, price)
+            setloading(false)
+            if (res?.links) {
+                const findUrl = res.links.find(data => data?.rel === "approve")
+                setPaypal_url(findUrl.href)
+                handleClose()
+                setShowModal(true)
+                console.log("response after calling create order:", findUrl.href)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+
+    const onUrlChange = (webviewState) => {
+        console.log("web view state change :", webviewState.url)
+        if (webviewState.url.includes('https://example.com/cancel')) {
+            clearPaypalState()
+            return;
+        }
+        if (webviewState.url.includes('https://example.com/return')) {
+            setloading(true)
+            const urlValues = queryString.parseUrl(webviewState.url)
+            // console.log("my urls value", urlValues)
+            const { token } = urlValues.query
+            if (!!token) {
+                paymentSucess(token)
+            }
+
+        }
+    }
+
+
+
+    const paymentSucess = async (id) => {
+        try {
+            paymentsApi.capturePayment(id, access_token)
+                .then((res) => {
+                    const { id, links, payer, payment_source, purchase_units, status } = res;
+                    const { address, email_address, name, payer_id } = payer;
+                    const { account_id, account_status } = payment_source.paypal;
+                    const [purchase_unit] = purchase_units;
+                    const { payments, reference_id, shipping } = purchase_unit;
+
+                    const link = links[0]?.href;
+                    const country_code = address?.country_code;
+                    const first_name = name?.given_name;
+                    const last_name = name?.surname;
+
+                   
+                    const amount_value = payments?.captures[0]?.amount.value;
+                    const currency_code = payments?.captures[0]?.amount.currency_code;
+                    const {
+                        address_line_1,
+                        admin_area_1,
+                        admin_area_2,
+                        postal_code
+                    } = shipping?.address;
+                    const dimanond_value = priceDetails[selected_price]?.coin;
+                    const payment_id = id;
+                    const data = {
+                        payment_id,
+                        link,
+                        country_code,
+                        email_address,
+                        first_name,
+                        last_name,
+                        payer_id,
+                        account_id,
+                        account_status,
+                        amount_value,
+                        currency_code,
+                        reference_id,
+                        status,
+                        address_line_1,
+                        admin_area_1,
+                        admin_area_2,
+                        postal_code,
+                        dimanond_value
+                    }
+                    storePayments(data, my_data?.auth_token)
+                    .then((r)=>{
+                        console.log(r)
+                        const wallet = r?.wallet
+                        console.log(wallet)
+                        dispatch(update_wallet_diamond(wallet))
+                        setloading(false)
+                    })
+                    .catch((err)=>{
+                        console.log(err.message)
+                    })
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+            clearPaypalState()
+           
+
+
+        } catch (error) {
+            console.log("error raised in payment capture", error)
+        }
+    }
+
+    const clearPaypalState = () => {
+        setPaypal_url(null)
+        setAccess_token(null)
+        setShowModal(false)
+    }
 
 
 
@@ -201,68 +337,118 @@ const RechargeBottomSheet = () => {
 
                 }}>
                     <Text>Balance</Text>
-                    <Image source={COIN} style={{ width: 15, height: 15, marginLeft: 10, marginRight: 3 }} />
+                    <Image source={DIAMOND_ICON} style={{ width: 15, height: 15, marginLeft: 10, marginRight: 3 }} />
                     <Text>0</Text>
                 </View>
             </>
         )
     }
 
-    console.log(selected_price)
+    const handleClose = () => {
+        dispatch(setRechargeSheet(false))
+    }
 
 
     return (
-        <BottomSheet
-            ref={rechargeModalRef}
-
-        >
+        <>
+            <Modal visible={bottomSheetSettingProfile} transparent={true} animationType='slide'>
+            {loading && (
             <View style={{
+                position: 'absolute',
                 width: width,
-                height: height * 0.7,
-                backgroundColor: '#fff'
+                height: height,
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                zIndex: 3000
             }}>
-
-                <RenderTop />
-
-                <View style={{ marginBottom: 70, height: height * 0.6 }}>
-
-                <View style={{ marginBottom: 70}}>
-                    <FlatList
-                        data={priceDetails}
-                        numColumns={3}
-                        renderItem={({ item, index }) => (
-                            <Pressable
-                                onPress={()=>{setSelected_price(index)}}
-                             style={[styles.coin_main_container, {borderColor: selected_price == index ? 'red': 'black'} ]}>
-                                <View style={styles.coin_view}>
-                                    <Image source={COIN} style={{ width: 20, height: 20 }} />
-                                    <Text style={styles.txt}>{item.coin}</Text>
-                                </View>
-                                <Text>{item.price}</Text>
-                            </Pressable>
-                        )}
-                    />
-                </View>
-                </View>
-
-
+                <Image
+                    source={TIKTOK_LOADER_GIF}
+                    style={{
+                        width: 50,
+                        height: 50
+                    }}
+                />
+            </View>
+          )}
                 <Pressable
-                 onPress={()=>{console.log("pressed")}}
-                 style={{
+                    onPress={handleClose}
+                    style={{
+                        width: width,
+                        height: height * 0.265,
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        backgroundColor: 'transparent',
+                        zIndex: 1000
+                    }} />
+
+                <View style={{
                     width: width,
-                    height: 70,
-                    backgroundColor: 'red',
+                    height: height * 0.7,
+                    backgroundColor: '#fff',
                     position: 'absolute',
                     bottom: 0,
-                    alignItems: 'center',
-                    justifyContent: 'center'
+                    left: 0,
+                    right: 0,
+                    borderTopStartRadius: 15,
+                    borderTopEndRadius: 15
                 }}>
-                    <Text style={{ color: 'white', fontSize: 16, fontWeight: '700' }}>RECHARGE</Text>
-                </Pressable>
+
+                    <RenderTop />
+
+                    <View style={{ marginBottom: 70, height: height * 0.6 }}>
+
+                        <View style={{ marginBottom: 70 }}>
+                            <FlatList
+                                data={priceDetails}
+                                numColumns={3}
+                                renderItem={({ item, index }) => (
+                                    <Pressable
+                                        onPress={() => { setSelected_price(index) }}
+                                        style={[styles.coin_main_container, { borderColor: selected_price == index ? 'red' : 'black' }]}>
+                                        <View style={styles.coin_view}>
+                                            <Image source={DIAMOND_ICON} style={{ width: 20, height: 20 }} />
+                                            <Text style={styles.txt}>{item.coin}</Text>
+                                        </View>
+                                        <Text>{item.price}</Text>
+                                    </Pressable>
+                                )}
+                            />
+                        </View>
+                    </View>
+                    <Pressable
+                        onPress={handlePayments}
+                        style={{
+                            width: width,
+                            height: 50,
+                            backgroundColor: 'red',
+                            position: 'absolute',
+                            bottom: 0,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            left: 0,
+                            right: 0
+                        }}>
+                        <Text style={{ color: 'white', fontSize: 16, fontWeight: '600' }}>RECHARGE</Text>
+                    </Pressable>
+                </View>
 
 
-            </View>
-        </BottomSheet>
+
+            </Modal>
+
+            <Modal visible={showModal}>
+                <View style={{ flex: 1, zIndex: 2000 }}>
+                    <WebView
+                        source={{ uri: paypal_url }}
+                        onNavigationStateChange={onUrlChange}
+                    />
+                </View>
+            </Modal>
+
+        </>
     )
 }
 

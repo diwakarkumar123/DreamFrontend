@@ -5,7 +5,10 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 import EvilIcons from 'react-native-vector-icons/EvilIcons'
 import { useNavigation } from '@react-navigation/native'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-
+import {update_country} from '../../../../store/my_dataSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import Toast from 'react-native-simple-toast'
+import {updateProfile} from '../../../../apis/userApi'
 
 
 const { width, height } = Dimensions.get('window')
@@ -14,6 +17,9 @@ const Countries_and_regions = ({ route }) => {
     const navigation = useNavigation()
     const [active_continent, setActive_continents] = useState('Asia')
     const { setList, list } = route.params;
+    const dispatch = useDispatch()
+    const my_data = useSelector(state => state.my_data.my_profile_data)
+
     const continents = [
         {
             name: 'Asia'
@@ -30,6 +36,19 @@ const Countries_and_regions = ({ route }) => {
     ]
 
     const handleCountryPress = (country) => {
+        const name = 'country'
+        const value = country
+        const data = {
+            name, value
+        }
+        updateProfile(my_data?.auth_token, data)
+            .then((res) => {
+                dispatch(update_country(country))
+                Toast.show(res.message, Toast.SHORT)
+            })
+            .catch((err) => {
+                console.log(err.message)
+            })
         const updatedList = list.map((item) => {
             if (item.name === 'Country') {
                 return {
@@ -323,7 +342,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'flex-start',
         borderWidth: 1,
-        width: width * 0.24,
+        width: width * 0.27,
         padding: 5,
         // borderColor: 'rgba(0, 0, 0, 0.2)',
         marginVertical: 8,

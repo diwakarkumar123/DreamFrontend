@@ -1,27 +1,29 @@
 import { StyleSheet, View, TextInput } from 'react-native';
-import React from 'react';
+import React, {forwardRef} from 'react';
 import { BORDER, COLOR, SPACING } from '../configs/styles';
 import Icon from './Icon';
 
-const CInput = ({
-  value,
-  placeholder,
-  onChangeText,
-  iconLeft,
-  iconRight,
-  onPressIconRight,
-  iconColor = COLOR.BLACK,
-  sizeIcon = 24,
-  keyboardType = 'default',
-  style,
-  onFocus,
-  secureTextEntry = false,
-  returnKeyType,
-  onSubmitEditing,
-  multiline = false,
-  placeholderTextColor,
-  textAlignVertical = 'center',
-}) => {
+const CInput = forwardRef((props, ref) => {
+  const {
+    value,
+    placeholder,
+    onChangeText,
+    iconLeft,
+    iconRight,
+    onPressIconRight,
+    iconColor = COLOR.BLACK,
+    sizeIcon = 24,
+    keyboardType = 'default',
+    style,
+    onFocus,
+    secureTextEntry = false,
+    returnKeyType,
+    onSubmitEditing,
+    multiline = false,
+    placeholderTextColor = '#020202',
+    textAlignVertical = 'center',
+  } = props;
+
   return (
     <View style={[styles.container, style]}>
       {iconLeft && (
@@ -45,6 +47,7 @@ const CInput = ({
         onSubmitEditing={onSubmitEditing}
         multiline={multiline}
         textAlignVertical={textAlignVertical}
+        ref={ref} // Forward the ref to the TextInput
       />
       {iconRight && (
         <Icon
@@ -57,7 +60,7 @@ const CInput = ({
       )}
     </View>
   );
-};
+});
 
 export default CInput;
 
@@ -76,5 +79,6 @@ const styles = StyleSheet.create({
     height: '100%',
     flex: 1,
     padding: SPACING.S2,
+    color: '#020202',
   },
 });

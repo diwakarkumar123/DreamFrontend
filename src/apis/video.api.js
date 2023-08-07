@@ -52,9 +52,10 @@ const getVideoLikeByIdUser = async (idUser, page = 1, limit = 40) => {
   return result;
 };
 
-const postVideo = async (data) => {
+const postVideo = async (data, token) => {
   const headers = {
     'Content-Type': 'multipart/form-data',
+    'Authorization': `Bearer ${token}`
   };
 
   const url = `${SERVER_API_URL}/videos/video`;
@@ -64,8 +65,28 @@ const postVideo = async (data) => {
     headers,
     data,
   });
-  return result; 
+  return result;
 };
+
+const getMyVideos = async (token) => {
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  const url = `${SERVER_API_URL}/videos/getMyVideos`;
+  const result = await axios.get(url, config);
+  return result;
+}
+
+
+const sendGifts = async (data, token) => {
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  const url = `${SERVER_API_URL}/users/gifts`;
+  const result = await axios.post(url, data, config);
+  return result;
+}
+
 
 export {
   getVideo,
@@ -75,4 +96,6 @@ export {
   getVideoByUserAuth,
   getVideoLikeByIdUser,
   getVideoLikeByUserAuth,
+  getMyVideos,
+  sendGifts
 };

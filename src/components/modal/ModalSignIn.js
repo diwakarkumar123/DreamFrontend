@@ -5,18 +5,20 @@ import { CLOSE_IMG, TIKTOK_ICON_IMG } from '../../configs/source';
 import { BORDER, COLOR, SPACING, TEXT } from '../../configs/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { setBottomSheetSignIn, setModalSignIn } from '../../store/indexSlice';
+import { useNavigation } from '@react-navigation/native';
 
 const ModalSignIn = () => {
   const dispatch = useDispatch();
   const visible = useSelector(state => state.index.modalSignIn);
+  const navigation = useNavigation()
   const handleClickClose = () => {
     dispatch(setModalSignIn(false));
   };
 
   const handleShowBottomSheetSignIn = useCallback(() => {
+    navigation.navigate('ChooseAccount') 
     dispatch(setModalSignIn(false));
-    dispatch(setBottomSheetSignIn(true));
-  }, [dispatch]);
+  }, [dispatch]); 
 
   return (
     <Modal visible={visible} transparent={true}>

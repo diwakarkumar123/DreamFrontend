@@ -17,13 +17,11 @@ import Animated, { FadeIn, FadeOut, withRepeat } from 'react-native-reanimated';
 import auth, { firebase } from '@react-native-firebase/auth'
 import { useDispatch, useSelector } from 'react-redux'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {add_my_profile_data, addIsLogin } from '../../store/my_dataSlice'
+import { add_my_profile_data, addIsLogin } from '../../store/my_dataSlice'
 import { useNavigation } from '@react-navigation/native';
 import { setModalSignIn, setBottomSheetLogout, setBottomSheetSignIn } from '../../store/indexSlice';
-import axios from 'axios';
 import { createAvatar } from '@dicebear/core';
 import { adventurer, notionists, croodles, personas } from '@dicebear/collection';
-import { SvgXml } from 'react-native-svg';
 
 
 const save_data = async (key, data) => {
@@ -57,16 +55,16 @@ const BottomSheetSignUp = ({ setCurrentForm, backToScreenSocial, handleClickClos
   }, [dispatch]);
 
 
-  const create_avatar = (seed)=>{
+  const create_avatar = (seed) => {
     const avatar = createAvatar(personas, {
       "seed": seed
     });
     const svg = avatar.toString();
-   return svg;
+    return svg;
   }
 
 
-  
+
   const handleClickSignUp = () => {
     setIsEmpty(false);
     setIsFailure(false);
@@ -79,49 +77,42 @@ const BottomSheetSignUp = ({ setCurrentForm, backToScreenSocial, handleClickClos
           return setIsEmpty(true);
         }
         auth()
-        .createUserWithEmailAndPassword(txtEmail, txtPassword)
-        .then(async(res)=>{
-          const name = txtName;
-          const email = res.user.email;
-          const firebase_uid = res.user.uid;
-          // const profile_pic = await create_avatar(firebase_uid)
-          const profile_pic = ''
-          console.log(res.user)
-          const result = authApi.signUp(name, email, firebase_uid, profile_pic)
-          result.then((res)=>{
-            console.log(res.data)
-            if(res.data.message == 'user created successfully'){
-              dispatch(add_my_profile_data(res.data.payload))
-              save_data("user", res.data.payload)
-              navigation.navigate('Me')
-              dispatch(addIsLogin(true))
-              // handleClickClose()
-              // dispatch(setModalSignIn(false));
-              // dispatch(setBottomSheetSignIn(false));
-              // dispatch(setBottomSheetLogout(false))
+          .createUserWithEmailAndPassword(txtEmail, txtPassword)
+          .then(async (res) => {
+            const name = txtName;
+            const email = res.user.email;
+            const firebase_uid = res.user.uid;
+            const profile_pic = ''
+            const result = authApi.signUp(name, email, firebase_uid, profile_pic)
+            result.then((res) => {
+              if (res.data.message == 'user created successfully') {
+                dispatch(add_my_profile_data(res.data.payload))
+                save_data("user", res.data.payload)
+                navigation.navigate('Me')
+                dispatch(addIsLogin(true))
+              }
+            })
+              .catch((err) => {
+                console.log(err)
+              })
+          })
+          .catch((error) => {
+            if (error.code == 'auth/invalid-email') {
+              setIsFailure_invalid(true)
+              console.log("email are badly formated")
+              setShowModal(false);
+            }
+            if (error.code == 'auth/email-already-in-use') {
+              setIsFailure(true)
+              console.log("email already in use")
+              setShowModal(false);
             }
           })
-          .catch((err)=>{
-            console.log(err)
-          })
-        })
-        .catch((error)=>{
-          if(error.code == 'auth/invalid-email'){
-            setIsFailure_invalid(true)
-            console.log("email are badly formated")
-          }
-          if(error.code == 'auth/email-already-in-use'){
-            setIsFailure(true)
-            console.log("email already in use")
-          }
-        })
       } catch (error) {
-        console.log('sing up erro ',error);
-        // setIsFailure(true);
-      } finally {
+        console.log('sing up erro ', error);
         setShowModal(false);
-      }
-    }, 8000);
+      } 
+    }, 3000);
   };
 
 
@@ -140,7 +131,7 @@ const BottomSheetSignUp = ({ setCurrentForm, backToScreenSocial, handleClickClos
         backgroundColor={COLOR.WHITE}
         justifyContent="center"
         alignItems="center"
-        >
+      >
         {showModal && <ModalLoading visible={showModal} />}
         <CText text={TEXT.H1} textAlign="center" marginVertical={SPACING.S1}>
           Dream
@@ -151,8 +142,8 @@ const BottomSheetSignUp = ({ setCurrentForm, backToScreenSocial, handleClickClos
           marginVertical={SPACING.S2}
           color={COLOR.GRAY}
           marginBottom={SPACING.S4}
-          
-          >
+
+        >
           Continue with email and password
         </CText>
         <CInput
@@ -183,10 +174,10 @@ const BottomSheetSignUp = ({ setCurrentForm, backToScreenSocial, handleClickClos
             {isEmpty
               ? 'You must enter all fields'
               : isFailure
-              ? 'Email already exists'
-              : isFaliure_invalid 
-              ? 'Email are badly formated'
-              : ''
+                ? 'Email already exists'
+                : isFaliure_invalid
+                  ? 'Email are badly formated'
+                  : ''
             }
           </CText>
         </Container>
@@ -207,15 +198,15 @@ const BottomSheetSignUp = ({ setCurrentForm, backToScreenSocial, handleClickClos
           </TouchableOpacity>
         </Container>
         <Container padding={SPACING.S2} width="100%" paddingTop={SPACING.S4}>
-        <TouchableOpacity onPress={() => setCurrentForm(0)}>
-        <CText
-            textAlign="center"
-            onPress={() => {
-              setCurrentForm(0);
-              backToScreenSocial();
-            }}>
-            Continue with another way
-          </CText>
+          <TouchableOpacity onPress={() => setCurrentForm(0)}>
+            <CText
+              textAlign="center"
+              onPress={() => {
+                setCurrentForm(0);
+                backToScreenSocial();
+              }}>
+              Continue with another way
+            </CText>
           </TouchableOpacity>
         </Container>
         {/* for back social screen */}

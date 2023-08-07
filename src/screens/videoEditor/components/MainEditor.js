@@ -297,7 +297,7 @@ export default MainEditor
 
 const styles = StyleSheet.create({
     main_container: {
-        width: 250,
+        width: 280,
         backgroundColor: 'rgba(0, 0, 0, 0.6)',
         flex: 1
     },

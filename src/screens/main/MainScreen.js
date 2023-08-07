@@ -51,6 +51,8 @@ const MainScreen = ({ navigation }) => {
       dispatch(setCurrentBottomTab({ currentBottomTab: tabName }));
     }
   };
+
+
   return (
     <>
       <StatusBar backgroundColor={COLOR.TRANSPARENT} translucent={true} />
@@ -61,17 +63,18 @@ const MainScreen = ({ navigation }) => {
             backgroundColor: COLOR.TRANSPARENT,
             position: 'absolute',
             elevation: 0,
+            borderTopColor: COLOR.TRANSPARENT,
           },
           tabBarLabelStyle: {
-            marginTop: -10,
+            // marginTop: -10,
             ...TEXT.SMALL_STRONG,
             fontSize: 10,
-            marginBottom: 5,
+            // marginBottom: 5,
           },
 
           headerShown: false,
           tabBarActiveTintColor: theme === 'dart' ? COLOR.WHITE : COLOR.BLACK,
-          tabBarInactiveTintColor: COLOR.GRAY,
+          tabBarInactiveTintColor: theme === 'dart' ? COLOR.WHITE : COLOR.GRAY,
         }}>
         <Bottom.Screen
           name={t('Home')}
@@ -130,7 +133,7 @@ const MainScreen = ({ navigation }) => {
             tabBarIcon: () => {
               return (
                 <Image
-                    source={HOME_NEW_VIDEO}
+                  source={HOME_NEW_VIDEO}
                   // source={theme === 'dart' ? NEW_VIDEO_IMG : NEW_VIDEO_IMG}
                   // source={NEW_VIDEO_IMG}
                   style={styles.newVideoTabIcon}
@@ -209,8 +212,8 @@ export default MainScreen;
 
 const styles = StyleSheet.create({
   bottomTabIcon: {
-    width: 28,
-    height: 28,
+    width: 30,
+    height: 30,
   },
   newVideoTabIcon: {
     width: 38,

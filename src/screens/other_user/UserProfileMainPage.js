@@ -7,10 +7,12 @@ import {
     TouchableOpacity,
     Dimensions,
     StatusBar,
-
+    Pressable,
+    Alert,
+    Modal
 } from 'react-native';
-import React, { useRef } from 'react';
-//   import {SafeAreaProvider} from 'react-native-safe-area-context';
+import React, { useEffect, useRef, useState } from 'react';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import {
     Eclipes,
     well_icon,
@@ -23,285 +25,385 @@ import {
     Fac_icon,
     stak_icon,
     Like_post,
+    USER_FILLED_IMG
 } from '../../configs/source';
 import AntDesign from 'react-native-vector-icons/AntDesign.js';
 import Foundation from 'react-native-vector-icons/Foundation.js';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons.js';
 import FontAwesome from 'react-native-vector-icons/FontAwesome.js';
-
 import { Tabs } from 'react-native-collapsible-tab-view';
 import Screenone from './Screenone';
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get('screen');
 import Screentwo from './Screentwo.js';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigation, useRoute } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { follow, unfollow, getInfoById } from '../../apis/userApi';
+import { useSelector } from 'react-redux';
+import StarIcon from './StarIcon';
+import { ViewPagerAndroidBase } from 'react-native';
+import { CButton } from '../../components';
+import PremiumModal from './components/PremiumModal';
+import MessagePriceList from './components/MessagePriceList';
+import { Portal } from 'react-native-paper';
 
-// import TabA from './TabA.js';
-const data = [
-    {
-        text: 'Rion star 123',
-        url: 'Https:www.snachat.com',
-        username: '@Lorengray234',
-        icon_1: stak_icon,
-        icon_2: Like_post,
+const Userprofile = () => {
+    const route = useRoute()
+    const user_data = route?.params?.user;
+    const my_data = useSelector(state => state.my_data.my_profile_data)
+    const [data, setData] = useState()
+    const navigation = useNavigation()
+    const [starIcon, setStarIcon] = useState(null);
+    const isIdPresent = data?.user?.Followers?.some(item => item.id === my_data?.id);
+    const [isFollowing, setIsFollowing] = useState(isIdPresent)
+    const [isModalVisible, setModalVisible] = useState(false)
+    const [showMessageList, setShowMessageList] = useState(false)
 
-        top_data: [
-            {
-                left_arrow: 'arrowleft',
-                text: 'Lorengray',
-                eclips_icon: Eclipes,
-                well_icon: well_icon,
-                onpress: () => navigation.navigate('Home')
+    const closeModal = () => {
+        setModalVisible(false);
+    };
 
-            },
-        ],
-        user_info: [
-            {
-                certified_icon: Certified,
-                profile_icon:
-                    'https://media.licdn.com/dms/image/D4D03AQFe9vksJNnGiA/profile-displayphoto-shrink_800_800/0/1683797622677?e=2147483647&v=beta&t=jbVEvQ5xMGlW_wzNSt8AiT0Td6C5brUNrdsRAIGfKW4',
-            },
-        ],
-        user_detail: [
-            {
-                text: 'Following',
-                number: '500',
-            },
-            {
-                text: 'Followers',
-                number: '22.2M',
-            },
-            {
-                text: 'Likes',
-                number: '9.9M',
-            },
-        ],
-        social_icon: [
-            {
-                youtube_icon: youtube,
-                facebook_icon: Facebook,
-                instagram_icon: instagram,
-                text: 'follow',
-            },
-        ],
-        section_part: [
-            {
-                icon_img: photo_icon,
-                text: 'Q&A',
-                icon_video: 'play-video',
-            },
-        ],
-    },
-];
+    const getData = () => {
+        getInfoById(user_data?.id)
+            .then((r) => {
+                const isIdPresent = r?.user?.Followers?.some(item => item.id === my_data?.id);
+                setData(r)
+                setIsFollowing(isIdPresent)
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    }
+    useEffect(() => {
+        getData()
+    }, [user_data])
 
-const Userprofile = ({ navigation }) => {
-    const Num_of_col = 3;
+    useEffect(() => {
+        async function get_no_of_star() {
+            const coin = data?.user?.wallet;
+            // const coin = 800000
+            switch (true) {
+                case coin < 200000:
+                    setStarIcon(null);
+                    break;
+                case coin >= 200000 && coin < 400000:
+                    setStarIcon(<StarIcon no_of_star={1} />);
+                    break;
+                case coin >= 400000 && coin < 600000:
+                    setStarIcon(<StarIcon no_of_star={2} />);
+                    break;
+                case coin >= 600000 && coin < 800000:
+                    setStarIcon(<StarIcon no_of_star={3} />);
+                    break;
+                case coin >= 800000 && coin < 1000000:
+                    setStarIcon(<StarIcon no_of_star={4} />);
+                    break;
+                default:
+                    setStarIcon(null);
+            }
+        }
+
+        get_no_of_star();
+    }, [data]);
+
+
+    const followThisGuy = () => {
+        let receiver_id = user_data?.id, data = { receiver_id }
+        follow(data, my_data?.auth_token)
+            .then((r) => {
+                console.log(r)
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+
+    }
+
+    const unfollowThisGuy = () => {
+
+    }
+
+
+
+    // function for handleing the button of message and follow
+    const handleMessageSend = async () => {
+        const receiver_id = user_data?.id;
+        if (isFollowing) {
+            const isIdPresent = data?.user?.Following?.some(item => item.id === my_data?.id);
+            if (isIdPresent) {
+                navigation.navigate('ChatScreen', { user_data })
+            } else if (!isIdPresent) {
+                setModalVisible(true)
+            }
+        } else if (!isFollowing) {
+            try {
+                setIsFollowing(true)
+                const res = await follow({ receiver_id }, my_data?.auth_token)
+            } catch (error) {
+                console.log('error while following the person', error)
+            }
+        }
+    }
+    // function for handeling the sending the messages
+    const handleContinueSend = async () => {
+        navigation.navigate('ChatScreen', { user_data })
+    }
+    // fonction for handeling the watching the details of messages
+    const handleViewDetails = async () => {
+
+    }
+    const premiumHandler = () => {
+        setModalVisible(false)
+        setShowMessageList(true)
+    }
+
+
+
     const Header = () => {
         return (
             <View style={styles.container}>
                 <View style={styles.topbar}>
-                    <FlatList
-                        data={data[0].top_data}
-                        renderItem={({ item }) => (
-                            <View style={styles.topbar_wraper}>
-                                <TouchableOpacity onPress={() => navigation.goBack()}>
-                                    <AntDesign name={item.left_arrow} size={24} />
+                    <View style={styles.topbar_wraper}>
+                        <TouchableOpacity style={{
+                            position: 'absolute',
+                            left: 15
+                        }} onPress={() => navigation.goBack()}>
+                            <AntDesign name='arrowleft' size={25} color={'#020202'} />
+                        </TouchableOpacity>
+                        <Text style={styles.top_text}>{user_data?.nickname}</Text>
+                        <View style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            width: 90,
+                            justifyContent: 'space-between',
+                            position: 'absolute',
+                            right: 15
+                        }}>
+                            <Image
+                                source={Eclipes}
+                                style={{ width: 20, height: 20 }}
+                            />
 
-                                </TouchableOpacity>
+                            <TouchableOpacity>
+                                <Image
+                                    source={well_icon}
+                                    style={{ width: 25, height: 25 }}
+                                />
+                            </TouchableOpacity>
+                        </View>
 
-                                <Text style={styles.top_text}>{item.text}</Text>
+                    </View>
+                </View>
 
-                                <Image
-                                    source={item.eclips_icon}
-                                    style={{ width: 20, height: 20, marginLeft: 40 }}
-                                />
-                                <Image
-                                    source={item.well_icon}
-                                    style={{ width: 20, height: 20, marginRight: 20 }}
-                                />
-                            </View>
-                        )}
-                        keyExtractor={(item, index) => index.toString()}
-                    />
-                </View>
-                <View>
-                    <FlatList
-                        data={data[0].user_info}
-                        renderItem={({ item }) => (
-                            <View style={styles.profilesection}>
-                                <Image
-                                    source={item.certified_icon}
-                                    style={{ width: 55, height: 55 }}
-                                />
-                                <Image
-                                    source={{ uri: item.profile_icon }}
-                                    style={{
-                                        width: 60,
-                                        height: 60,
-                                        borderRadius: 30,
-                                        right: 50,
-                                        resizeMode: 'contain',
-                                    }}
-                                />
-                            </View>
-                        )}
-                        keyExtractor={(item, index) => index.toString()}
-                    />
-                </View>
-                <View style={styles.usertext}>
-                    <Text style={{ fontSize: 16, letterSpacing: 0.6, fontWeight: 500 }}>
-                        {data[0].username}
-                    </Text>
-                </View>
 
                 <View>
-                    <FlatList
-                        data={data[0].user_detail}
-                        renderItem={({ item }) => (
-                            <View style={styles.follwer_wraper}>
-                                <Text style={styles.follwertext}>{item.number}</Text>
+                    <View style={styles.profilesection}>
+                        <View
+                            style={{ width: 55, height: 55, position: 'absolute', left: 30, top: 0 }}>
+                            {starIcon}
+                        </View>
 
-                                <Text style={{ fontSize: 15, opacity: 0.5 }}>{item.text}</Text>
-                            </View>
-                        )}
-                        keyExtractor={(item, index) => index.toString()}
-                        horizontal
-                    />
+
+                        {/* <Image
+                            source={Certified}
+                            style={{ width: 55, height: 55, position: 'absolute', left: 30 }}
+                        /> */}
+
+                        <View style={{
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                        }}>
+                            <Image
+                                source={user_data?.profile_pic ? { uri: user_data?.profile_pic } : USER_FILLED_IMG}
+                                style={{
+                                    width: 70,
+                                    height: 70,
+                                    borderRadius: 35,
+                                    borderWidth: 1,
+                                    borderColor: '#020202'
+                                }}
+                            />
+                            <Text style={{ fontSize: 16, fontWeight: '500', marginTop: 10 }}>
+                                @{user_data?.username}
+                            </Text>
+                        </View>
+                    </View>
                 </View>
+
+
+
+                <View style={{
+                    flexDirection: 'row',
+                    width: width,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginTop: 15
+                }}>
+                    <Pressable onPress={() => { navigation.navigate("Followers", { user_id: user_data?.id }) }} style={styles.follwer_wraper}>
+                        <Text style={styles.follwertext}>{data?.user?.Followers?.length || 0}</Text>
+                        <Text style={styles.follwertext}>Followers</Text>
+                    </Pressable>
+
+                    <Pressable onPress={() => { navigation.navigate("Followings", { user_id: user_data?.id }) }} style={styles.follwer_wraper}>
+                        <Text style={styles.follwertext}>{data?.user?.Following?.length || 0}</Text>
+                        <Text style={styles.follwertext}>Followings</Text>
+                    </Pressable>
+
+                    <Pressable style={styles.follwer_wraper}>
+                        <Text style={styles.follwertext}>0</Text>
+                        <Text style={styles.follwertext}>Likes</Text>
+                    </Pressable>
+                </View>
+
 
                 <View style={styles.social_wraper}>
-                    <FlatList
-                        data={data[0].social_icon}
-                        renderItem={({ item }) => (
-                            <View
-                                style={{
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-around',
-                                }}>
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'space-around',
+                        }}>
 
-                                <View style={styles.msgbutton}>
-                                    <TouchableOpacity style={{ flex: 1 }} >
-                                        <Text
-                                            style={{
-                                                textAlign: 'center',
-                                                fontSize: 15,
-                                                letterSpacing: 0.5,
-                                                color: '#fff',
-                                                fontSize: 16
+                        <View style={styles.msgbutton}>
+                            {/* <TouchableOpacity
+                                style={{ flex: 1 }}
+                                // onPress={followThisGuy}
+                                onPress={handleMessageSend}
 
-                                            }}>
-                                            {item.text}
-                                        </Text>
-                                    </TouchableOpacity >
-                                </View>
+                            >
+                                <Text
+                                    style={{
+                                        textAlign: 'center',
+                                        // color: '#fff',
+                                        fontSize: 16
+
+                                    }}>
+                                    message
+                                </Text>
+                            </TouchableOpacity > */}
+                            <CButton
+                                lable={isFollowing ? 'Message' : 'Follow'}
+                                backgroundColor={isFollowing ? 'grey' : 'red'}
+                                onPress={handleMessageSend}
+                            />
+                        </View>
 
 
-                                <View style={{ flexDirection: 'row' }}>
-                                    <TouchableOpacity>
-                                        <Image
-                                            source={item.youtube_icon}
-                                            style={{
-                                                width: 35,
-                                                height: 35,
-                                                resizeMode: 'contain',
-                                                marginRight: 12,
-                                            }}
-                                        />
-                                    </TouchableOpacity>
-                                    <TouchableOpacity>
-                                        <Image
-                                            source={item.facebook_icon}
-                                            style={{
-                                                width: 35,
-                                                height: 35,
-                                                resizeMode: 'contain',
-                                                marginRight: 12,
-                                            }}
-                                        />
-                                    </TouchableOpacity>
-                                    <TouchableOpacity>
-                                        <Image
-                                            source={item.instagram_icon}
-                                            style={{
-                                                width: 35,
-                                                height: 35,
-                                                resizeMode: 'contain',
-                                                marginRight: 12,
-                                            }}
-                                        />
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                        )}
-                        keyExtractor={(item, index) => index.toString()}
-                    // horizontal
-                    />
+                        <View style={{ flexDirection: 'row' }}>
+                            <TouchableOpacity>
+                                <Image
+                                    source={youtube}
+                                    style={{
+                                        width: 35,
+                                        height: 35,
+                                        resizeMode: 'contain',
+                                        marginRight: 12,
+                                    }}
+                                />
+                            </TouchableOpacity>
+                            <TouchableOpacity>
+                                <Image
+                                    source={Facebook}
+                                    style={{
+                                        width: 35,
+                                        height: 35,
+                                        resizeMode: 'contain',
+                                        marginRight: 12,
+                                    }}
+                                />
+                            </TouchableOpacity>
+                            <TouchableOpacity>
+                                <Image
+                                    source={instagram}
+                                    style={{
+                                        width: 35,
+                                        height: 35,
+                                        resizeMode: 'contain',
+                                        marginRight: 12,
+                                    }}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
                 </View>
-                <View style={{ padding: 2, alignItems: 'center', paddingLeft: 16 }}>
-                    <Text style={{ fontSize: 16, letterSpacing: 0.9, opacity: 0.4 }}>
-                        {data[0].text}
-                    </Text>
+
+                <View style={{ alignItems: 'center', marginTop: 10, justifyContent: 'center' }}>
+                    {user_data?.bio && (<Text style={{ fontSize: 16, color: '#020202', textAlign: 'center', width: width * 0.6 }}>
+                        {user_data?.bio}
+                    </Text>)}
+                    {user_data?.website && (<Text style={{ fontSize: 16, color: '#020202', width: width * 0.6 }}>
+                        {user_data?.website}
+                    </Text>)}
                 </View>
-                <View style={{ padding: 2, alignItems: 'center', paddingLeft: 16 }}>
-                    <Text style={{ fontSize: 16, letterSpacing: 0.9, opacity: 0.4 }}>
-                        {data[0].url}
-                    </Text>
-                </View>
-                <View style={{ padding: 9 }}>
-                    <FlatList
-                        data={data[0].section_part}
-                        renderItem={({ item }) => (
-                            <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                                <TouchableOpacity>
-                                    <Image
-                                        source={item.icon_img}
-                                        style={{ width: 20, height: 20, marginRight: 12 }}
-                                    />
-                                </TouchableOpacity>
-                                <Text>{item.text}</Text>
-                                <TouchableOpacity>
-                                    <Foundation
-                                        name={item.icon_video}
-                                        size={22}
-                                        style={{ marginLeft: 12, opacity: 0.5 }}
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                        )}
-                        keyExtractor={(item, index) => index.toString()}
-                    />
+
+
+                <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 15 }}>
+                    <TouchableOpacity>
+                        <Image
+                            source={photo_icon}
+                            style={{ width: 20, height: 20, marginRight: 10 }}
+                        />
+                    </TouchableOpacity>
+                    <Text>Q&A</Text>
+                    <TouchableOpacity style={{ marginLeft: 10 }}>
+                        <Foundation
+                            name={'play-video'}
+                            size={20}
+                        />
+                    </TouchableOpacity>
                 </View>
             </View>
         );
     };
 
     return (
-        <View style={{ flex: 1 }}>
-            <Tabs.Container renderHeader={Header}>
-                <Tabs.Tab
-                    label={() => (
-                        <Image source={data[0].icon_1} style={{ width: 20, height: 20 }} />
-                    )}
-                    name={'stackA'}>
-                    <Screenone />
-                    {/* <TabA /> */}
-                </Tabs.Tab>
+            <View style={{ paddingTop: StatusBar.currentHeight, flex: 1, backgroundColor: '#fff' }}>
+                
+                <Tabs.Container renderHeader={Header}>
+                    <Tabs.Tab
+                        label={() => (
+                            <Image source={stak_icon} style={{ width: 20, height: 20 }} />
+                        )}
+                        name={'stackA'}>
+                        <Screenone data={data?.user?.videos} />
 
-                <Tabs.Tab
-                    label={() => (
-                        <Image
-                            source={data[0].icon_2}
-                            style={{ width: 25, height: 25, }}
-                        />
-                    )}
-                    name={'stackB'}>
-                    <Screentwo />
-                </Tabs.Tab>
-            </Tabs.Container>
-            <StatusBar hidden={true} />
-        </View>
+                    </Tabs.Tab>
+
+                    <Tabs.Tab
+                        label={() => (
+                            <Image
+                                source={Like_post}
+                                style={{ width: 25, height: 25, }}
+                            />
+                        )}
+                        name={'stackB'}>
+                        <Screentwo data={data?.liked_video} />
+                    </Tabs.Tab>
+                </Tabs.Container>
+                <StatusBar hidden={true} barStyle={'light-content'} />
+                <Portal>
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={isModalVisible}
+                    onRequestClose={closeModal}
+                >
+                    <PremiumModal
+                        setModalVisible={setModalVisible}
+                        premiumHandler={premiumHandler} />
+                </Modal>
+
+
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={showMessageList}
+                    onRequestClose={() => { setShowMessageList(false) }}>
+                    <MessagePriceList setShowMessageList={setShowMessageList} user_data={user_data} />
+                </Modal>
+                </Portal>
+            </View>
+       
     );
 };
 
@@ -309,66 +411,54 @@ export default Userprofile;
 
 const styles = StyleSheet.create({
     container: {
-        // flex: 1,
-        // position: 'absolute',
-        // height: 300,
-        // backgroundColor: 'red',
+        flex: 1,
+        width: width,
     },
     topbar: {
-        // backgroundColor: "red",
+
     },
     topbar_wraper: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        padding: 14,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginVertical: 15
     },
     top_text: {
-        paddingLeft: 110,
-        fontWeight: '900',
-        fontSize: 17,
-        letterSpacing: 0.7,
+        fontWeight: '600',
+        fontSize: 16,
+        color: '#020202'
     },
     profilesection: {
-        margin: 6,
         flexDirection: 'row',
-        justifyContent: 'space-evenly',
-        // backgroundColor:'red',
+        justifyContent: 'center',
         alignItems: 'center',
-        padding: 12,
+        marginTop: 15
     },
     usertext: {
-        // backgroundColor:'red',
         padding: 4,
-        paddingLeft: 23,
         alignItems: 'center',
-        marginTop: -10,
+        width: width,
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     follwer_wraper: {
         flexDirection: 'column',
-        // backgroundColor:'red',
         alignItems: 'center',
-        marginLeft: 30,
-        padding: 12,
+        marginHorizontal: 10,
     },
     follwertext: {
         fontSize: 16,
-        fontWeight: '900',
+        fontWeight: '600',
+        color: '#020202',
+        marginTop: 3
     },
     social_wraper: {
         flexDirection: 'row',
         justifyContent: 'space-evenly',
-        // backgroundColor:'red',
-        padding: 5,
-        // alignItems:'center'    // justifyContent:'space-between'
+        marginTop: 25
     },
     msgbutton: {
-        backgroundColor: '#f2f5f7',
-        padding: 5,
         width: '47%',
         marginLeft: 15,
-        borderRadius: 9,
-        borderWidth: 1,
-        borderColor: '#c5c6c7',
-        backgroundColor: 'red'
     },
 });

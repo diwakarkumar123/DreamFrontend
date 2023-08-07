@@ -5,35 +5,31 @@ import {
     ImageBackground,
     Dimensions,
     Image,
+    Pressable,
 } from 'react-native';
 import React from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign.js';
 import Foundation from 'react-native-vector-icons/Foundation.js';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons.js';
 import FontAwesome from 'react-native-vector-icons/FontAwesome.js';
-const { width, height } = Dimensions.get('window');
-const RenderPost = ({ item, index }) => {
+import { DIAMOND_ICON } from '../../configs/source'
+const { width, height } = Dimensions.get('screen');
+
+
+
+const RenderPost = ({ item, index, handleImagePress }) => {
+
     return (
-        <View style={styles.main_container}>
+        <Pressable onPress={()=>{handleImagePress(index)}} style={styles.main_container}>
             <ImageBackground
-                resizeMode="cover"
-                source={{ uri: item.img }}
+                source={item?.thum ? { uri: `https://dpcst9y3un003.cloudfront.net/${item.thum}`} : {uri: 'https://'} }
                 style={styles.image_style}>
+
                 <View style={styles.image_upper_view}>
-                    {/* <MaterialCommunityIcons name="diamond" size={19} color={'yellow'} /> */}
-                    <Image source={item.diamond_icon} style={{ width: 20, height: 20 }} />
-                    <Text style={styles.txt}>{item.text_foll}</Text>
+                    <Image source={DIAMOND_ICON} style={{ width: 20, height: 20 }} />
+                    <Text style={styles.txt}>{item?.diamond_value || 0}</Text>
                 </View>
 
-                <View style={styles.image_bottom_view}>
-                    <View style={styles.paused_section}>
-                        <Text style={[styles.txt, { color: 'white', paddingRight: 10 }]}>
-                            {item.date}
-                        </Text>
-
-                        <FontAwesome name="share" size={15} color={'white'} />
-                    </View>
-                </View>
                 <View style={styles.image_bottom}>
                     <View style={styles.paused_section}>
                         <AntDesign
@@ -48,13 +44,13 @@ const RenderPost = ({ item, index }) => {
                                 styles.txt,
                                 { color: 'white', paddingRight: 10, textAlign: 'center' },
                             ]}>
-                            {item.play}
+                            {item?.view || 0}
                         </Text>
                     </View>
-                    <Text style={[styles.txt, { color: 'white' }]}>{item.share_text}</Text>
+                    <Text style={[styles.txt, { color: 'white' }]}>{item?.likes || 0}</Text>
                 </View>
             </ImageBackground>
-        </View>
+        </Pressable>
     );
 };
 
@@ -62,21 +58,21 @@ export default RenderPost;
 
 const styles = StyleSheet.create({
     image_style: {
-        width: width * 0.3,
+        width: width / 3,
         height: 180,
     },
     main_container: {
-        marginHorizontal: width * 0.017777,
-        paddingTop: 10,
-        paddingBottom: 7
+        borderWidth: 1,
+        borderColor: '#fff'
     },
     image_upper_view: {
         flexDirection: 'column',
         justifyContent: 'space-between',
         position: 'absolute',
-        top: 10,
-        width: width * 0.3,
+        top: 5,
+        right: 20,
         paddingHorizontal: 2,
+        alignItems: 'center'
     },
     txt: {
         color: 'yellow',

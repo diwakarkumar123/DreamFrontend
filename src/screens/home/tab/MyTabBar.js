@@ -72,7 +72,7 @@ const MyTabBar = ({ state, descriptors, navigation, position }) => {
           width={26}
           height={26}
           tintColor={COLOR.WHITE}
-          onPress={()=>{navigation.navigate('SearchScreen')}}
+          onPress={()=>{navigation.navigate('Discover')}}
         />
       </Container>
       {measures.length > 1 && (

@@ -37,11 +37,11 @@ import GiftSelectionScreen from '../../components/modal/GiftSelectionScreen';
 
 
 const window = {
-  width: Dimensions.get('window').width,
-  height: Dimensions.get('window').height
+  width: Dimensions.get('screen').width,
+  height: Dimensions.get('screen').height
 }
 
-const { height, width } = Dimensions.get('window');
+const { height, width } = Dimensions.get('screen');
 
 
 
@@ -60,29 +60,6 @@ const FollowTab = () => {
 
 
 
-  const videoData = [
-    {
-      video: 'https://dpcst9y3un003.cloudfront.net/videos/62cf3f5ee912f2black.mp4',
-    },
-    {
-      video: 'https://dpcst9y3un003.cloudfront.net/videos/62c88ae59235f2black.mp4',
-    },
-    {
-      video: 'https://dpcst9y3un003.cloudfront.net/videos/62c965384e3772black.mp4',
-    },
-    {
-      video: 'https://dpcst9y3un003.cloudfront.net/videos/62cabdab721a82black.mp4',
-    },
-    {
-      video: 'https://dpcst9y3un003.cloudfront.net/videos/62cd66413546a10black.mp4',
-    },
-    {
-      video: 'https://dpcst9y3un003.cloudfront.net/videos/62cf3d8b239172black.mp4',
-    },
-    {
-      video: 'https://dpcst9y3un003.cloudfront.net/videos/62cf3dc97cda92black.mp4',
-    }
-  ]
 
 
 
@@ -179,12 +156,19 @@ const FollowTab = () => {
 
   const styles = StyleSheet.create({
     container: {
-      flex: 1,
+      // flex: 1,
       // paddingTop: STATUSBAR_HEIGHT,
       // paddingBottom: bottomHeight,
       backgroundColor: COLOR.BACKGROUND_LOADING,
       justifyContent: 'center',
       alignItems: 'center',
+      width: width,
+      height: height,
+      // position: 'absolute',
+      // top: 0,
+      // left: 0,
+      // right: 0,
+      // bottom: 0
     },
   });
 
@@ -201,49 +185,64 @@ const FollowTab = () => {
   //   return false;
   // });
   const [buttonCount, setButtonCount] = useState(0);
-let resetTimeout;
-let buttonClicked = false;
+  let resetTimeout;
+  let buttonClicked = false;
 
-const resetButtonCount = () => {
-  setButtonCount(0);
-};
+  const resetButtonCount = () => {
+    setButtonCount(0);
+  };
 
-const handleButtonClick = () => {
-  buttonClicked = true;
-  setButtonCount(prevCount => prevCount + 1);
+  // const handleButtonClick = () => {
+  //   buttonClicked = true;
+  //   setButtonCount(prevCount => prevCount + 1);
 
-  clearTimeout(resetTimeout);
-  resetTimeout = setTimeout(() => {
-    resetButtonCount();
-    buttonClicked = false;
-  }, 5000); // Reset to zero after 5 seconds of inactivity
-};
+  //   clearTimeout(resetTimeout);
+  //   resetTimeout = setTimeout(() => {
+  //     resetButtonCount();
+  //     buttonClicked = false;
+  //   }, 5000); // Reset to zero after 5 seconds of inactivity
+  // };
 
-BackHandler.addEventListener('hardwareBackPress', () => {
-  if (!buttonClicked) {
-    handleButtonClick();
+  // BackHandler.addEventListener('hardwareBackPress', () => {
+  //   if (!buttonClicked) {
+  //     handleButtonClick();
 
-    if (buttonCount === 2) {
-      BackHandler.exitApp();
-    } else if (buttonCount === 1) {
-      Alert.alert("Displaying notification");
-    } else if (buttonCount === 0) {
-      flatListRef.current.scrollToIndex({ index: 1 });
-    }
-  }
-});
+  //     if (buttonCount === 2) {
+  //       BackHandler.exitApp();
+  //     } else if (buttonCount === 1) {
+  //       Alert.alert("Displaying notification");
+  //     } else if (buttonCount === 0) {
+  //       flatListRef.current.scrollToIndex({ index: 1 });
+  //     }
+  //   }
+  // });
 
-  
 
-  
+
+
 
 
 
 
   return (
-    <Animated.View style={[styles.container, containerStyle]}>
+
+    <View style={{
+      width: width,
+      height: height,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: COLOR.BACKGROUND_LOADING
+    }}>
       {isLoading ? (
-        <Icon source={TIKTOK_LOADER_GIF} width={50} height={50} />
+        <View style={{
+          width: width,
+          height: height,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: COLOR.BACKGROUND_LOADING
+        }}>
+          <Icon source={TIKTOK_LOADER_GIF} width={50} height={50} />
+        </View>
       ) : data.length > 0 ? (
         <FlatList
           ref={flatListRef}
@@ -260,30 +259,31 @@ BackHandler.addEventListener('hardwareBackPress', () => {
                 flatListRef={flatListRef}
 
               />
-            
+
             );
           }}
           keyExtractor={(item, index) => index.toString()}
           scrollEventThrottle={16}
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
-          initialNumToRender={0}
-          maxToRenderPerBatch={3}
+          initialNumToRender={1}
+          // maxToRenderPerBatch={3}
           removeClippedSubviews={true}
-          windowSize={5}
+          // windowSize={5}
           onViewableItemsChanged={onViewableItemsChanged}
           viewabilityConfig={viewabilityConfig}
-          getItemLayout={(_data, index) => ({
-            length: HEIGHT_ITEM,
-            offset: HEIGHT_ITEM * index,
-            index,
-          })}
+        // getItemLayout={(_data, index) => ({
+        //   length: HEIGHT_ITEM,
+        //   offset: HEIGHT_ITEM * index,
+        //   index,
+        // })}
         />
       ) : (
         <NotFoundData onPress={handleFecthData} />
       )}
 
-    </Animated.View>
+
+    </View>
   );
 };
 

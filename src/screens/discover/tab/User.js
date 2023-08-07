@@ -6,6 +6,7 @@ import ListView from '../../../components/ListView';
 import { useIsFocused } from '@react-navigation/native';
 import * as userApi from '../../../apis/user.api';
 import { useSelector } from 'react-redux';
+import * as searchApi from '../../../apis/searchApi'
 
 const User = () => {
   const isFocusTab = useIsFocused();
@@ -16,15 +17,16 @@ const User = () => {
 
   const fetchData = useCallback(async () => {
     try {
-      const getUser = await userApi.getUser(txtSearch, 20);
+      const getUser = await searchApi.searchUser(txtSearch);
 
       const listUser = getUser.data.map(e => {
         const u = {
-          avatar: e.avatar,
-          name: e.name,
-          userName: e.userName,
+          avatar: e.profile_pic,
+          name: e.nickname,
+          userName: e.username,
           follow: '14.9k',
           numVideo: e.totalVideo,
+          ...e
         };
         return u;
       });

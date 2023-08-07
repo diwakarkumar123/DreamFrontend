@@ -10,39 +10,15 @@ import ItemComment from '../../../components/item/ItemComment';
 import { useSelector, useDispatch } from 'react-redux';
 import { setIsShowComment } from '../../../store/mainScreenSlice';
 import * as commentApi from '../../../apis/comment.api';
-
-const data = [
-  {
-    "_id": 93,
-    "user_id": 367,
-    "video_id": 1132,
-    "comment": "How To Manage video Comment", "created": "2022-11-22T15:40:45.000Z"
-  },
-  {
-    "_id": 94,
-    "user_id": 367,
-    "video_id": 1132,
-    "comment": "How To Manage video Comment", "created": "2022-11-22T15:40:45.000Z"
-  },
-  {
-    "_id": 95,
-    "user_id": 367,
-    "video_id": 1132,
-    "comment": "How To Manage video Comment", "created": "2022-11-22T15:40:45.000Z"
-  },
-  {
-    "_id": 96,
-    "user_id": 367,
-    "video_id": 1132,
-    "comment": "How To Manage video Comment", "created": "2022-11-22T15:40:45.000Z"
-  }
-];
+import { Dimensions, StyleSheet, View, Modal, Pressable, ActivityIndicator, StatusBar, Platform } from 'react-native';
+import { current } from '@reduxjs/toolkit';
+import CommentScreen from './CommentScreen';
+import { Portal } from 'react-native-paper';
 
 
 
 
-
-
+const { width, height } = Dimensions.get('window')
 
 
 const BottomSheetComment = () => {
@@ -51,33 +27,31 @@ const BottomSheetComment = () => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState([]);
+  const [update_comment, setUpdate_comment] = useState('')
 
   const isShowComment = useSelector(state => state.mainScreen.isShowComment);
   const currentComment = useSelector(state => state.mainScreen.currentComment);
 
-  const fetchData = useCallback(async () => {
-    try {
-      const result = await commentApi.getComment(currentComment);
 
-      setData(result.data);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [currentComment]);
-
+  const fetchCommentData = useCallback(() => {
+    commentApi.fetchComment(currentComment)
+      .then((r) => {
+        setData(r.comments);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [currentComment, update_comment ]);
   useEffect(() => {
-    if (isShowComment) {
-      const heightLayout = bottomSheetRef?.current?.heightLayoutCurrent();
-      bottomSheetRef?.current?.scrollTo(-heightLayout);
-      fetchData();
-    }
-  }, [isShowComment, fetchData]);
+    fetchCommentData()
+  }, [fetchCommentData])
+
+
+
 
   const handleClickClose = useCallback(() => {
-    bottomSheetRef?.current?.scrollTo(0);
     dispatch(setIsShowComment(false));
+    setData('')
   }, [dispatch]);
 
   const onCloseBottomSheet = () => {
@@ -85,39 +59,53 @@ const BottomSheetComment = () => {
   };
 
   return (
-    <BottomSheet
-      ref={bottomSheetRef}
-      HeaderComponent={
-        <HeaderBottomSheetComment handleClickClose={handleClickClose} />
-      }
-      FooterComponent={
-        <FooterBottomSheetComment
-          idVideo={currentComment}
-          fetchData={fetchData}
-        />
-      }
-      onCloseBottomSheet={onCloseBottomSheet}>
-      <Container padding={SPACING.S3} height={HEIGHT / 2} marginBottom={50}>
-        {/* {isLoading ? (
-          <Loading />
-        ) : (
-          <FlatList
-            scrollEventThrottle={16}
-            data={data}
-            renderItem={({ item, index }) => {
-              return <ItemComment item={item} />;
-            }}
-            keyExtractor={(item, index) => index.toString()}
-            showsHorizontalScrollIndicator={false}
-            showsVerticalScrollIndicator={false}
-            scrollToOverflowEnabled={true}
-          />
-        )} */}
+    
+      <Modal
+        visible={isShowComment}
+        transparent={true}
+        animationType="slide"
+        statusBarTranslucent={true}>
+        <StatusBar translucent backgroundColor="transparent" />
+        <View style={styles.main_container}>
+          <Pressable onPress={handleClickClose} style={styles.topContainer} />
 
-        <ItemComment item={{}} />
-      </Container>
-    </BottomSheet>
+          {/* Bottom Section */}
+          <View style={styles.bottomContainer}>
+            <HeaderBottomSheetComment handleClickClose={handleClickClose} no_of_comment={data.length} />
+
+            {data ? (
+              <CommentScreen data={data} />
+            ) : (
+              <View style={{ flex: 1, alignItems: 'center', marginTop: 40 }}>
+                <ActivityIndicator size={'large'} color={'#020202'} />
+              </View>
+            )}
+
+            <FooterBottomSheetComment currentComment={currentComment} setUpdate_comment={setUpdate_comment}  />
+          </View>
+
+        </View>
+      </Modal>
+    
   );
 };
 
 export default BottomSheetComment;
+
+
+const styles = StyleSheet.create({
+  topContainer: {
+    flex: 1,
+  },
+  main_container: {
+    width: width,
+    height: height,
+    backgroundColor: 'transparent',
+    marginTop: Platform.OS === 'android' ? StatusBar.currentHeight : 20
+  },
+  bottomContainer: {
+    width: width,
+    height: height,
+    backgroundColor: '#fff',
+  }
+})

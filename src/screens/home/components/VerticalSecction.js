@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useCallback, useImperativeHandle, useState } from 'react';
-import { ImageBackground, StyleSheet, Text, View, Dimensions } from 'react-native';
+import { ImageBackground, StyleSheet, Text, View, Dimensions, Alert } from 'react-native';
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -18,7 +18,8 @@ import {
   GIFT_ICON,
   QUEEN_ICON,
   DIAMOND_ICON,
-  DISC_IMG
+  DISC_IMG,
+  USER_FILLED_IMG
 } from '../../../configs/source';
 import { BORDER, COLOR, SPACING } from '../../../configs/styles';
 import { useDispatch, useSelector } from 'react-redux';
@@ -47,12 +48,12 @@ const window = {
 
 
 const VerticalSecction = React.forwardRef(
-  ({ idVideo, like = 0, comment = 0, author, onGiftPress }, ref) => {
+  ({ idVideo, like = 0, comment = 0, author, onGiftPress, diamond_value, user }, ref) => {
     const dispatch = useDispatch();
     const [amountLike, setAmountLike] = useState(Number(like));
-    const {t, i18n} = useTranslation()
+    const { t, i18n } = useTranslation()
     const navigation = useNavigation();
-
+    const my_data = useSelector(state => state.my_data.my_profile_data)
     const heartValue = useSharedValue(0);
 
     const heartStyle = useAnimatedStyle(() => {
@@ -68,25 +69,24 @@ const VerticalSecction = React.forwardRef(
           heartValue.value =
             heartValue.value === 0
               ? withTiming(1, {
-                  duration: 800,
-                  easing: Easing.elastic(2),
-                })
+                duration: 800,
+                easing: Easing.elastic(2),
+              })
               : withTiming(0, {
-                  duration: 200,
-                  easing: Easing.linear,
-                });
+                duration: 200,
+                easing: Easing.linear,
+              });
         }
         const currentAmountLike =
           doubleTap && heartValue.value !== 0
             ? amountLike
             : heartValue.value < 0.3
-            ? amountLike + 1
-            : amountLike === 0
-            ? 0
-            : amountLike - 1;
+              ? amountLike + 1
+              : amountLike === 0
+                ? 0
+                : amountLike - 1;
 
         try {
-          // added by me only below line
           dispatch(setModalSignIn(true));
           const TOKEN = await AsyncStorage.getItem(KEY_STORAGE.TOKEN);
 
@@ -110,7 +110,7 @@ const VerticalSecction = React.forwardRef(
       },
     }));
 
-    const ItemVertical = ({ source, text, tinColor, onPress = null }) => {
+    const ItemVertical = ({ source, text, tinColor, onPress = null, }) => {
       return (
         <Container marginBottom={SPACING.S4} alignItems="center">
           <Icon
@@ -126,8 +126,11 @@ const VerticalSecction = React.forwardRef(
     };
 
     const handleClickAvatar = () => {
-      navigation.navigate('UserProfileMainPage');
-      console.log("pressed")
+      if (my_data) {
+        navigation.navigate('UserProfileMainPage', { user });
+      } else {
+        dispatch(setModalSignIn(true))
+      }
     };
 
     const handleShowComment = useCallback(() => {
@@ -138,11 +141,9 @@ const VerticalSecction = React.forwardRef(
     const handleShowBottomSheetSignIn = useCallback(() => {
       // dispatch(setBottomSheetSignIn(true));
     }, []);
- 
-    return (
-      <Container position="absolute" left={SPACING.S4} bottom={window.width * 0.2}>
-       
 
+    return (
+      <Container position="absolute" left={SPACING.S4} bottom={window.width * 0.3}>
         <Container
           marginBottom={SPACING.S5}
           alignItems="center"
@@ -150,11 +151,13 @@ const VerticalSecction = React.forwardRef(
           borderColor={COLOR.BLACK}
           borderWidth={0}>
           <Icon
-            source={{ uri: `https://dpcst9y3un003.cloudfront.net/${author}` }}
+            source={user?.profile_pic ? { uri: user?.profile_pic } : USER_FILLED_IMG}
             width={50}
             height={50}
             borderRadius={BORDER.PILL}
-            
+            backgroundColor={'#fff'}
+            onPress={handleClickAvatar}
+
           />
           <Container
             position="absolute"
@@ -166,84 +169,43 @@ const VerticalSecction = React.forwardRef(
             alignItems="center">
             <Icon
               source={QUEEN_ICON}
-              width={70}
-              height={70}
+              width={75}
+              height={75}
               onPress={handleClickAvatar}
+              zIndex={1000}
             />
           </Container>
-          <Container
-            position="absolute"
-            bottom={-11}
-            backgroundColor={COLOR.DANGER2}
-            width={22}
-            height={22}
-            borderRadius={BORDER.PILL}
-            justifyContent="center"
-            alignItems="center">
-            <CText color={COLOR.WHITE} fontSize={18}>
-              +
-            </CText>
-          </Container>
+
         </Container>
 
-        <Container  marginBottom={SPACING.S5} alignItems="center">
+        <Container marginBottom={SPACING.S5} alignItems="center">
           <Icon
             source={GIFT_ICON}
             width={50}
             height={50}
             onPress={onGiftPress}
           />
-          <Text style={{fontSize: 16, color: 'white', fontWeight: '500'}}>{t('gift')}</Text>
+          <Text style={{ fontSize: 16, color: 'white', fontWeight: '500' }}>{t('gift')}</Text>
         </Container>
 
-        
+
 
         <Container marginBottom={40} alignItems="center">
           <Icon
             source={DIAMOND_ICON}
             width={50}
             height={50}
-            // onPress={onPress}
+          // onPress={onPress}
           />
-          <Text style={{fontSize: 16, color: 'white', fontWeight: '500', marginTop: -10}}>20</Text>
+          <Text
+            style={{
+              fontSize: 16,
+              color: 'white',
+              fontWeight: '500',
+              marginTop: -10
+            }}>{diamond_value || 0}</Text>
         </Container>
-      
-        {/* <Container alignItems="center">
-          <ItemVertical
-            source={HEART_IMG}
-            text={19}
-            onPress={() => handleClickHeart(false)}
-          />
-          <Animated.View style={[styles.iconHeart, heartStyle]}>
-            <Icon
-              source={HEART_TRUE_IMG}
-              width={'100%'}
-              height={'100%'}
-              onPress={() => handleClickHeart(false)}
-            />
-          </Animated.View>
-        </Container>
-        <ItemVertical
-          source={COMMENT_ICON_IMG}
-          text={20}
-          onPress={handleShowComment}
-        />
-        {/* <ItemVertical
-          source={BOOKMARK_FILLED_IMG}
-          text={'25'}
-          tinColor="#f7f7f7"
-          onPress={handleShowBottomSheetSignIn}
-        /> */}
-        {/* <ItemVertical
-          source={REPLY_FILLED_IMG}
-          text={'25'}
-          tinColor="#f7f7f7"
-        /> */}
-        {/* <ItemVertical
-          source={DISC_IMG}
-          text={'music'}
-          // tinColor="#f7f7f7"
-        />  */}
+
       </Container>
     );
   },

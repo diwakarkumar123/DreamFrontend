@@ -1,14 +1,21 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
+import { Tabs } from 'react-native-collapsible-tab-view'
+import RenderPost from '../components/RenderPost'
 
-const VideoPost = () => {
+
+const VideoPost = ({data}) => {
   return (
-    <View>
-      <Text>VideoPost</Text>
-    </View>
+    <Tabs.FlatList
+      data={data}
+      numColumns={3}
+      renderItem={({ item, index }) => (
+        <RenderPost item={item} index={index} />
+      )}
+    />
   )
 }
 
 export default VideoPost
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({})  

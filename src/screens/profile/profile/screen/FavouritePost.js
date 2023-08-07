@@ -1,11 +1,19 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
+import RenderPost from '../components/RenderPost'
+import { Tabs } from 'react-native-collapsible-tab-view'
 
-const FavouritePost = () => {
+
+
+const FavouritePost = ({data}) => {
   return (
-    <View>
-      <Text>FavouritePost</Text>
-    </View>
+    <Tabs.FlatList
+      data={data}
+      numColumns={3}
+      renderItem={({ item, index }) => (
+        <RenderPost item={item} index={index} />
+      )}
+    />
   )
 }
 

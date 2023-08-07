@@ -28,7 +28,7 @@ import FormSignIn from './FormSignIn';
 import FormSignUp from './FormSignUp';
 import Animated, {
   LightSpeedInRight,
-  LightSpeedInLeft, 
+  LightSpeedInLeft,
   LightSpeedOutRight,
   LightSpeedOutLeft,
   FadeIn,
@@ -36,19 +36,34 @@ import Animated, {
 } from 'react-native-reanimated';
 import { Dimensions, Pressable, StyleSheet } from 'react-native';
 import { onGoogleButtonPress } from '../../auth/google.auth';
-import {onFacebookButtonPress} from '../../auth/facebook'
+import { onFacebookButtonPress } from '../../auth/facebook'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { signIn, signUp, user_exist  } from '../../apis/auth.api';
+import { signIn, signUp, user_exist } from '../../apis/auth.api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { add_my_profile_data, addIsLogin } from '../../store/my_dataSlice'
+import * as authApi from '../../apis/auth.api';
+
 // import {user_exist} from '../../apis/auth.api'
 
-const {width, height} = Dimensions.get('window')
+const { width, height } = Dimensions.get('window')
 
 
 const BottomSheetSocialAuth = () => {
   const dispatch = useDispatch();
   const bottomSheetRef = useRef();
   const navigation = useNavigation()
+
+
+  const save_data = async (key, data) => {
+    try {
+      await AsyncStorage.setItem(key, JSON.stringify(data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
 
   const [currentForm, setCurrentForm] = useState(0); //0 social, 1 login, 2 register
 
@@ -66,7 +81,7 @@ const BottomSheetSocialAuth = () => {
   //   }
   // }, [bottomSheetSignIn, dataSignInWithSocial]);
 
-  const handleClickClose = ()=>{
+  const handleClickClose = () => {
     navigation.goBack()
   }
 
@@ -98,28 +113,44 @@ const BottomSheetSocialAuth = () => {
         icon: FACEBOOK_ICON,
         using: 'Continue with Facebook',
         onPress: () => onFacebookButtonPress()
-        .then((d) =>{console.log('Logined:', d)})
-        .catch((err)=>{console.log(err)})
+          .then((d) => { console.log('Logined:', d) })
+          .catch((err) => { console.log(err) })
       },
       {
         icon: GOOGLE_ICON,
         using: 'Continue with Google',
         onPress: () =>
           onGoogleButtonPress()
-          .then(async(r)=>{
-            const {displayName, email, uid, photoURL} = r.user;
-             signIn(email)
-             .then((r)=>{
-              if(r.data.message === 'user not found'){
+            .then(async (r) => {
+              const { displayName, email, uid, photoURL } = r.user;
+              signIn(email)
+                .then((r) => {
+                  console.log(r.data)
+                  if (r.data.message === 'user not found') {
+                    const result = authApi.signUp(displayName, email, uid, photoURL)
+                    result.then((res) => {
+                      if (res.data.message == 'user created successfully') {
+                        dispatch(add_my_profile_data(res.data.payload))
+                        save_data("user", res.data.payload)
+                        navigation.navigate('Me')
+                        dispatch(addIsLogin(true))
+                      }
+                    })
+                      .catch((err) => {
+                        console.log(err.message)
+                      })
 
-              } else{
-                
-              }
-             })
-            
-            
-          })
-          .catch((err)=>{console.log(err.message)})
+                  } else {
+                    dispatch(add_my_profile_data(r.data.payload))
+                    save_data("user", r.data.payload)
+                    navigation.navigate('Me')
+                    dispatch(addIsLogin(true))
+                  }
+                })
+
+
+            })
+            .catch((err) => { console.log(err.message) })
       },
       {
         icon: TWITTER_ICON,
@@ -236,11 +267,11 @@ const BottomSheetSocialAuth = () => {
                   <CText textAlign="center" color={COLOR.GRAY} fontSize={13}>
                     By continuing, you agree to Dream’s{' '}
                     <CText text={TEXT.STRONG} fontSize={13}>
-                    Terms of Service
+                      Terms of Service
                     </CText>{' '}
                     and confirm that you have read Dream’s{' '}
                     <CText text={TEXT.STRONG} fontSize={13}>
-                    Privacy Policy.
+                      Privacy Policy.
                     </CText>
                   </CText>
                 </Container>
@@ -282,7 +313,7 @@ const BottomSheetSocialAuth = () => {
           </CText>
         </Container>
       </Container>
-      </SafeAreaView>
+    </SafeAreaView>
   );
 };
 

@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useCallback, useImperativeHandle, useState } from 'react';
-import { ImageBackground, StyleSheet, Text, View, Dimensions } from 'react-native';
+import { ImageBackground, StyleSheet, Text, View, Dimensions, Alert } from 'react-native';
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -34,95 +34,43 @@ import { setModalSignIn } from '../../../store/indexSlice';
 import { Image } from 'react-native-svg';
 import Share from 'react-native-share';
 import { useTranslation } from 'react-i18next';
-
+import { like } from '../../../apis/like.api'
 
 const window = {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height
+  width: Dimensions.get('window').width,
+  height: Dimensions.get('window').height
 }
 
 
 
 const VerticalLeftSection = React.forwardRef(
-  ({ idVideo, like = 0, comment = 0, author, share }, ref) => {
+  ({ idVideo, comment = 0, author, share, item }, ref) => {
     const dispatch = useDispatch();
-    const [amountLike, setAmountLike] = useState(Number(like));
-    const {t, i18n} = useTranslation()
-
+    const { t, i18n } = useTranslation()
+    const [num_like, setNum_like] = useState(item?.like)
+    const [isLike, setIsLike] = useState(false)
     const navigation = useNavigation();
+    const my_data = useSelector(state => state.my_data.my_profile_data)
 
     const handleShare = () => {
-      const shareOptions = {
-        title: 'Share via',
-        message: 'Check out this awesome video!',
-        url: 'https://your-video-url.com',
-        // You can include more options like email, subject, etc. based on your requirements
-      };
-    
-      Share.open(shareOptions)
-        .then((res) => console.log('Shared successfully:', res))
-        .catch((err) => console.log('Error sharing:', err));
+      if (my_data) {
+        const shareOptions = {
+          title: 'Share via',
+          message: 'Check out this awesome video!',
+          url: 'https://your-video-url.com',
+          // You can include more options like email, subject, etc. based on your requirements
+        };
+
+        Share.open(shareOptions)
+          .then((res) => console.log('Shared successfully:', res))
+          .catch((err) => console.log('Error sharing:', err));
+      } else{
+        dispatch(setModalSignIn(true))
+      }
     };
 
 
 
-
-    const heartValue = useSharedValue(0);
-
-    const heartStyle = useAnimatedStyle(() => {
-      return {
-        transform: [{ scale: heartValue.value }],
-      };
-    }, []);
-
-    const handleClickHeart = useCallback(
-      async doubleTap => {
-        if (doubleTap && heartValue.value !== 0) {
-        } else {
-          heartValue.value =
-            heartValue.value === 0
-              ? withTiming(1, {
-                  duration: 800,
-                  easing: Easing.elastic(2),
-                })
-              : withTiming(0, {
-                  duration: 200,
-                  easing: Easing.linear,
-                });
-        }
-        const currentAmountLike =
-          doubleTap && heartValue.value !== 0
-            ? amountLike
-            : heartValue.value < 0.3
-            ? amountLike + 1
-            : amountLike === 0
-            ? 0
-            : amountLike - 1;
-
-        try {
-          // added by me only below line
-          dispatch(setModalSignIn(true));
-          const TOKEN = await AsyncStorage.getItem(KEY_STORAGE.TOKEN);
-
-          if (currentAmountLike > amountLike) {
-            await likeApi.like(idVideo, 'like', TOKEN);
-          } else {
-            await likeApi.like(idVideo, 'dislike', TOKEN);
-          }
-        } catch (error) {
-          console.log(error);
-          dispatch(setModalSignIn(true));
-        }
-        setAmountLike(currentAmountLike);
-      },
-      [heartValue, amountLike, idVideo, dispatch],
-    );
-
-    useImperativeHandle(ref, () => ({
-      handleClickHeart: doubleTap => {
-        handleClickHeart(doubleTap);
-      },
-    }));
 
     const ItemVertical = ({ source, text, tinColor, onPress = null }) => {
       return (
@@ -139,18 +87,16 @@ const VerticalLeftSection = React.forwardRef(
       );
     };
 
-    const handleClickAvatar = () => {
-      navigation.navigate('ProfileScreenTab', {
-        showHeader: true,
-        currentUser: author._id,
-      });
-    };
-
 
     // function for displaying the comment sections
     const handleShowComment = useCallback(() => {
-      dispatch(setIsShowComment(true));
-      dispatch(setCurrentComment(idVideo));
+      if (my_data) {
+        dispatch(setIsShowComment(true));
+        dispatch(setCurrentComment(idVideo));
+      } else {
+        dispatch(setModalSignIn(true))
+
+      }
     }, [dispatch, idVideo]);
 
 
@@ -158,30 +104,52 @@ const VerticalLeftSection = React.forwardRef(
     const handleShowBottomSheetSignIn = useCallback(() => {
       // dispatch(setBottomSheetSignIn(true));
     }, []);
- 
+
+    const handleLike = async () => {
+      const video_id = item?.id;
+      const reciever_id = item?.user_id;
+      const data = { video_id, reciever_id }
+      if (my_data) {
+        if (isLike) {
+          setIsLike(false)
+          setNum_like(p => p - 1)
+        } else {
+          like(data, my_data?.auth_token)
+            .then((r) => {
+              setIsLike(true)
+              setNum_like(p => p + 1)
+              console.log(r)
+            })
+            .catch((err) => {
+              console.log(err)
+            })
+        }
+      } else {
+        dispatch(setModalSignIn(true))
+      }
+    }
+
+
     return (
-      <Container position="absolute" right={SPACING.S2} bottom={window.width * 0.22}>
-       <Container alignItems="center" marginBottom={SPACING.S4} >
-        { !like &&  <ItemVertical
+      <Container position="absolute" right={SPACING.S2} bottom={window.width * 0.32}>
+        <Container alignItems="center" marginBottom={SPACING.S4} >
+
+          {!isLike && <ItemVertical
             source={HEART_IMG}
-            text={like}
-            onPress={() => handleClickHeart(false)}
-          /> }
-          {like && <ItemVertical
-              source={HEART_TRUE_IMG}
-              width={'100%'}
-              height={'100%'}
-              onPress={() => handleClickHeart(false)}
-            />}
-         
-          <Animated.View style={[styles.iconHeart, heartStyle]}>
-            
-          </Animated.View>
+            text={num_like}
+            onPress={handleLike}
+          />}
+          {isLike && <ItemVertical
+            source={HEART_TRUE_IMG}
+            onPress={handleLike}
+            text={num_like}
+          />}
+
         </Container>
 
         <Container marginBottom={SPACING.S4} alignItems="center">
           <ItemVertical
-            source={COMMENT_ICON_IMG} 
+            source={COMMENT_ICON_IMG}
             width={50}
             height={50}
             text={comment}
@@ -191,7 +159,7 @@ const VerticalLeftSection = React.forwardRef(
 
         <Container marginBottom={SPACING.S4} alignItems="center">
           <ItemVertical
-            source={REPLY_FILLED_IMG} 
+            source={REPLY_FILLED_IMG}
             width={60}
             height={60}
             text={share}
@@ -252,7 +220,7 @@ const VerticalLeftSection = React.forwardRef(
           />
           <Text style={{fontSize: 20, color: 'white', fontWeight: '500', marginTop: -10}}>20</Text>
         </Container> */}
-      
+
         {/* <Container alignItems="center">
           <ItemVertical
             source={HEART_IMG}
@@ -279,7 +247,7 @@ const VerticalLeftSection = React.forwardRef(
           tinColor="#f7f7f7"
           onPress={handleShowBottomSheetSignIn}
         /> */}
-         {/* <ItemVertical
+        {/* <ItemVertical
           source={REPLY_FILLED_IMG}
           text={'25'}
           tinColor="#f7f7f7"

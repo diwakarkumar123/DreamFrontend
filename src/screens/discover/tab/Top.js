@@ -10,6 +10,7 @@ import { useIsFocused } from '@react-navigation/native';
 import * as userApi from '../../../apis/user.api';
 import * as videoApi from '../../../apis/video.api';
 import { useSelector } from 'react-redux';
+import * as searchApi from '../../../apis/searchApi'
 
 const { width } = Dimensions.get('window');
 
@@ -22,33 +23,34 @@ const Top = () => {
 
   const fetchData = useCallback(async () => {
     try {
-      const getUser = userApi.getUser(txtSearch, 3);
-      const getVideo = videoApi.getVideo(txtSearch);
-
-      const [users, videos] = await Promise.all([getUser, getVideo]);
+      // const getUser = userApi.getUser(txtSearch, 3);
+      // const getVideo = videoApi.getVideo(txtSearch);
+      const getUser = searchApi.searchUser(txtSearch)
+      const [users] = await Promise.all([getUser]);
 
       const listUser = users.data.map(e => {
         const u = {
-          avatar: e.avatar,
-          name: e.name,
-          userName: e.userName,
+          avatar: e.profile_pic,
+          name: e.nickname,
+          userName: e.username,
           follow: '14.9k',
           numVideo: e.totalVideo,
+          ...e
         };
         return u;
       });
 
-      const listVideo = videos.data.data.map(e => {
-        const v = {
-          caption: e.caption,
-          background: e.background,
-          author: { avatar: e.author.avatar, name: e.author.name },
-          like: e.like,
-        };
-        return v;
-      });
+      // const listVideo = videos.data.data.map(e => {
+      //   const v = {
+      //     caption: e.caption,
+      //     background: e.background,
+      //     author: { avatar: e.author.avatar, name: e.author.name },
+      //     like: e.like,
+      //   };
+      //   return v;
+      // });
       setUsers(listUser);
-      setVideos(listVideo);
+      // setVideos(listVideo);
     } catch (error) {
       console.log(error);
     }
@@ -76,7 +78,7 @@ const Top = () => {
           ) : (
             <></>
           )}
-          {videos.length > 0 ? <Title lable={'Video'} /> : <></>}
+          {/* {videos.length > 0 ? <Title lable={'Video'} /> : <></>} */}
         </View>
       </>
     );

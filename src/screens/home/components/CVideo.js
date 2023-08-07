@@ -1,4 +1,4 @@
-import {View, TouchableWithoutFeedback, Text, Image, TouchableOpacity,Dimensions,StyleSheet} from 'react-native';
+import { View, TouchableWithoutFeedback, Text, Image, TouchableOpacity, Dimensions, StyleSheet } from 'react-native';
 import React, { useRef, useState } from 'react';
 import Video from 'react-native-video';
 import { SERVER_DOMAIN, STATUSBAR_HEIGHT } from '../../../constants/constants';
@@ -15,10 +15,10 @@ import Fontisto from 'react-native-vector-icons/Fontisto';
 
 
 
-const {width, height} = Dimensions.get('window')
+const { width, height } = Dimensions.get('screen')
 
 
-const CVideo = ({ videoRef, url, isActive, bottomHeight,item, onEnd, avatar, flatListRef, index }) => {
+const CVideo = ({ videoRef, url, isActive, bottomHeight, item, onEnd, avatar, flatListRef, index }) => {
   const sliderRef = useRef();
   // console.log('url to play',url);
   const [duration, setDuration] = useState(0);
@@ -33,18 +33,18 @@ const CVideo = ({ videoRef, url, isActive, bottomHeight,item, onEnd, avatar, fla
   //   },
   // });
   // console.log('videoRef: ',videoRef);
-  
+
   const [paused, setPaused] = useState(false);
 
   const onPlayPausePress = () => {
     setPaused(!paused);
   };
 
-  const moveToNext = ()=>{
+  const moveToNext = () => {
     flatListRef.current.scrollToIndex({ index: index + 1 })
   }
 
-  
+
   const onLikePress = () => {
     const likesToAdd = isLiked ? -1 : 1;
     setPost({
@@ -74,18 +74,22 @@ const CVideo = ({ videoRef, url, isActive, bottomHeight,item, onEnd, avatar, fla
       <Video
         ref={videoRef}
         source={{
-          uri: `${url}`, }}
-        // style={styles.video}
+          uri: `${url}`,
+        }}
         style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
           width: width,
           height: height,
-          justifyContent: 'center',
-          alignItems: 'center'
+          bottom: 0
         }}
         resizeMode="cover"
         paused={!isActive}
+        fullscreen={true}
         repeat={false}
-        onLoad={data =>{
+        onLoad={data => {
           setDuration(data.duration)
         }}
         onProgress={data => {
@@ -142,7 +146,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     left: 0,
-    bottom: -5,
+    // bottom: 0,
     right: 0,
     flex: 1,
     width: width,

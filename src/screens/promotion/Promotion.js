@@ -82,16 +82,16 @@ const Promotion = ({ makePayments, setPromotion }) => {
                         <Text style={styles.txt}>Add topic</Text>
                     </TouchableOpacity>
 
-                    
 
-                        <TouchableOpacity style={styles.live_adding}>
-                            <Image
-                                source={LIVE_ICON1}
-                                style={{ width: 20, height: 20, }}
-                            />
-                            <Text style={styles.txt}>Add a LIVE g.....</Text>
-                        </TouchableOpacity>
-                
+
+                    <TouchableOpacity style={styles.live_adding}>
+                        <Image
+                            source={LIVE_ICON1}
+                            style={{ width: 20, height: 20, }}
+                        />
+                        <Text style={styles.txt}>Add a LIVE g.....</Text>
+                    </TouchableOpacity>
+
                 </View>
             </View>
             {/* upper section completed */}
@@ -146,7 +146,7 @@ const Promotion = ({ makePayments, setPromotion }) => {
                                     style={{ marginRight: 6 }}
                                 />
                                 <Text>
-                                    Promote LIVE With real-time screen
+                                    Promote LIVE
                                 </Text>
                             </View>
                             <RadioButton
@@ -164,7 +164,7 @@ const Promotion = ({ makePayments, setPromotion }) => {
                                     style={{ marginRight: 6 }}
                                 />
                                 <Text>
-                                    Promote LIVE With Video
+                                    Promote The Video
                                 </Text>
                             </View>
                             <RadioButton
@@ -261,6 +261,9 @@ const Promotion = ({ makePayments, setPromotion }) => {
                             )}
                         />
                     </View>
+                    {/* <View>
+                        <Text>Total Budget </Text>
+                    </View> */}
                 </ScrollView>
             </View>
 

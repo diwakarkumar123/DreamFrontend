@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import 'intl-pluralrules';
@@ -48,6 +48,29 @@ import PremiumAccount from './src/screens/profile/profile/screen/PremiumAccount'
 import BusinessAccount from './src/screens/profile/profile/screen/BusinessAccount';
 import { NativeMethods } from 'react-native'
 import VideoGift from './src/screens/gift/VideoGift';
+import { PermissionsAndroid } from 'react-native';
+import messaging from '@react-native-firebase/messaging';
+import notifee from '@notifee/react-native';
+import PushNotification from 'react-native-push-notification';
+import { useAppState } from '@react-native-community/hooks';
+import { AppState } from 'react-native';
+import Followers from './src/screens/profile/profile/screen/Followers';
+import Followings from './src/screens/profile/profile/screen/Followings';
+import GiftHistory from './src/screens/profile/profile/screen/GiftHistory';
+import DiamondHistory from './src/screens/profile/profile/screen/DiamondHistory';
+import LikesHistory from './src/screens/profile/profile/screen/LikesHistory';
+import WatchProfileVideo from './src/screens/other_user/WatchProfileVideo';
+import ChatScreen from './src/screens/inbox/screen/ChatScreen';
+import { PaperProvider } from 'react-native-paper';
+import ContactList from './src/screens/inbox/screen/ContactList';
+import ColorPicking from './src/screens/inbox/component/ColorPicking';
+import AudioCall from './src/screens/inbox/screen/AudioCall';
+import VideoCall from './src/screens/inbox/screen/VideoCall';
+
+
+
+
+
 
 LogBox.ignoreLogs = ['Remote debugger'];
 console.disableYellowBox = true;
@@ -60,12 +83,34 @@ const App = () => {
     webClientId:
       '549099161334-vcrplrh8dmpv3cuij8rmj0m9bf8q44g3.apps.googleusercontent.com',
   });
+  const [interactionTime, setInteractionTime] = useState(0);
+  const [startTime, setStartTime] = useState(Date.now());
 
-  // const { RNTwitterSignIn } = NativeModules
 
-  // RNTwitterSignIn.init('4lYiTuDOnwHD0oAIRh6Iwan03', 'Xy5Jts4KoZVC14AsIu5vXUUKT0qAtu1BzPvA0FxFj6lI5j4Psi').then(() =>
-  //   console.log('Twitter SDK initialized'),
-  // );
+  const appState = useAppState();
+
+  const calculateInteractionTime = useCallback(() => {
+    if (appState === 'active') {
+      const currentTime = Date.now();
+      const newInteractionTime = interactionTime + (currentTime - startTime);
+      setStartTime(currentTime);
+      setInteractionTime(newInteractionTime);
+    }
+  }, [appState, interactionTime, startTime]);
+
+  // useEffect(() => {
+  //   const handleAppStateChange = (nextAppState) => {
+  //     if (nextAppState === 'active') {
+  //       calculateInteractionTime();
+  //     }
+  //   };
+
+  //   AppState.addEventListener('change', handleAppStateChange);
+
+  //   return () => {
+  //     AppState.removeEventListener('change', handleAppStateChange);
+  //   };
+  // }, [calculateInteractionTime]);
 
 
 
@@ -75,226 +120,320 @@ const App = () => {
 
   return (
     <Provider store={store}>
-      <NavigationContainer onReady={() => { RNBootSplash.hide() }}>
-        <Stack.Navigator
-          initialRouteName="Index"
-          screenOptions={{ animation: 'none' }}>
-          {/* <Stack.Screen
+      <PaperProvider>
+
+        <NavigationContainer onReady={() => { RNBootSplash.hide() }}>
+          <Stack.Navigator
+            initialRouteName="Index"
+            screenOptions={{ animation: 'none' }}>
+            {/* <Stack.Screen
             name="Splash"
             component={SplashScreen}
             options={{ headerShown: false }}
           /> */}
-          {/* <Stack.Screen
+            {/* <Stack.Screen
             name="Video"
             component={VideoPlay}
             options={{ headerShown: false }}
           /> */}
-          <Stack.Screen
-            name='ProfileScreen'
-            component={ProfileScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name='Payments'
-            component={Payments}
-          />
-          <Stack.Screen
-            name="Index"
-            component={Index}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="NewVideo"
-            component={NewVideoScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="PreviewVideoScreen"
-            component={PreviewVideoScreen}
-            options={{ headerShown: false, animationEnabled: false }}
-          />
-          <Stack.Screen
-            name="SelectingLocationScreen"
-            component={SelectingLocationScreen}
-            options={{ headerShown: false, animationEnabled: false, title: 'Location' }}
-          />
-          <Stack.Screen name="AudioScreen" component={AudioScreen} />
-          <Stack.Screen
-            name="PostVideoScreen"
-            component={PostVideoScreen}
-            options={{ headerShown: true, animationEnabled: false, title: 'Post' }}
-
-          />
-          <Stack.Screen
-            name="SelectingCitiesScreen"
-            component={SelectingCitiesScreen}
-            options={{ headerShown: false, animationEnabled: false, title: 'Post' }}
-
-          />
-          <Stack.Screen
-            name="EditProfile"
-            component={EditProfile}
-            options={{ headerShown: false, animationEnabled: false, title: 'Post' }}
-
-          />
-          <Stack.Screen
-            name="CustomAudienceScreen"
-            component={CustomAudienceScreen}
-            options={{ headerShown: false, animationEnabled: false, title: 'Select Audience' }}
-
-          />
-          <Stack.Screen
-            name="Promotion"
-            component={Promotion}
-            options={{ headerShown: false, animationEnabled: false, title: '' }}
-
-          />
-          <Stack.Screen
-            name="InterestScreen"
-            component={InterestScreen}
-            options={{ headerShown: false, animationEnabled: false, title: 'Interest' }}
-
-          />
-          <Stack.Screen
-            name="Industries"
-            component={Occupation}
-            options={{ headerShown: false, animationEnabled: false, title: 'Interest' }}
-
-          />
-
-          <Stack.Screen
-            name="SelectingGender"
-            component={SelectingGender}
-            options={{ headerShown: false, animationEnabled: false, title: 'Interest' }}
-
-          />
-
-          <Stack.Screen
-            name="SelectingAge"
-            component={SelectingAge}
-            options={{ headerShown: false, animationEnabled: false, title: 'Interest' }}
-          />
-
-          <Stack.Screen
-            name="MainInsightScreen"
-            component={MainInsightScreen}
-            options={{ headerShown: false, animationEnabled: false, title: 'Insight' }}
-          />
-
-          <Stack.Screen
-            name="TotalSpendedTime"
-            component={TotalSpendedTime}
-            options={{ headerShown: false, animationEnabled: false, title: 'Insight' }}
-          />
-
-          <Stack.Screen
-            name="Avatar"
-            component={Avatar}
-            options={{ headerShown: false, animationEnabled: false, title: 'Insight' }}
-          />
-
-          <Stack.Screen
-            name="BottomSheetSocialAuth"
-            component={BottomSheetSocialAuth}
-            options={{ headerShown: false, animationEnabled: false, title: 'Insight' }}
-          />
-          <Stack.Screen
-            name="CountryAndRegion"
-            component={Countries_and_regions}
-            options={{ headerShown: false, animationEnabled: false, title: 'Insight' }}
-          />
-          <Stack.Screen
-            name="MakingFriendIntenttion"
-            component={Making_friend_intention}
-            options={{ headerShown: false, animationEnabled: false, title: 'Insight' }}
-          />
-          <Stack.Screen
-            name="VideoEditorLandingPage"
-            component={VideoEditorLandingPage}
-            options={{ headerShown: false, animationEnabled: false, title: 'Insight' }}
-          />
-
-          <Stack.Screen
-            name="AccountScreen"
-            component={AccountScreen}
-            options={{ headerShown: false, animationEnabled: false, title: 'Insight' }}
-          />
-          <Stack.Screen
-            name="ChooseAccount"
-            component={ChooseAccount}
-            options={{ headerShown: false, animationEnabled: false, title: 'Insight' }}
-          />
-          <Stack.Screen
-            name="ChooseBasicAccount"
-            component={ChooseBasicAccount}
-            options={{ headerShown: false, animationEnabled: false, title: 'Insight' }}
-          />
-          <Stack.Screen
-            name="ChoosePremiumAccount"
-            component={ChoosePremiumAccount}
-            options={{ headerShown: false, animationEnabled: false, title: 'Insight' }}
-          />
-          <Stack.Screen
-            name="ChooseBusinessAccount"
-            component={ChooseBusinessAccount}
-            options={{ headerShown: false, animationEnabled: false, title: 'Insight' }}
-          />
-
-          <Stack.Screen
-            name="UserProfileMainPage"
-            component={Userprofile}
-            options={{ headerShown: false, animationEnabled: false, title: 'Insight' }}
-          />
-
-          <Stack.Screen
-            name="SearchScreen"
-            component={SearchScreen}
-            options={{
-              headerShown: false,
-              animationEnabled: true,
-              animationType: 'slide_from_bottom',
-              title: 'Search',
-            }} />
-
-
-          <Stack.Screen
-            name="BasicAccount"
-            component={BasicAccount}
-            options={{
-              headerShown: false,
-              animationEnabled: false,
-            }} />
-
-          <Stack.Screen
-            name="PremiumAccount"
-            component={PremiumAccount}
-            options={{
-              headerShown: false,
-              animationEnabled: false,
-            }} />
-
-          <Stack.Screen
-            name="BusinessAccount"
-            component={BusinessAccount}
-            options={{
-              headerShown: false,
-              animationEnabled: false,
-            }} />
             <Stack.Screen
-            name="VideoGift"
-            component={VideoGift}
-            options={{
-              headerShown: false,
-              animationEnabled: false,
-            }} />
+              name='ProfileScreen'
+              component={ProfileScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name='Payments'
+              component={Payments}
+            />
+            <Stack.Screen
+              name="Index"
+              component={Index}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="NewVideo"
+              component={NewVideoScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="PreviewVideoScreen"
+              component={PreviewVideoScreen}
+              options={{ headerShown: false, animationEnabled: false }}
+            />
+            <Stack.Screen
+              name="SelectingLocationScreen"
+              component={SelectingLocationScreen}
+              options={{ headerShown: false, animationEnabled: false, title: 'Location' }}
+            />
+            <Stack.Screen name="AudioScreen" component={AudioScreen} />
+            <Stack.Screen
+              name="PostVideoScreen"
+              component={PostVideoScreen}
+              options={{ headerShown: true, animationEnabled: false, title: 'Post' }}
+
+            />
+            <Stack.Screen
+              name="SelectingCitiesScreen"
+              component={SelectingCitiesScreen}
+              options={{ headerShown: false, animationEnabled: false, title: 'Post' }}
+
+            />
+            <Stack.Screen
+              name="EditProfile"
+              component={EditProfile}
+              options={{ headerShown: false, animationEnabled: false, title: 'Post' }}
+
+            />
+            <Stack.Screen
+              name="CustomAudienceScreen"
+              component={CustomAudienceScreen}
+              options={{ headerShown: false, animationEnabled: false, title: 'Select Audience' }}
+
+            />
+            <Stack.Screen
+              name="Promotion"
+              component={Promotion}
+              options={{ headerShown: false, animationEnabled: false, title: '' }}
+
+            />
+            <Stack.Screen
+              name="InterestScreen"
+              component={InterestScreen}
+              options={{ headerShown: false, animationEnabled: false, title: 'Interest' }}
+
+            />
+            <Stack.Screen
+              name="Industries"
+              component={Occupation}
+              options={{ headerShown: false, animationEnabled: false, title: 'Interest' }}
+
+            />
+
+            <Stack.Screen
+              name="SelectingGender"
+              component={SelectingGender}
+              options={{ headerShown: false, animationEnabled: false, title: 'Interest' }}
+
+            />
+
+            <Stack.Screen
+              name="SelectingAge"
+              component={SelectingAge}
+              options={{ headerShown: false, animationEnabled: false, title: 'Interest' }}
+            />
+
+            <Stack.Screen
+              name="MainInsightScreen"
+              component={MainInsightScreen}
+              options={{ headerShown: false, animationEnabled: false, title: 'Insight' }}
+            />
+
+            <Stack.Screen
+              name="TotalSpendedTime"
+              component={TotalSpendedTime}
+              options={{ headerShown: false, animationEnabled: false, title: 'Insight' }}
+            />
+
+            <Stack.Screen
+              name="Avatar"
+              component={Avatar}
+              options={{ headerShown: false, animationEnabled: false, title: 'Insight' }}
+            />
+
+            <Stack.Screen
+              name="BottomSheetSocialAuth"
+              component={BottomSheetSocialAuth}
+              options={{ headerShown: false, animationEnabled: false, title: 'Insight' }}
+            />
+            <Stack.Screen
+              name="CountryAndRegion"
+              component={Countries_and_regions}
+              options={{ headerShown: false, animationEnabled: false, title: 'Insight' }}
+            />
+            <Stack.Screen
+              name="MakingFriendIntenttion"
+              component={Making_friend_intention}
+              options={{ headerShown: false, animationEnabled: false, title: 'Insight' }}
+            />
+            <Stack.Screen
+              name="VideoEditorLandingPage"
+              component={VideoEditorLandingPage}
+              options={{ headerShown: false, animationEnabled: false, title: 'Insight' }}
+            />
+
+            <Stack.Screen
+              name="AccountScreen"
+              component={AccountScreen}
+              options={{ headerShown: false, animationEnabled: false, title: 'Insight' }}
+            />
+            <Stack.Screen
+              name="ChooseAccount"
+              component={ChooseAccount}
+              options={{ headerShown: false, animationEnabled: false, title: 'Insight' }}
+            />
+            <Stack.Screen
+              name="ChooseBasicAccount"
+              component={ChooseBasicAccount}
+              options={{ headerShown: false, animationEnabled: false, title: 'Insight' }}
+            />
+            <Stack.Screen
+              name="ChoosePremiumAccount"
+              component={ChoosePremiumAccount}
+              options={{ headerShown: false, animationEnabled: false, title: 'Insight' }}
+            />
+            <Stack.Screen
+              name="ChooseBusinessAccount"
+              component={ChooseBusinessAccount}
+              options={{ headerShown: false, animationEnabled: false, title: 'Insight' }}
+            />
+
+            <Stack.Screen
+              name="UserProfileMainPage"
+              component={Userprofile}
+              options={{ headerShown: false, animationEnabled: false, title: 'Insight' }}
+            />
+
+            <Stack.Screen
+              name="SearchScreen"
+              component={SearchScreen}
+              options={{
+                headerShown: false,
+                animationEnabled: true,
+                animationType: 'slide_from_bottom',
+                title: 'Search',
+              }} />
 
 
+            <Stack.Screen
+              name="BasicAccount"
+              component={BasicAccount}
+              options={{
+                headerShown: false,
+                animationEnabled: false,
+              }} />
 
-          {/* <Stack.Screen name="ProfileScreen" component={ProfileScreen} /> */}
-          <Stack.Screen name="SettingScreen" component={SettingScreen} />
-        </Stack.Navigator>
-      </NavigationContainer>
+            <Stack.Screen
+              name="PremiumAccount"
+              component={PremiumAccount}
+              options={{
+                headerShown: false,
+                animationEnabled: false,
+              }} />
+
+            <Stack.Screen
+              name="BusinessAccount"
+              component={BusinessAccount}
+              options={{
+                headerShown: false,
+                animationEnabled: false,
+              }} />
+            <Stack.Screen
+              name="VideoGift"
+              component={VideoGift}
+              options={{
+                headerShown: false,
+                animationEnabled: false,
+              }} />
+
+            <Stack.Screen
+              name="Followers"
+              component={Followers}
+              options={{
+                headerShown: false,
+                animationEnabled: false,
+              }} />
+
+            <Stack.Screen
+              name="Followings"
+              component={Followings}
+              options={{
+                headerShown: false,
+                animationEnabled: false,
+              }} />
+
+            <Stack.Screen
+              name="GiftHistory"
+              component={GiftHistory}
+              options={{
+                headerShown: false,
+                animationEnabled: false,
+              }} />
+
+            <Stack.Screen
+              name="DiamondHistory"
+              component={DiamondHistory}
+              options={{
+                headerShown: false,
+                animationEnabled: false,
+              }} />
+
+            <Stack.Screen
+              name="LikesHistory"
+              component={LikesHistory}
+              options={{
+                headerShown: false,
+                animationEnabled: false,
+              }} />
+
+            <Stack.Screen
+              name="WatchProfileVideo"
+              component={WatchProfileVideo}
+              options={{
+                headerShown: false,
+                animationEnabled: false,
+              }} />
+
+            <Stack.Screen
+              name="ChatScreen"
+              component={ChatScreen}
+              options={{
+                headerShown: false,
+                animationEnabled: false,
+              }} />
+
+
+            <Stack.Screen
+              name="ContactList"
+              component={ContactList}
+              options={{
+                headerShown: false,
+                animationEnabled: false,
+              }} />
+
+            <Stack.Screen
+              name="ColorPicking"
+              component={ColorPicking}
+              options={{
+                headerShown: false,
+                animationEnabled: false,
+                presentation: 'modal'
+              }} />
+
+            <Stack.Screen
+              name="AudioCall"
+              component={AudioCall}
+              options={{
+                headerShown: false,
+                animationEnabled: false,
+              }} />
+
+
+            <Stack.Screen
+              name="VideoCall"
+              component={VideoCall}
+              options={{
+                headerShown: false,
+                animationEnabled: false,
+              }} />
+
+
+            {/* <Stack.Screen name="ProfileScreen" component={ProfileScreen} /> */}
+            <Stack.Screen name="SettingScreen" component={SettingScreen} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </PaperProvider>
     </Provider>
+
   );
 };
 

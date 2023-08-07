@@ -7,7 +7,10 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 import SkeletonContent from 'react-native-skeleton-content-nonexpo';
 import { useNavigation } from '@react-navigation/native';
 import { getAvatar } from '../../../../apis/avatarApi';
-
+import {updateProfile} from '../../../../apis/userApi'
+import { useSelector, useDispatch } from 'react-redux';
+import Toast from 'react-native-simple-toast'
+import {update_profile_pic} from '../../../../store/my_dataSlice.js'
 
 
 const { width, height } = Dimensions.get('window')
@@ -17,18 +20,20 @@ const Avatar = () => {
     const [loading, setLoading] = useState(true)
     const navigation = useNavigation()
     const [loaded_avatar, setLoaded_avatar] = useState([])
+    const my_data = useSelector(state => state.my_data.my_profile_data)
+    const dispatch = useDispatch()
 
     const memoizedAvatar = useMemo(async () => {
         const result = await getAvatar()
         return result.data.payload;
-      }, []);
+    }, []);
 
     useEffect(() => {
-    memoizedAvatar.then((avatarData) => {
-      setLoading(false);
-      setLoaded_avatar(avatarData);
-    });
-  }, [memoizedAvatar])
+        memoizedAvatar.then((avatarData) => {
+            setLoading(false);
+            setLoaded_avatar(avatarData);
+        });
+    }, [memoizedAvatar])
 
 
     const RenderItem = ({ item, index }) => {
@@ -48,6 +53,24 @@ const Avatar = () => {
     }
 
 
+    const handleAvatarSave = () => {
+        const value = `https://dpcst9y3un003.cloudfront.net/${select_avatar?.avatar_url}`
+        const name = 'profile_pic'
+        const data = {
+            name, value
+        }
+        updateProfile(my_data?.auth_token, data)
+            .then((res) => {
+                navigation.goBack()
+                Toast.show(res.message, Toast.SHORT)
+                dispatch(update_profile_pic(value))
+            })
+            .catch((err) => {
+                console.log(err.message)
+            })
+    };
+
+
     return (
         <SafeAreaView style={{
             flex: 1,
@@ -61,7 +84,7 @@ const Avatar = () => {
                 <Text style={[styles.headerText, { marginTop: 0 }]}>
                     Avatar
                 </Text>
-                <TouchableOpacity onPress={() => { }}>
+                <TouchableOpacity onPress={handleAvatarSave}>
                     <Text style={[styles.headerText, { color: 'red' }]}>Save</Text>
                 </TouchableOpacity>
             </View>
@@ -134,6 +157,6 @@ const styles = StyleSheet.create({
     avatar_image: {
         width: 65,
         height: 65,
-  
+
     }
 });

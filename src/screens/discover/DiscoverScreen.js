@@ -21,6 +21,7 @@ import { Container } from '../../components';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { KEY_STORAGE } from '../../constants/constants';
+import { searchUser } from '../../apis/searchApi'
 
 const statusbarHeight = StatusBar.currentHeight;
 

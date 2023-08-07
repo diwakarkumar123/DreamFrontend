@@ -3,6 +3,10 @@ import React, { useState } from 'react'
 import Body from '../../../../components/Body/Body.components'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import { useNavigation } from '@react-navigation/native';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateProfile } from '../../../../apis/userApi'
+import { update_occupation } from '../../../../store/my_dataSlice';
+import Toast from 'react-native-simple-toast'
 
 
 const { width, height } = Dimensions.get('window')
@@ -12,14 +16,24 @@ const Occupation = ({ route }) => {
     const navigation = useNavigation()
     const [selected_industries, setSelected_industries] = useState(0)
     const [selected_occupation, setSelected_occupation] = useState('Software Developer')
+    const my_data = useSelector(state => state.my_data.my_profile_data)
+    const dispatch = useDispatch()
 
-
-    const handleConfirm = ()=>{
-        setindustries(occupations[selected_industries].industry)
-        setoccupation(selected_occupation)
+    const handleConfirm = () => {
+        const name = 'occupation', value = selected_occupation
+        const data = {
+            name, value
+        }
+        updateProfile(my_data?.auth_token, data)
+            .then((res) => {
+                Toast.show(res.message, Toast.SHORT)
+                dispatch(update_person_height(value))
+            })
+            .catch((err) => {
+                console.log(err.message)
+            })
         navigation.goBack()
     }
-
     const occupations = [
         {
             industry: "Information Technology (IT)",
@@ -263,13 +277,13 @@ const Occupation = ({ route }) => {
                         <AntDesign name='arrowleft' size={20} />
                     </TouchableOpacity>
                     <Text style={[styles.headerText, { marginTop: 0 }]}>
-                        Please Select Your i...
+                        Occupation
                     </Text>
                 </Body>
                 <TouchableOpacity
                     onPress={handleConfirm}
                 >
-                    <Text style={[styles.headerText, { color: 'rgba(26, 148, 236, 1)' }]}>Compl...</Text>
+                    <Text style={[styles.headerText, { color: 'red' }]}>save</Text>
                 </TouchableOpacity>
             </Body>
 

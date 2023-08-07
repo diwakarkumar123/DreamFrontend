@@ -10,7 +10,7 @@ import { SIGNUP_USER } from '../../../configs/source'
 
 const { width, height } = Dimensions.get('screen')
 
-const ChoosingAccountType = ({onPress, HeaderText, descrptionHeader, description  }) => {
+const ChoosingAccountType = ({ onPress, HeaderText, descrptionHeader, description }) => {
     const navigation = useNavigation()
 
 
@@ -22,7 +22,7 @@ const ChoosingAccountType = ({onPress, HeaderText, descrptionHeader, description
             {/* Displaying Header */}
             <View style={styles.header}>
                 <TouchableOpacity style={styles.icon} onPress={() => { navigation.goBack() }}>
-                    <AntDesign name='arrowleft' size={20} />
+                    <AntDesign name='arrowleft' size={20} color={'#020202'} />
                 </TouchableOpacity>
                 <Text style={{ color: '#020202', fontWeight: '500', fontSize: 16 }}>{HeaderText}</Text>
             </View>
@@ -48,15 +48,15 @@ const ChoosingAccountType = ({onPress, HeaderText, descrptionHeader, description
 
                     <Pressable
                         onPress={onPress}
-                    style={{
-                        width: width * 0.6,
-                        backgroundColor: '#FF006B',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        padding: 7,
-                        borderRadius: 2,
-                        marginTop: height * 0.05
-                    }}>
+                        style={{
+                            width: width * 0.6,
+                            backgroundColor: '#FF006B',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            padding: 10,
+                            borderRadius: 2,
+                            marginTop: height * 0.05
+                        }}>
                         <Text style={{ color: '#fff' }}>Next</Text>
                     </Pressable>
 
@@ -64,7 +64,7 @@ const ChoosingAccountType = ({onPress, HeaderText, descrptionHeader, description
             </View>
 
 
-            <StatusBar hidden={true} />
+            <StatusBar hidden={false} backgroundColor={'#e0ded7'} />
         </SafeAreaView>
     )
 }
@@ -74,15 +74,17 @@ export default ChoosingAccountType
 const styles = StyleSheet.create({
     main_container: {
         flex: 1,
-        backgroundColor: '#fff'
+        backgroundColor: '#fff',
+
     },
     header: {
         backgroundColor: '#e0ded7',
         flexDirection: 'row',
         width: width,
-        height: 45,
+        height: 55,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        // paddingTop: 20
     },
     icon: {
         position: 'absolute',

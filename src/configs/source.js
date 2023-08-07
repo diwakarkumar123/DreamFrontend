@@ -1,3 +1,4 @@
+
 const HOME_IMG = require('../assets/images/home.png');
 const HOME_FILLED_IMG = require('../assets/images/home-filled.png');
 const SELECTED_IMG = require('../assets/images/Selected.png');
@@ -52,7 +53,7 @@ const PHOTO_CAMERA_ICON = require('../assets/images/photo_camera.png');
 const VIDEOCAM_OUTLINE_ICON = require('../assets/images/videocam_outline.png');
 const LOGOUT_ICON = require('../assets/images/logout.png');
 const GIFT_ICON = require('../assets/images/gift.png')
-const QUEEN_ICON = require('../assets/images/queen.png')
+const QUEEN_ICON = require('../assets/images/crown.png')
 const DIAMOND_ICON = require('../assets/images/diamond.png')
 const LIVE_ICON1 = require('../assets/images/live.png')
 const SPLASH_SCREEN = require('../assets/images/splash.png')
@@ -86,6 +87,40 @@ const VIDEO_TRIM = require('../assets/images/video_trim.png')
 const VIDEO_REPLACE = require('../assets/images/video_replace.png')
 const VIDEO_MIRRORING = require('../assets/images/rotate-smartphone.png')
 const HOME_NEW_VIDEO = require('../assets/images/new_video_images.png')
+const ROSE = require('../assets/images/rose.png')
+
+const CHAT_VIDEO = require('../assets/images/5.png')
+const CHAT_ROSE = require('../assets/images/16.png')
+const CHAT_ATTACHMENT = require('../assets/images/14.png')
+const CHAT_MICROPHONE = require('../assets/images/2.png')
+const CHAT_DOCUMENT = require('../assets/images/8.png')
+const CHAT_CAMERA = require('../assets/images/9.png')
+const CHAT_GALLERY = require('../assets/images/10.png')
+const CHAT_MUSIC = require('../assets/images/3.png')
+const CHAT_AUDIO = require('../assets/images/11.png')
+const CHAT_LOCATION = require('../assets/images/12.png')
+const CHAT_CONTACT = require('../assets/images/13.png')
+const CHAT_COLOR_PICKER = require('../assets/images/15.png')
+const CHAT_VIDEO_TWO = require('../assets/images/7.png')
+const CHAT_CALL = require('../assets/images/4.png')
+
+
+const CHAT_WHITE_BRIGHTNESS = require('../assets/images/34.png')
+const CHAT_WHITE_ROSE = require('../assets/images/33.png')
+const CHAT_WHITE_COLOR_PICKER = require('../assets/images/32.png')
+const CHAT_WHITE_ATTACHMENT = require('../assets/images/31.png')
+const CHAT_WHITE_CONTACT = require('../assets/images/30.png')
+const CHAT_WHITE_LOCATION = require('../assets/images/29.png')
+const CHAT_WHITE_AUDIO= require('../assets/images/28.png')
+const CHAT_WHITE_GALLERY = require('../assets/images/27.png')
+const CHAT_WHITE_CAMERA = require('../assets/images/26.png')
+const CHAT_WHITE_DOCUMENT = require('../assets/images/25.png')
+const CHAT_WHITE_VIDEO_TWO = require('../assets/images/24.png')
+const CHAT_WHITE_VIDEO = require('../assets/images/21.png')
+const CHAT_WHITE_MUSIC = require('../assets/images/19.png')
+const CHAT_WHITE_CALL = require('../assets/images/20.png')
+
+
 
 
 const LUCKY_WHEEL_ICON = require('../assets/images/lucky_wheel.png')
@@ -118,6 +153,8 @@ const APPLE_ICON = require('../assets/icon-social/apple-logo.png');
 const KAKAOTALK_ICON = require('../assets/icon-social/kakao-talk.png');
 const LINE_ICON = require('../assets/icon-social/line.png');
 const TWITTER_ICON = require('../assets/icon-social/twitter.png');
+
+const RECORDING_ANIMATION = require('../assets/lottie/recording.json')
 
 
 const LOGO_IMG = require('../assets/images/TikTok-Logo.jpg');
@@ -300,5 +337,38 @@ export {
   VIDEO_SLIP,
   VIDEO_EDITING_MIRRORING,
   HOME_NEW_VIDEO,
-  SIGNUP_USER
+  SIGNUP_USER,
+  ROSE,
+  
+  CHAT_VIDEO,
+  CHAT_ROSE,
+  CHAT_ATTACHMENT,
+  CHAT_MICROPHONE,
+  CHAT_DOCUMENT,
+  CHAT_CAMERA,
+  CHAT_GALLERY,
+  CHAT_MUSIC,
+  CHAT_AUDIO,
+  CHAT_LOCATION,
+  CHAT_CONTACT,
+  CHAT_COLOR_PICKER,
+  CHAT_CALL,
+  CHAT_VIDEO_TWO,
+
+  CHAT_WHITE_BRIGHTNESS,
+  CHAT_WHITE_ROSE,
+  CHAT_WHITE_COLOR_PICKER,
+  CHAT_WHITE_ATTACHMENT,
+  CHAT_WHITE_CONTACT,
+  CHAT_WHITE_LOCATION,
+  CHAT_WHITE_AUDIO,
+  CHAT_WHITE_GALLERY,
+  CHAT_WHITE_CAMERA,
+  CHAT_WHITE_DOCUMENT,
+  CHAT_WHITE_VIDEO_TWO,
+  CHAT_WHITE_VIDEO,
+  CHAT_WHITE_MUSIC,
+  CHAT_WHITE_CALL,
+  RECORDING_ANIMATION
+
 };

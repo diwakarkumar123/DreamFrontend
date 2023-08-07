@@ -1,12 +1,13 @@
 import {
+  Dimensions,
+  Modal,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-
-
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -15,16 +16,26 @@ import Layer from 'react-native-vector-icons/Entypo';
 import Play from 'react-native-vector-icons/AntDesign';
 import Store from 'react-native-vector-icons/FontAwesome5';
 import Layeranimation from './Layeranimation';
+import Feather from 'react-native-vector-icons/Feather'
 import Animation from './Animation';
 import LeftIcon from './LeftIcon';
+import { useSelector, useDispatch } from 'react-redux';
+import { set_play_video } from '../../../store/videoSlice'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import {
+  VIDEO_ADJUSTMENT,
+  VIDEO_FILTER
+} from '../../../configs/source'
+import { Image } from 'react-native';
+
+const { width, height } = Dimensions.get('screen')
+
 
 const CircularPattern = ({ setVideo_path, video_path, openHandler_modal, setShow_media }) => {
   const navigation = useNavigation();
-
-
-
   const [layer, setLayer] = useState(false);
-  // const [show_media, setshow_media] = useState(false);
+  const dispatch = useDispatch()
+  const play_video = useSelector(state => state.video.play_video)
 
 
   const handleLayer = () => {
@@ -57,70 +68,20 @@ const CircularPattern = ({ setVideo_path, video_path, openHandler_modal, setShow
     <>
       <View style={styles.container}>
 
-
-{/* 
-        <View style={[styles.circle]}>
-          {Array.from({ length: numItems }, (_, index) => (
-            <View
-              key={index}
-              style={[
-                styles.item,
-                {
-                  left: getItemTextPosition(index).x,
-                  top: getItemTextPosition(index).y,
-                },
-              ]}
-            >
-              <Text style={styles.text}>shu</Text>
-            </View>
-          ))}
-        </View>
-
-
-        <View style={styles.circle}>
-          {Array.from({ length: numItems }, (_, index) => (
-            <View
-              key={index}
-              style={[
-                styles.item,
-                {
-                  left: getItemPosition(index).x,
-                  top: getItemPosition(index).y,
-                },
-              ]}
-            >
-              <Text style={styles.text}>sh</Text>
-            </View>
-          ))}
-        </View> */}
-
-
-
-
-
-
-
-
-        <View style={styles.import}>
-
-
-
-
-
+        <Pressable style={styles.import}>
           <Layer
             name="share-alternative"
-            style={{ fontSize: 20, color: 'white' }}
-          />
-        </View>
+            size={20}
+            color={"#fff"} />
+        </Pressable>
 
         <View style={{ flexDirection: 'row' }}>
-          <View style={styles.layerbutton}>
-            {/* {layer && <Layeranimation layerHandler />} */}
-
-          </View>
 
           <View style={styles.outerCircle}>
+
+            {/* Media button for selecting the media from users devices */}
             <View style={{ marginBottom: 5 }}>
+
 
               <TouchableOpacity
                 style={styles.icon_style}
@@ -131,7 +92,10 @@ const CircularPattern = ({ setVideo_path, video_path, openHandler_modal, setShow
                 />
                 <Text style={{ fontSize: 10, color: 'white' }}>Media</Text>
               </TouchableOpacity>
+
+
             </View>
+
 
             <View style={{
               width: '100%',
@@ -142,13 +106,15 @@ const CircularPattern = ({ setVideo_path, video_path, openHandler_modal, setShow
               paddingHorizontal: 8
             }}>
 
+
+              {/* Layer button for applying many layer on the video */}
               <TouchableOpacity onPress={handleLayer}>
                 <View style={styles.icon_style}>
                   <Layer
                     name="layers"
                     style={{
                       fontSize: 25,
-                      color: 'white',
+                      color: layer ? '#020202' : '#fff',
                       marginTop: 9,
                       marginLeft: 3,
                     }}
@@ -158,6 +124,13 @@ const CircularPattern = ({ setVideo_path, video_path, openHandler_modal, setShow
               </TouchableOpacity>
 
 
+
+
+
+
+
+
+              {/* Camera button for capturing the media from users devices */}
               <View style={styles.camera}>
                 <TouchableOpacity
                   onPress={() =>
@@ -172,7 +145,14 @@ const CircularPattern = ({ setVideo_path, video_path, openHandler_modal, setShow
                 </TouchableOpacity>
               </View>
 
-              <View style={[styles.icon_style, { marginBottom: 5 }]}>
+
+
+
+
+
+
+              {/* Music button for selecting music from user devices */}
+              <Pressable style={[styles.icon_style, { marginBottom: 5 }]}>
                 <Music
                   name="music"
                   style={{
@@ -183,34 +163,118 @@ const CircularPattern = ({ setVideo_path, video_path, openHandler_modal, setShow
                   }}
                 />
                 <Text style={{ fontSize: 10, color: 'white' }}>Audio</Text>
-              </View>
+              </Pressable>
+
+
+
 
             </View>
 
-            <View style={styles.icon_style}>
+
+
+
+
+
+
+            {/* Recording button for recording music from microphone */}
+
+            <Pressable style={styles.icon_style}>
               <Music
                 name="microphone"
                 style={{ fontSize: 25, color: 'white', marginLeft: 3 }}
               />
               <Text style={{ fontSize: 10, color: 'white' }}>Rec</Text>
-            </View>
-
+            </Pressable>
           </View>
         </View>
+
+
         <View style={styles.play}>
-          <Store name="store" style={{ fontSize: 20, color: 'white' }} />
-          <Play
-            name="play"
-            style={{ fontSize: 23, color: 'white', marginBottom: 10 }}
-          />
+          <Pressable onPress={() => { dispatch(set_play_video()) }}>
+            <Feather
+              color={'#fff'}
+              size={35}
+              name={play_video ? 'play-circle' : 'pause-circle'}
+            />
+          </Pressable>
         </View>
       </View>
-      {/* </ScrollView> */}
-      {/* {display_red_area && <Animation />} */}
-      {/* display_red_area && <Animation display_red_area={animationHandler} />} */}
-      {/* <View style={styles.circle}>
-      
-    </View> */}
+
+      <Modal visible={layer} transparent={true}>
+        <Pressable style={{flex: 1}} onPress={handleLayer} >
+          <View
+            style={{
+              width: 100,
+              backgroundColor: 'red',
+              position: 'absolute',
+              top: 10,
+              right: 210
+            }}>
+
+            <TouchableOpacity
+              style={{
+                backgroundColor: '#fff',
+                justifyContent: 'space-evenly',
+                flexDirection: 'row-reverse',
+                alignItems: 'center',
+                padding: 10
+              }}
+              onPress={() => { setShow_media(p => !p) }}>
+              <Icon
+                name="perm-media"
+                style={{ fontSize: 25, color: '#020202', marginLeft: 3 }}
+              />
+              <Text style={{ fontSize: 10, color: '#020202' }}>Media</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={{
+                backgroundColor: '#fff',
+                justifyContent: 'space-evenly',
+                flexDirection: 'row-reverse',
+                alignItems: 'center',
+                padding: 10
+              }}
+              onPress={() => { setShow_media(p => !p) }}>
+              <MaterialCommunityIcons
+                name="format-text"
+                style={{ fontSize: 25, color: '#020202', marginLeft: 3 }}
+              />
+              <Text style={{ fontSize: 10, color: '#020202' }}>Text</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={{
+                backgroundColor: '#fff',
+                justifyContent: 'space-evenly',
+                flexDirection: 'row-reverse',
+                alignItems: 'center',
+                padding: 10
+              }}
+              onPress={() => { setShow_media(p => !p) }}>
+              <MaterialCommunityIcons
+                name="sticker"
+                style={{ fontSize: 25, color: '#020202', marginLeft: 3 }}
+              />
+              <Text style={{ fontSize: 10, color: '#020202' }}>Sticker</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={{
+                backgroundColor: '#fff',
+                justifyContent: 'space-evenly',
+                flexDirection: 'row-reverse',
+                alignItems: 'center',
+                padding: 10
+              }}
+              onPress={() => { setShow_media(p => !p) }}>
+              <Image source={VIDEO_ADJUSTMENT} style={{ width: 25, height: 25 }} />
+              <Text style={{ fontSize: 10, color: '#020202' }}>Effect</Text>
+            </TouchableOpacity>
+          </View>
+        </Pressable>
+
+      </Modal>
 
     </>
   );
@@ -220,15 +284,14 @@ export default CircularPattern;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'grey',
     alignItems: 'center',
-    height: 220,
+    height: height * 0.62,
     width: 250,
   },
   outerCircle: {
     width: 160,
     height: 160,
-    borderRadius: 80,
+    borderRadius: 100,
     borderWidth: 0,
     justifyContent: 'center',
     alignItems: 'center',
@@ -254,11 +317,10 @@ const styles = StyleSheet.create({
     top: 20,
   },
   play: {
-    flexDirection: 'row',
     justifyContent: 'space-between',
     width: 200,
-
     bottom: 80,
+    alignItems: 'flex-end'
   },
   icon_style: {
     justifyContent: 'center',

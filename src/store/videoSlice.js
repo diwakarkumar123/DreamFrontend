@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { stat } from "react-native-fs";
 
 let initialState = {
     video_url: null,
-    show_loader: false
+    show_loader: false,
+    play_video: true,
 }
 
 
@@ -16,10 +16,17 @@ const videoSlice = createSlice({
         },
         change_loading(state, action){
             state.show_loader = action.payload
+        },
+        set_play_video(state, action){
+            state.play_video = !state.play_video
         }
     }
 
 })
 
-export const {change_video_url, change_loading} = videoSlice.actions;
+export const {
+    change_video_url, 
+    change_loading,
+    set_play_video
+} = videoSlice.actions;
 export default videoSlice.reducer;

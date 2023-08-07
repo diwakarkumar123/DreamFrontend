@@ -44,6 +44,13 @@ import Promotion from '../promotion/Promotion';
 import { Modalize } from 'react-native-modalize';
 import { FlatList } from 'react-native-gesture-handler';
 import AntDesign from 'react-native-vector-icons/AntDesign'
+import { change_video_url } from '../../store/videoSlice';
+import { useDispatch} from 'react-redux';
+import Toast from 'react-native-simple-toast'
+import { FFmpegKit, ReturnCode } from 'ffmpeg-kit-react-native';
+import RNFS from 'react-native-fs';
+
+
 
 const { width, height } = Dimensions.get('window')
 
@@ -62,7 +69,8 @@ const PostVideoScreen = () => {
   const route = useRoute();
   const modalizeRef = useRef(null)
   const [modalizeHeight, setModalizeHeight] = useState(height * 0.8)
-
+  const video = useSelector(state => state.video)
+  const dispatch = useDispatch()
   const openModalize = () => {
     modalizeRef.current.open()
   }
@@ -78,6 +86,32 @@ const PostVideoScreen = () => {
       .catch((err) => {
         console.log(err)
       })
+  }, [])
+
+  const resize_video = async () => {
+    const cache_dir_path = await RNFS.CachesDirectoryPath;
+    const filename = new Date().getTime()
+    const output_path = `${cache_dir_path}/${filename}.mp4`
+    const command = `-i ${route?.params?.pathVideo} -vf \"scale=iw*min (720/iw\\,1280/ih):ih*min (720/iw\\,1280/ih),pad=720:1280: (720-iw*min (720/iw\\,1280/ih))/2: (1280-ih*min (720/iw\\,1280/ih))/2\" -c:a copy ${output_path}`;
+    FFmpegKit.executeAsync(command, async (session) => {
+      const returnCode = await session.getReturnCode();
+      if (ReturnCode.isSuccess(returnCode)) {
+        console.log('success')
+
+        dispatch(change_video_url(output_path))
+       
+      } else if (ReturnCode.isCancel(returnCode)) {
+        
+        Toast.show('Cancel', Toast.LONG);
+
+      } else {
+        Toast.show('Error', Toast.LONG);
+      }
+    });
+  };
+
+  useEffect(() => {
+    resize_video()
   }, [])
 
   const move_to_promote = () => {
@@ -135,7 +169,6 @@ const PostVideoScreen = () => {
 
   // console.log(my_data)
 
-  console.log(route?.params)
 
   const handlePostVideo = async () => {
     if (my_data) {
@@ -144,8 +177,8 @@ const PostVideoScreen = () => {
 
         const formData = new FormData();
         formData.append('video', {
-          uri: route?.params?.pathVideo,
-          name: route?.params?.pathVideo.split('/').reverse()[0],
+          uri: `file:// + ${video?.video_url}`,
+          name: video?.video_url.split('/').reverse()[0],
           type: 'video/mp4',
         });
 
@@ -164,11 +197,11 @@ const PostVideoScreen = () => {
         // formData.append('countries', countries)
         // formData.append('ciities', cities)
 
-        const result = await videoApi.postVideo(formData);
+        const result = await videoApi.postVideo(formData, my_data?.auth_token);
 
         navigation.replace('Index');
       } catch (error) {
-        console.log('error during post video: ', error);
+        console.log('error during post video: ', error.message);
       } finally {
         setShowModal(false);
       }
@@ -313,7 +346,7 @@ const PostVideoScreen = () => {
     const scrollPositionPercentage = (contentOffset.y / maxScrollPosition) * 100;
 
     // Calculate the new modal height based on the scroll position
-    const newModalHeight = height * 0.8 + (scrollPositionPercentage * 3); 
+    const newModalHeight = height * 0.8 + (scrollPositionPercentage * 3);
     setModalizeHeight(newModalHeight);
   };
 

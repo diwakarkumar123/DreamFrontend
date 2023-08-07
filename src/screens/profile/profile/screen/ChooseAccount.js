@@ -5,7 +5,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 import { useNavigation } from '@react-navigation/native'
 import Entypo from 'react-native-vector-icons/Entypo'
 
-const {width, height} = Dimensions.get('screen')
+const { width, height } = Dimensions.get('screen')
 
 const ChooseAccount = () => {
     const navigation = useNavigation()
@@ -35,7 +35,7 @@ const ChooseAccount = () => {
         <Body style={{ flex: 1, }}>
             <Body applyPadding={false} style={styles.header}>
                 <TouchableOpacity onPress={() => { navigation.goBack() }}>
-                    <AntDesign name='arrowleft' size={20} />
+                    <AntDesign name='arrowleft' size={20} color={'#020202'} />
                 </TouchableOpacity>
                 <Text style={[styles.headerText, { marginTop: 0 }]}>
                     Choose Account
@@ -46,12 +46,14 @@ const ChooseAccount = () => {
                     data={data}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item, index }) => (
-                       <View style={styles.list_view}>
-                        <Text style={styles.list_text}>{item.account_type}</Text>
                         <TouchableOpacity onPress={item.onPress}>
-                            <Entypo name='chevron-right' size={30} />
+                            <View style={styles.list_view}>
+                                <Text style={styles.list_text}>{item.account_type}</Text>
+
+                                <Entypo name='chevron-right' size={30} color={'#020202'} />
+
+                            </View>
                         </TouchableOpacity>
-                       </View>
                     )}
                 />
             </Body>

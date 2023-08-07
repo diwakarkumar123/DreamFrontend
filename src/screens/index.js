@@ -26,6 +26,7 @@ const Index = () => {
           dispatch(addIsLogin(true))
           getUserInfo(data.auth_token)
             .then((res) => {
+             
               dispatch(add_my_profile_data(res.payload))
             })
             .catch((err) => { console.log(err) })

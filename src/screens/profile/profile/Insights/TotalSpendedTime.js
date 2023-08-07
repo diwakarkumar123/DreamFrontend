@@ -74,7 +74,7 @@ const TotalSpendedTime = () => {
             </View>
 
             <View>
-                <LineChart
+                <BarChart
                     data={{
                         labels: ["January", "February", "March", "April", "May", "June"],
                         datasets: [

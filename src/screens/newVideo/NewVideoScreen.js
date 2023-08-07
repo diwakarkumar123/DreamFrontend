@@ -45,11 +45,10 @@ const NewVideoScreen = () => {
       {isFocused && (
         <Camera
           camera={camera}
-          // setUri={setUri}
+          setUri={setUri}
           navigation={navigation}
           isRecord={isRecord}
           setIsRecord={setIsRecord}
-          setUri={(r)=>{console.log('shubhams',r)}}
         />
       )}
 

@@ -47,8 +47,9 @@ import { applyWarnEffect } from './utils/Trim_video';
 import { stateList } from './State';
 import { useDispatch, useSelector } from 'react-redux';
 import { change_video_url, change_loading } from '../../store/videoSlice';
-
+import Recording from './components/Recording';
 const { width, height } = Dimensions.get('screen')
+
 
 export const content_width = {
     LEFT_CONTAINER: {
@@ -84,7 +85,7 @@ const VideoEditorLandingPage = () => {
     const imageDisplayView = useRef(null)
     const [video_segment, setvideo_segment] = useState('')
     const [trimmed_videopath, setTrimmed_video_path] = useState('')
-    const leftPosition = useSharedValue(2900)
+    const leftPosition = useSharedValue(200)
     const positionX = useSharedValue(0)
     const selected_part = useSharedValue(800)
     const sliding_direction = useSharedValue(0)
@@ -95,11 +96,39 @@ const VideoEditorLandingPage = () => {
     const [show_editor, setShow_editor] = useState(false)
     const [open_top_sheet, setOPen_top_sheet] = useState(false)
     const [show_media, setShow_media] = useState(false)
+    const [screenDimensions, setScreenDimensions] = useState(Dimensions.get('window'));
+    const { width, height } = Dimensions.get('window')
+    const [start_recording, setStart_recording] = useState(true)
     const [property_settings, setProperty_settings] = useState({
         visible: false
     })
     const video = useSelector(state => state.video)
-
+    const play_video = useSelector(state => state.video.play_video)
+    const content_width = {
+        LEFT_CONTAINER: {
+            width: 50,
+            height: height
+        },
+        RIGHT_CONTAINER: {
+            width: width - 50,
+            height: height
+        },
+        RIGHT_BOTTOM_CONTAINER: {
+            width: width - 50,
+            height: height * 38
+        },
+        RIGHT_TOP_RIGHT: {
+            width: 250,
+            height: height - (height * 38)
+        },
+        RIGHT_TOP_LEFT: {
+            width: width - (50 + 250),
+            height: height - (height * 38)
+        },
+        POINTER_POSITION: {
+            x: 300,
+        }
+    }
     const [show_loader, setShow_loader] = useState(false)
     const [video_path, setVideo_path] = useState('')
 
@@ -112,7 +141,18 @@ const VideoEditorLandingPage = () => {
         }
     }, [])
 
+    useEffect(() => {
+        const updateDimensions = ({ window }) => {
+            setScreenDimensions(window);
+        };
 
+        Dimensions.addEventListener('change', updateDimensions);
+
+        // Clean up the listener when the component unmounts
+        return () => {
+            // Dimensions.removeEventListener('change', updateDimensions);
+        };
+    }, []);
 
     // console.log(video_path)
     // console.log(stateList.size)
@@ -141,7 +181,7 @@ const VideoEditorLandingPage = () => {
     // }
 
     // function for transposing the video to right and left
-    
+
 
     const rotateVideo = async () => {
         console.log("video rotation")
@@ -163,7 +203,7 @@ const VideoEditorLandingPage = () => {
             } else {
                 dispatch(change_loading(false))
                 console.log('error')
-                
+
 
             }
         });
@@ -188,7 +228,7 @@ const VideoEditorLandingPage = () => {
             } else {
                 dispatch(change_loading(false))
                 console.log('error')
-                
+
 
             }
         });
@@ -212,7 +252,7 @@ const VideoEditorLandingPage = () => {
             } else {
                 dispatch(change_loading(false))
                 console.log('error')
-                
+
 
             }
         });
@@ -236,7 +276,7 @@ const VideoEditorLandingPage = () => {
             } else {
                 dispatch(change_loading(false))
                 console.log('error')
-                
+
 
             }
         });
@@ -259,13 +299,35 @@ const VideoEditorLandingPage = () => {
                 dispatch(change_loading(false))
             } else {
                 dispatch(change_loading(false))
-                console.log('error')    
+                console.log('error')
 
             }
         });
     };
 
+    const resize_video = async () => {
+        dispatch(change_loading(true))
+        const cache_dir_path = await RNFS.CachesDirectoryPath;
+        const filename = new Date().getTime()
+        const output_path = `${cache_dir_path}/${filename}.mp4`
+        const command = `-i ${video.video_url} -f lavfi -i color=c=white:s=1280x720:r=24 -filter_complex \" [0:v] [1:v]overlay=shortest=1,format=yuv420p [out]\" -map \" [out]\" ${output_path}`;
+        FFmpegKit.executeAsync(command, async (session) => {
+            const returnCode = await session.getReturnCode();
+            if (ReturnCode.isSuccess(returnCode)) {
+                console.log('success')
+                stateList.addState(output_path)
+                dispatch(change_video_url(stateList.current.data))
+                dispatch(change_loading(false))
+            } else if (ReturnCode.isCancel(returnCode)) {
+                console.log("cancel")
+                dispatch(change_loading(false))
+            } else {
+                dispatch(change_loading(false))
+                console.log('error')
 
+            }
+        });
+    };
 
 
 
@@ -310,6 +372,7 @@ const VideoEditorLandingPage = () => {
             active: true,
             onPress: () => {
                 navigation.goBack()
+                // resize_video()
             }
         },
         {
@@ -388,7 +451,7 @@ const VideoEditorLandingPage = () => {
         )
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         segment_video()
     }, [])
 
@@ -665,15 +728,39 @@ const VideoEditorLandingPage = () => {
 
 
     return (
+        // root view for handeling the gesture of whole components
         <GestureHandlerRootView>
-            <View style={styles.mainContainers}>
-
-                {/* Left View */}
-                <View style={styles.leftView}>
+            <View style={{
+                width: width,
+                height: height,
+                flexDirection: 'row',
+                backgroundColor: 'grey',
+            }}>
+                {/* left button list */}
+                <View style={{
+                    width: content_width.LEFT_CONTAINER.width,
+                    height: content_width.LEFT_CONTAINER.height,
+                    backgroundColor: 'red',
+                    zIndex: 1,
+                    position: 'absolute',
+                    left: 0,
+                    top: 0,
+                    bottom: 0
+                }}>
+                    {/* FlatList for displaying all the button */}
                     <FlatList
                         data={data}
                         renderItem={({ item }) => (
-                            <View style={styles.image_view}>
+                            <View style={{
+                                width: 50,
+                                height: (height) / 7,
+                                backgroundColor: 'red',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                borderTopWidth: 0.5,
+                                borderColor: 'white',
+                                borderRightWidth: 0
+                            }}>
                                 <LeftIcon
                                     group_name={item.group_name}
                                     icon_name={item.icon_name}
@@ -685,29 +772,56 @@ const VideoEditorLandingPage = () => {
                     />
                 </View>
 
-                {/* Right view */}
-                <View style={styles.rightView}>
+
+
+                {/* extreme right view  */}
+                <View style={{
+                    width: content_width.RIGHT_CONTAINER.width,
+                    height: content_width.RIGHT_CONTAINER.height,
+                    position: 'absolute',
+                    right: 0,
+                    top: 0,
+                    bottom: 0,
+                }}>
 
                     {/* Top View */}
-                    <View style={styles.topView}>
+                    <View style={{
+                        width: width - 50,
+                        height: height * 0.62,
+                        backgroundColor: 'white',
+                        flexDirection: 'row'
+                    }}>
 
                         {/* Left view  */}
-                        <View style={styles.topLeftView}>
+                        {/* video main view for handeling many thing */}
+                        <View style={{
+                            width: content_width.RIGHT_TOP_LEFT.width,
+                            height: content_width.RIGHT_TOP_LEFT.height,
+                            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                            borderRightWidth: 5,
+                            borderRightColor: '#020202',
+                            borderLeftWidth: 5,
+                        }}>
 
                             {video &&
                                 <Video
                                     source={{ uri: `file://` + video.video_url }}
                                     style={{ flex: 1 }}
                                     resizeMode='contain'
-                                    paused={false}
+                                    paused={play_video}
                                     repeat={false}
                                     filterEnabled={false}
-                                    controls={true}
+                                    controls={false}
                                 />}
                         </View>
 
-                        <View style={styles.topRightView}>
-                            {!show_editor && <CircularPattern setShow_media={setShow_media} />}
+                        {/* main editor view for handeling all the editing functionality */}
+                        <View style={{
+                            width: content_width.RIGHT_TOP_RIGHT.width,
+                            height: content_width.RIGHT_TOP_RIGHT.height,
+                            backgroundColor: 'grey',
+                        }}>
+                            {/* {!show_editor && <CircularPattern setShow_media={setShow_media} />} */}
                             {show_editor && <MainEditor
                                 setShow_editor={setShow_editor}
                                 show_editor={show_editor}
@@ -716,15 +830,21 @@ const VideoEditorLandingPage = () => {
                                 mirroringHorizontally={mirroringHorizontally}
                                 mirroringVertically={mirroringVertically}
                                 reverse_video={reverse_video} />}
+                            {start_recording && <Recording />}
                         </View>
                     </View>
 
 
 
-                    
+
 
                     {/* Bottom View */}
-                    <View style={styles.bottomView}>
+                    <View style={{
+                        width: content_width.RIGHT_BOTTOM_CONTAINER.width,
+                        height: content_width.RIGHT_BOTTOM_CONTAINER.height,
+                        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                        paddingTop: 10
+                    }}>
                         <PanGestureHandler onGestureEvent={handleGesture}>
                             <Animated.View style={{
                                 width: content_width.RIGHT_BOTTOM_CONTAINER.width,
