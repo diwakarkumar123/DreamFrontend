@@ -1,15 +1,16 @@
-import { Dimensions, FlatList, StyleSheet, Text, TouchableOpacity, View, PermissionsAndroid, Platform } from 'react-native'
+import { Dimensions, FlatList, StyleSheet, Text, TouchableOpacity, View, PermissionsAndroid, Platform, Pressable, useWindowDimensions } from 'react-native'
 import React, { useRef, useState, useEffect } from 'react'
 import TopSheet from '../../../components/bottomSheets/TopSheet'
 import LeftIcon from './LeftIcon'
 import RNFS from 'react-native-fs'
-import {readAllFolder }from '../utils/ReadAllFiles'
+import { readAllFolder } from '../utils/ReadAllFiles'
 import Entypo from 'react-native-vector-icons/Entypo'
-const { width, height } = Dimensions.get('screen')
+const { width, height } = Dimensions.get('window')
 
-const TopSheetMediaSelection = ({ setShow_media }) => {
+const TopSheetMediaSelection = ({ setOPen_top_sheet }) => {
     const [folder_name, setFolder_name] = useState('')
     const topSheetRef = useRef()
+    const { width, height } = useWindowDimensions()
     const data = [
         {
             id: 1,
@@ -39,7 +40,20 @@ const TopSheetMediaSelection = ({ setShow_media }) => {
             }
         }
     ]
+    useEffect(() => {
+        const updateDimensions = ({ window }) => {
+            setScreenDimensions(window);
+        };
 
+        Dimensions.addEventListener('change', updateDimensions);
+
+        // Clean up the listener when the component unmounts
+        return () => {
+            // Dimensions.removeEventListener('change', updateDimensions);
+        };
+    }, []);
+
+    console.log(width, height)
 
 
     // const readAllFolder = async () => {
@@ -101,140 +115,119 @@ const TopSheetMediaSelection = ({ setShow_media }) => {
         return false;
     };
 
-    useEffect(() => {
-        async function fetchData() {
-            const folderData = await readAllFolder();
-            setFolder_name(folderData)
+    // useEffect(() => {
+    //     async function fetchData() {
+    //         const folderData = await readAllFolder();
+    //         setFolder_name(folderData)
 
-        }
+    //     }
 
-        fetchData();
-    }, []);
+    //     fetchData();
+    // }, []);
 
-    const handleCancel = ()=>{
+    const handleCancel = () => {
         setShow_media(p => !p)
     }
+
+
+    const styles = StyleSheet.create({
+        main_container: {
+            width: width,
+            height: height * 0.62,
+            backgroundColor: '#fff',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            borderBottomWidth: 1,
+            borderBottomColor: '#020202'
+        },
+        left_icon: {
+            width: 50,
+            backgroundColor: 'red',
+            height: height * 0.62,
+        },
+        image_view: {
+            width: 50,
+            height: (height * 0.62) / 3,
+            backgroundColor: 'red',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderTopWidth: 0.5,
+            borderColor: 'white',
+            borderRightWidth: 0,
+            borderBottomWidth: 10
+        },
+        text: {
+            color: 'white',
+            marginTop: 5
+        },
+    })
 
 
 
 
     return (
-        <TopSheet
-            ref={topSheetRef} onCloseTopSheet={() => { setOPen_top_sheet(false) }}>
-            <View style={styles.main_container}>
+        <View style={styles.main_container}>
 
 
-                {/* left view  */}
-                <View style={styles.left_icon}>
+            <View style={styles.left_icon}>
+                <FlatList
+                    data={data}
+                    renderItem={({ item, index }) => (
+                        <View style={styles.image_view}>
+                            <LeftIcon
+                                group_name={item.group_name}
+                                icon_name={item.icon_name}
+                                size={25}
+                                onPress={item.onPress}
+                                color={'white'} />
+                            <Text style={styles.text}>{item.title}</Text>
+                        </View>
+                    )}
+                />
+            </View>
+
+
+
+
+
+            {/* right view  */}
+            <View style={{ width: width - 50, position: 'absolute', right: 0, top: 0, bottom: 0 }}>
+
+
+                {/* right top view  */}
+                <View style={styles.topView}>
+                    <View style={styles.top_left_view}>
+                        <LeftIcon
+                            group_name={"Entypo"}
+                            icon_name={'folder-images'}
+                            size={25}
+                            color={'white'} />
+                        <Text style={[styles.text, { fontSize: 16, fontWeight: '600' }]}>Media Browser</Text>
+                    </View>
+                    <TouchableOpacity onPress={handleCancel}>
+                        <Entypo name='cross' size={30} color={'white'} />
+                    </TouchableOpacity>
+                </View>
+                {/* right bottom view  */}
+                {folder_name && <View style={{ width: width - 50, height: 200, position: 'absolute', right: 0, top: 50 }}>
                     <FlatList
-                        data={data}
+                        data={folder_name}
                         renderItem={({ item, index }) => (
-                            <View style={styles.image_view}>
-                                <LeftIcon
-                                    group_name={item.group_name}
-                                    icon_name={item.icon_name}
-                                    size={25}
-                                    onPress={item.onPress}
-                                    color={'white'} />
-                                <Text style={styles.text}>{item.title}</Text>
+                            <View>
+                                <Text style={{ color: 'black' }}>{item.folderName}</Text>
                             </View>
+
                         )}
                     />
-                </View>
-
-
-                {/* right view  */}
-                <View style={{width: width - 50, position: 'absolute', right: 0, top: 0, bottom: 0 }}>
-
-
-                    {/* right top view  */}
-                    <View style={styles.topView}>
-                        <View style={styles.top_left_view}>
-                            <LeftIcon
-                                group_name={"Entypo"}
-                                icon_name={'folder-images'}
-                                size={25}
-                                color={'white'} />
-                            <Text style={[styles.text, { fontSize: 16, fontWeight: '600' }]}>Media Browser</Text>
-                        </View>
-                        <TouchableOpacity onPress={handleCancel}>
-                            <Entypo name='cross' size={30} color={'white'} />
-                        </TouchableOpacity>
-                    </View>
-
-
-                    {/* right bottom view  */}
-                    {folder_name && <View style={{ width: width - 50, height: 200, position: 'absolute', right: 0, top: 50 }}>
-                        <FlatList
-                            data={folder_name}
-                            renderItem={({ item, index }) => (
-                                <View>
-                                    <Text style={{ color: 'black' }}>{item.folderName}</Text>
-                                </View>
-
-                            )}
-                        />
-                    </View>}
-                </View>
-
-
+                </View>}
             </View>
-         </TopSheet>
+
+
+        </View>
     )
 }
 
 export default TopSheetMediaSelection
 
-const styles = StyleSheet.create({
-    main_container: {
-        width: width,
-        height: 250,
-        position: 'absolute', 
-        right: 0,
-        left: 0,
-        top: 0,
-        backgroundColor: 'white',
-        zIndex: 100
-    },
-    left_icon: {
-        width: 50,
-        backgroundColor: 'red',
-        position: 'absolute',
-        height: 250,
-
-    },
-    image_view: {
-        width: 50,
-        height: 250 / 3,
-        backgroundColor: 'red',
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderTopWidth: 0.5,
-        borderColor: 'white',
-        borderRightWidth: 0
-    },
-    text: {
-        color: 'white',
-        marginTop: 5
-    },
-    topView: {
-        width: width - 50,
-        position: 'absolute',
-        top: 0,
-        right: 0,
-        backgroundColor: 'red',
-        height: 50,
-        borderLeftColor: '#fff',
-        borderLeftWidth: 0.7,
-        justifyContent: 'space-between',
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingHorizontal: 20
-    },
-    top_left_view: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        width: 150,
-        alignItems: 'center'
-    }
-})

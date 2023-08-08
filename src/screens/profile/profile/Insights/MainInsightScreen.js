@@ -50,7 +50,9 @@ const MainInsightScreen = () => {
             name: 'Total diamond',
             value: 3,
             percentage: '100%',
-            onPress: null
+            onPress: ()=>{
+                navigation.navigate('DiamondAnalytics')
+            }
         },
         {
             name: 'Total comment',

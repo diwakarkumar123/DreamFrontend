@@ -103,7 +103,8 @@ const VideoEditorLandingPage = () => {
         visible: false
     })
     const video = useSelector(state => state.video)
-    const play_video = useSelector(state => state.video.play_video)
+    const play_video = useSelector(state => state?.video?.play_video)
+    const show_recording = useSelector(state => state?.video?.show_recording)
     const content_width = {
         LEFT_CONTAINER: {
             width: 50,
@@ -728,192 +729,211 @@ const VideoEditorLandingPage = () => {
 
 
     return (
-        // root view for handeling the gesture of whole components
-        <GestureHandlerRootView>
-            <View style={{
-                width: width,
-                height: height,
-                flexDirection: 'row',
-                backgroundColor: 'grey',
-            }}>
-                {/* left button list */}
+        <>
+            <GestureHandlerRootView>
                 <View style={{
-                    width: content_width.LEFT_CONTAINER.width,
-                    height: content_width.LEFT_CONTAINER.height,
-                    backgroundColor: 'red',
-                    zIndex: 1,
-                    position: 'absolute',
-                    left: 0,
-                    top: 0,
-                    bottom: 0
+                    width: width,
+                    height: height,
+                    flexDirection: 'row',
+                    backgroundColor: 'grey',
                 }}>
-                    {/* FlatList for displaying all the button */}
-                    <FlatList
-                        data={data}
-                        renderItem={({ item }) => (
-                            <View style={{
-                                width: 50,
-                                height: (height) / 7,
-                                backgroundColor: 'red',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                borderTopWidth: 0.5,
-                                borderColor: 'white',
-                                borderRightWidth: 0
-                            }}>
-                                <LeftIcon
-                                    group_name={item.group_name}
-                                    icon_name={item.icon_name}
-                                    size={25}
-                                    onPress={item.onPress}
-                                    color={'white'} />
-                            </View>
-                        )}
-                    />
-                </View>
-
-
-
-                {/* extreme right view  */}
-                <View style={{
-                    width: content_width.RIGHT_CONTAINER.width,
-                    height: content_width.RIGHT_CONTAINER.height,
-                    position: 'absolute',
-                    right: 0,
-                    top: 0,
-                    bottom: 0,
-                }}>
-
-                    {/* Top View */}
+                    {/* left button list */}
                     <View style={{
-                        width: width - 50,
-                        height: height * 0.62,
-                        backgroundColor: 'white',
-                        flexDirection: 'row'
+                        width: content_width.LEFT_CONTAINER.width,
+                        height: content_width.LEFT_CONTAINER.height,
+                        backgroundColor: 'red',
+                        zIndex: 1,
+                        position: 'absolute',
+                        left: 0,
+                        top: 0,
+                        bottom: 0
                     }}>
-
-                        {/* Left view  */}
-                        {/* video main view for handeling many thing */}
-                        <View style={{
-                            width: content_width.RIGHT_TOP_LEFT.width,
-                            height: content_width.RIGHT_TOP_LEFT.height,
-                            backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                            borderRightWidth: 5,
-                            borderRightColor: '#020202',
-                            borderLeftWidth: 5,
-                        }}>
-
-                            {video &&
-                                <Video
-                                    source={{ uri: `file://` + video.video_url }}
-                                    style={{ flex: 1 }}
-                                    resizeMode='contain'
-                                    paused={play_video}
-                                    repeat={false}
-                                    filterEnabled={false}
-                                    controls={false}
-                                />}
-                        </View>
-
-                        {/* main editor view for handeling all the editing functionality */}
-                        <View style={{
-                            width: content_width.RIGHT_TOP_RIGHT.width,
-                            height: content_width.RIGHT_TOP_RIGHT.height,
-                            backgroundColor: 'grey',
-                        }}>
-                            {/* {!show_editor && <CircularPattern setShow_media={setShow_media} />} */}
-                            {show_editor && <MainEditor
-                                setShow_editor={setShow_editor}
-                                show_editor={show_editor}
-                                rotateVideo={rotateVideo}
-                                rotateAntiClockwiseVideo={rotateAntiClockwiseVideo}
-                                mirroringHorizontally={mirroringHorizontally}
-                                mirroringVertically={mirroringVertically}
-                                reverse_video={reverse_video} />}
-                            {start_recording && <Recording />}
-                        </View>
-                    </View>
-
-
-
-
-
-                    {/* Bottom View */}
-                    <View style={{
-                        width: content_width.RIGHT_BOTTOM_CONTAINER.width,
-                        height: content_width.RIGHT_BOTTOM_CONTAINER.height,
-                        backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                        paddingTop: 10
-                    }}>
-                        <PanGestureHandler onGestureEvent={handleGesture}>
-                            <Animated.View style={{
-                                width: content_width.RIGHT_BOTTOM_CONTAINER.width,
-                                height: content_width.RIGHT_BOTTOM_CONTAINER.height
-                            }}>
-
-                                {video_segment && <TapGestureHandler onHandlerStateChange={handleTapGesture}>
-                                    <Animated.View
-                                        ref={imageDisplayView}
-                                        style={[{
-                                            flexDirection: 'row',
-                                            zIndex: -1,
-                                            width: 810,
-                                            height: 70,
-                                        }, animatedStyle]}>
-                                        {video_segment.map((frame, index) => renderFrame(frame, index))}
-                                        {show_editor && <Animated.View
-                                            style={[{
-                                                position: 'absolute',
-                                                bottom: 0,
-                                                top: 0,
-                                                height: 60,
-                                                zIndex: 1000,
-                                                borderWidth: 2,
-                                                borderColor: 'red'
-                                            }, selectedStyle]}>
-                                            <PanGestureHandler onGestureEvent={handleNestedGesture}>
-                                                <Animated.View style={{ flex: 1 }} />
-                                            </PanGestureHandler>
-                                        </Animated.View>}
-
-                                    </Animated.View>
-                                </TapGestureHandler>}
-
-
-
-                                {!video_segment && <TouchableOpacity
-                                    onPress={segment_video}
-                                    style={{
-                                        backgroundColor: 'blue',
-                                        width: 70,
-                                        height: 40
-                                    }}
-                                >
-                                    <Text>Video</Text>
-                                </TouchableOpacity>}
+                        {/* FlatList for displaying all the button */}
+                        <FlatList
+                            data={data}
+                            renderItem={({ item }) => (
                                 <View style={{
-                                    width: 2,
-                                    height: content_width.RIGHT_BOTTOM_CONTAINER.height,
-                                    backgroundColor: 'yellow',
-                                    position: 'absolute',
-                                    bottom: 0,
-                                    right: content_width.POINTER_POSITION.x
+                                    width: 50,
+                                    height: (height) / 7,
+                                    backgroundColor: 'red',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    borderTopWidth: 0.5,
+                                    borderColor: 'white',
+                                    borderRightWidth: 0
                                 }}>
+                                    <LeftIcon
+                                        group_name={item.group_name}
+                                        icon_name={item.icon_name}
+                                        size={25}
+                                        onPress={item.onPress}
+                                        color={'white'} />
                                 </View>
-                            </Animated.View>
-                        </PanGestureHandler>
+                            )}
+                        />
+                    </View>
 
+
+
+                    {/* extreme right view  */}
+                    <View style={{
+                        width: content_width.RIGHT_CONTAINER.width,
+                        height: content_width.RIGHT_CONTAINER.height,
+                        position: 'absolute',
+                        right: 0,
+                        top: 0,
+                        bottom: 0,
+                    }}>
+
+                        {/* Top View */}
+                            <View style={{
+                                width: width - 50,
+                                height: height * 0.62,
+                                backgroundColor: 'white',
+                                flexDirection: 'row'
+                            }}>
+
+                                {/* Left view  */}
+                                {/* video main view for handeling many thing */}
+                                <View style={{
+                                    width: content_width.RIGHT_TOP_LEFT.width,
+                                    height: content_width.RIGHT_TOP_LEFT.height,
+                                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                                    borderRightWidth: 5,
+                                    borderRightColor: '#020202',
+                                    borderLeftWidth: 5,
+                                }}>
+
+                                    {video &&
+                                        <Video
+                                            source={{ uri: `file://` + video.video_url }}
+                                            style={{ flex: 1 }}
+                                            resizeMode='contain'
+                                            paused={play_video}
+                                            repeat={false}
+                                            filterEnabled={false}
+                                            controls={false}
+                                        />}
+                                </View>
+
+                                {/* main editor view for handeling all the editing functionality */}
+                                <View style={{
+                                    width: content_width.RIGHT_TOP_RIGHT.width,
+                                    height: content_width.RIGHT_TOP_RIGHT.height,
+                                    backgroundColor: 'grey',
+                                }}>
+                                    {!show_editor && !show_recording && (
+                                        <CircularPattern
+                                            setShow_media={setShow_media}
+                                            setShow_editor={setShow_editor}
+                                            setOPen_top_sheet={setOPen_top_sheet}
+                                        />
+                                    )}
+                                    {show_editor && (
+                                        <MainEditor
+                                            setShow_editor={setShow_editor}
+                                            show_editor={show_editor}
+                                            rotateVideo={rotateVideo}
+                                            rotateAntiClockwiseVideo={rotateAntiClockwiseVideo}
+                                            mirroringHorizontally={mirroringHorizontally}
+                                            mirroringVertically={mirroringVertically}
+
+                                            reverse_video={reverse_video} />
+                                    )}
+                                    {show_recording && !show_editor && (
+                                        <Recording />
+                                    )}
+                                </View>
+                            </View>
+                        
+                       
+
+
+
+
+                        {/* Bottom View */}
+                        <View style={{
+                            width: content_width.RIGHT_BOTTOM_CONTAINER.width,
+                            height: content_width.RIGHT_BOTTOM_CONTAINER.height,
+                            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                            paddingTop: 10
+                        }}>
+                            <PanGestureHandler onGestureEvent={handleGesture}>
+                                <Animated.View style={{
+                                    width: content_width.RIGHT_BOTTOM_CONTAINER.width,
+                                    height: content_width.RIGHT_BOTTOM_CONTAINER.height
+                                }}>
+
+                                    {video_segment && <TapGestureHandler onHandlerStateChange={handleTapGesture}>
+                                        <Animated.View
+                                            ref={imageDisplayView}
+                                            style={[{
+                                                flexDirection: 'row',
+                                                zIndex: -1,
+                                                width: 810,
+                                                height: 70,
+                                            }, animatedStyle]}>
+                                            {video_segment.map((frame, index) => renderFrame(frame, index))}
+                                            {show_editor && <Animated.View
+                                                style={[{
+                                                    position: 'absolute',
+                                                    bottom: 0,
+                                                    top: 0,
+                                                    height: 60,
+                                                    zIndex: 1000,
+                                                    borderWidth: 2,
+                                                    borderColor: 'red'
+                                                }, selectedStyle]}>
+                                                <PanGestureHandler onGestureEvent={handleNestedGesture}>
+                                                    <Animated.View style={{ flex: 1 }} />
+                                                </PanGestureHandler>
+                                            </Animated.View>}
+
+                                        </Animated.View>
+                                    </TapGestureHandler>}
+
+
+
+                                    {!video_segment && <TouchableOpacity
+                                        onPress={segment_video}
+                                        style={{
+                                            backgroundColor: 'blue',
+                                            width: 70,
+                                            height: 40
+                                        }}
+                                    >
+                                        <Text>Video</Text>
+                                    </TouchableOpacity>}
+                                    <View style={{
+                                        width: 2,
+                                        height: content_width.RIGHT_BOTTOM_CONTAINER.height,
+                                        backgroundColor: 'yellow',
+                                        position: 'absolute',
+                                        bottom: 0,
+                                        right: content_width.POINTER_POSITION.x
+                                    }}>
+                                    </View>
+                                </Animated.View>
+                            </PanGestureHandler>
+
+
+                        </View>
 
                     </View>
 
+
+
+                    <StatusBar hidden={true} />
                 </View>
-
-
-
-                <StatusBar hidden={true} />
-            </View>
-            <TopSheetMediaSelection open_top_sheet={open_top_sheet} setOPen_top_sheet={setOPen_top_sheet} />
+            </GestureHandlerRootView>
             {/* <Modal visible={property_settings.visible}> */}
+            {open_top_sheet && (
+                            <TopSheetMediaSelection
+                                open_top_sheet={open_top_sheet}
+                                setOPen_top_sheet={setOPen_top_sheet} />
+
+                        )}
+
             <PropertySettings property_settings={property_settings} setProperty_settings={setProperty_settings} />
             {/* </Modal> */}
             {video?.show_loader && <View style={styles.loader}>
@@ -922,7 +942,7 @@ const VideoEditorLandingPage = () => {
                     style={{ width: 50, height: 50 }}
                 />
             </View>}
-        </GestureHandlerRootView>
+        </>
     )
 }
 

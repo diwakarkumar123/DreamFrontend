@@ -5,12 +5,15 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import LottieView from 'lottie-react-native'
 import { RECORDING_ANIMATION } from '../../../configs/source'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import { useDispatch } from 'react-redux'
+import {setShow_recording} from '../../../store/videoSlice'
 
 
 
 const Recording = () => {
     const [recording, setRecording] = useState(false)
     const [speaker, setSpeaker] = useState(false)
+    const dispatch = useDispatch()
 
 
 
@@ -18,7 +21,7 @@ const Recording = () => {
         return (
             <View style={styles.upper_goback}>
                 <TouchableOpacity
-                    onPress={() => { setShow_editor(false) }}
+                    onPress={() => { dispatch(setShow_recording()) }}
                     style={{
                         position: 'absolute',
                         left: 0
@@ -38,9 +41,9 @@ const Recording = () => {
     return (
         <View style={styles.main_container}>
             <RenderHeader />
-            <Pressable style={styles.volume}>
+            <Pressable style={styles.volume} onPress={() => { setSpeaker(p => !p) }}>
                 <MaterialCommunityIcons
-                    name='volume-high'
+                    name={speaker ? 'volume-high' : 'volume-off'}
                     size={30}
                     color={'#fff'}
                 />
@@ -48,17 +51,23 @@ const Recording = () => {
             <View style={styles.recording_container}>
                 <LottieView
                     source={RECORDING_ANIMATION}
-                    autoPlay={true}
-                    loop={true}
+                    autoPlay={recording}
+                    loop={recording}
                     style={{
                         width: 100,
                         height: 100
                     }} />
-                    <Pressable style={styles.start_button}>
-                        <Text style={{
-                            color: '#fff'
-                        }}>Start</Text>
-                    </Pressable>
+                <Pressable
+                    style={[styles.start_button, {
+                        backgroundColor: recording ? 'rgba(0, 0, 0, 0.7)' : 'rgba(0, 0, 0, 0.3)'
+                    }]}
+                    onPress={() => { setRecording(p => !p) }}>
+                    <Text style={{
+                        color: '#fff'
+                    }}>
+                        {recording ? 'Stop' : 'Start'}
+                    </Text>
+                </Pressable>
             </View>
         </View>
     )
@@ -92,7 +101,6 @@ const styles = StyleSheet.create({
         paddingTop: 5
     },
     start_button: {
-        backgroundColor: 'rgba(0, 0, 0, 0.7)',
         paddingHorizontal: 12,
         paddingVertical: 4,
         borderRadius: 4,

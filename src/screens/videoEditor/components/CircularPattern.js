@@ -27,11 +27,19 @@ import {
   VIDEO_FILTER
 } from '../../../configs/source'
 import { Image } from 'react-native';
+import {setShow_recording} from '../../../store/videoSlice'
 
 const { width, height } = Dimensions.get('screen')
 
 
-const CircularPattern = ({ setVideo_path, video_path, openHandler_modal, setShow_media }) => {
+const CircularPattern = ({
+  setVideo_path,
+  video_path,
+  openHandler_modal,
+  setShow_media,
+  setShow_editor,
+  setOPen_top_sheet
+}) => {
   const navigation = useNavigation();
   const [layer, setLayer] = useState(false);
   const dispatch = useDispatch()
@@ -41,6 +49,10 @@ const CircularPattern = ({ setVideo_path, video_path, openHandler_modal, setShow
   const handleLayer = () => {
     setLayer(!layer);
   };
+
+  const handleRecording = ()=>{
+    dispatch(setShow_recording())
+  }
 
   const numItems = 5; // Number of items to display
   const radius = 95; // Radius of the circular arrangement
@@ -85,7 +97,7 @@ const CircularPattern = ({ setVideo_path, video_path, openHandler_modal, setShow
 
               <TouchableOpacity
                 style={styles.icon_style}
-                onPress={() => { setShow_media(p => !p) }}>
+                onPress={() => { setOPen_top_sheet(p => !p) }}>
                 <Icon
                   name="perm-media"
                   style={{ fontSize: 25, color: 'white', marginLeft: 3 }}
@@ -103,8 +115,7 @@ const CircularPattern = ({ setVideo_path, video_path, openHandler_modal, setShow
               justifyContent: 'space-between',
               alignItems: 'center',
               marginVertical: 5,
-              paddingHorizontal: 8
-            }}>
+              paddingHorizontal: 8}}>
 
 
               {/* Layer button for applying many layer on the video */}
@@ -178,7 +189,7 @@ const CircularPattern = ({ setVideo_path, video_path, openHandler_modal, setShow
 
             {/* Recording button for recording music from microphone */}
 
-            <Pressable style={styles.icon_style}>
+            <Pressable style={styles.icon_style} onPress={handleRecording}>
               <Music
                 name="microphone"
                 style={{ fontSize: 25, color: 'white', marginLeft: 3 }}
@@ -201,7 +212,7 @@ const CircularPattern = ({ setVideo_path, video_path, openHandler_modal, setShow
       </View>
 
       <Modal visible={layer} transparent={true}>
-        <Pressable style={{flex: 1}} onPress={handleLayer} >
+        <Pressable style={{ flex: 1 }} onPress={handleLayer} >
           <View
             style={{
               width: 100,

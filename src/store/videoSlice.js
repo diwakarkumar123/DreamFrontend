@@ -4,6 +4,7 @@ let initialState = {
     video_url: null,
     show_loader: false,
     play_video: true,
+    show_recording: true
 }
 
 
@@ -19,6 +20,9 @@ const videoSlice = createSlice({
         },
         set_play_video(state, action){
             state.play_video = !state.play_video
+        },
+        setShow_recording(state, action){
+            state.show_recording = !state.show_recording
         }
     }
 
@@ -27,6 +31,7 @@ const videoSlice = createSlice({
 export const {
     change_video_url, 
     change_loading,
-    set_play_video
+    set_play_video,
+    setShow_recording
 } = videoSlice.actions;
 export default videoSlice.reducer;

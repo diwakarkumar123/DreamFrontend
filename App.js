@@ -66,6 +66,7 @@ import ContactList from './src/screens/inbox/screen/ContactList';
 import ColorPicking from './src/screens/inbox/component/ColorPicking';
 import AudioCall from './src/screens/inbox/screen/AudioCall';
 import VideoCall from './src/screens/inbox/screen/VideoCall';
+import DiamondAnalytics from './src/screens/profile/profile/Insights/DiamondAnalytics';
 
 
 
@@ -426,6 +427,13 @@ const App = () => {
                 animationEnabled: false,
               }} />
 
+            <Stack.Screen
+              name="DiamondAnalytics"
+              component={DiamondAnalytics}
+              options={{
+                headerShown: false,
+                animationEnabled: false,
+              }} />
 
             {/* <Stack.Screen name="ProfileScreen" component={ProfileScreen} /> */}
             <Stack.Screen name="SettingScreen" component={SettingScreen} />
