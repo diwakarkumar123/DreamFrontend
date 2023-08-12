@@ -50,7 +50,6 @@ const Camera = ({ camera, isRecord, navigation, setUri, setIsRecord }) => {
     <>
       <RNCamera
         onRecordingStart={data => {
-          console.log('start camera', data.nativeEvent.uri);
           setIsRecord(true);
           setUri(data.nativeEvent.uri);
         }}

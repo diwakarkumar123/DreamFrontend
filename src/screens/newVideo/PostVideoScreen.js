@@ -26,6 +26,7 @@ import {
   PLACE_ICON,
   STITCH_ICON,
   USER_IMG,
+  USER_FILLED_IMG
 } from '../../configs/source';
 import { BORDER, COLOR, SPACING, TEXT } from '../../configs/styles';
 import TopPostVideo from './components/TopPostVideo';
@@ -37,18 +38,20 @@ import * as videoApi from '../../apis/video.api';
 import ModalLoading from '../../components/modal/ModalLoading';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
-import { createThumbnail } from "react-native-create-thumbnail";
 import WebView from 'react-native-webview'
 import paymentsApi from '../../apis/paymentsApi';
 import Promotion from '../promotion/Promotion';
 import { Modalize } from 'react-native-modalize';
 import { FlatList } from 'react-native-gesture-handler';
 import AntDesign from 'react-native-vector-icons/AntDesign'
+import Entypo from 'react-native-vector-icons/Entypo'
 import { change_video_url } from '../../store/videoSlice';
-import { useDispatch} from 'react-redux';
+import { useDispatch } from 'react-redux';
 import Toast from 'react-native-simple-toast'
 import { FFmpegKit, ReturnCode } from 'ffmpeg-kit-react-native';
 import RNFS from 'react-native-fs';
+import HighlightText from '@sanar/react-native-highlight-text';
+import * as userApi from '../../apis/userApi'
 
 
 
@@ -68,106 +71,74 @@ const PostVideoScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const modalizeRef = useRef(null)
-  const [modalizeHeight, setModalizeHeight] = useState(height * 0.8)
+  const [show_tag_modal, setShow_tag_modal] = useState(false)
+  const [following_people, setFollowing_people] = useState()
   const video = useSelector(state => state.video)
+  const my_data = useSelector(state => state.my_data.my_profile_data)
   const dispatch = useDispatch()
-  const openModalize = () => {
-    modalizeRef.current.open()
+  const openModalize = async () => {
+    const result = await userApi.getAllFollowingsUsers(my_data?.auth_token)
+    setFollowing_people(result?.payload[0]?.Following)
+    setShow_tag_modal(true)
   }
-
-  useEffect(() => {
-    createThumbnail({
-      url: route.params.pathVideo,
-      timeStamp: 5000
-    })
-      .then((res) => {
-        setImage(res.path)
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-  }, [])
-
-  const resize_video = async () => {
-    const cache_dir_path = await RNFS.CachesDirectoryPath;
-    const filename = new Date().getTime()
-    const output_path = `${cache_dir_path}/${filename}.mp4`
-    const command = `-i ${route?.params?.pathVideo} -vf \"scale=iw*min (720/iw\\,1280/ih):ih*min (720/iw\\,1280/ih),pad=720:1280: (720-iw*min (720/iw\\,1280/ih))/2: (1280-ih*min (720/iw\\,1280/ih))/2\" -c:a copy ${output_path}`;
-    FFmpegKit.executeAsync(command, async (session) => {
-      const returnCode = await session.getReturnCode();
-      if (ReturnCode.isSuccess(returnCode)) {
-        console.log('success')
-
-        dispatch(change_video_url(output_path))
-       
-      } else if (ReturnCode.isCancel(returnCode)) {
-        
-        Toast.show('Cancel', Toast.LONG);
-
-      } else {
-        Toast.show('Error', Toast.LONG);
-      }
-    });
-  };
-
-  useEffect(() => {
-    resize_video()
-  }, [])
-
   const move_to_promote = () => {
     setPromotion(true)
   }
   const [searchText, setSearchText] = useState("");
   const [filteredUsers, setFilteredUsers] = useState(userinfo);
+
+
   const handleSearch = (text) => {
     setSearchText(text);
-
-    const filteredData = userinfo.filter((user) =>
-      user.name.toLowerCase().startsWith(text.toLowerCase())
+    const filteredData = following_people?.filter((user) =>
+      user.nickname.toLowerCase().startsWith(text.toLowerCase())
     );
-
     setFilteredUsers(filteredData);
   };
-
-  const my_data = useSelector(state => state.my_data.my_profile_data)
-
+  console.log(following_people)
   const [caption, setCaption] = useState('');
   const [privacy, setPrivacy] = useState(false);
   const [allow_comment, setAllow_comment] = useState(true)
   const [allow_duet, setAllowDuet] = useState(true)
   const [showModal, setShowModal] = useState(false);
   const [image, setImage] = useState(null)
-  // const [public, setPublic] = useState()
   const [allow_stitch, setAllow_stitch] = useState(true)
   const [promotion, setPromotion] = useState(false)
-
   const [PromoteModal, setpromoteModal] = useState(false)
-
   const [access_token, setAccess_token] = useState(null)
   const [paypal_url, setPaypal_url] = useState(null)
-  // const [showModal, setShowModal] = useState(false)
   const [promoteModal, setPromoteModal] = useState(false)
-
   const [countries, setCountries] = useState([])
   const [cities, setCities] = useState([])
 
-  // useEffect(() => {
-  //   navigation.setOptions({
-  //     headerShown: true,
-  //     headerTitle: 'Post',
-  //     headerTitleAlign: 'center',
-  //     headerShadowVisible: false,
-  //     headerLeft: () => (
-  //       <Icon
-  //         source={ARROW_BACK_IMG}
-  //         tintColor={COLOR.BLACK}
-  //         onPress={() => navigation.goBack()}
-  //       />
-  //     ),
-  //   });
-  // }, [navigation]);
+  const generate_thumbnail = async () => {
+    const cache_dir_path = await RNFS.CachesDirectoryPath;
+    const filename = new Date().getTime()
+    const output_path = `${cache_dir_path}/${filename}.mp4`
+    const command = `-i ${video?.video_url} -ss 00:00:05 -vframes 1 ${output_path}`;
 
-  // console.log(my_data)
+    return new Promise((resolve, reject) => {
+      FFmpegKit.executeAsync(command, async (session) => {
+        const returnCode = await session.getReturnCode();
+        if (ReturnCode.isSuccess(returnCode)) {
+          console.log('success')
+          resolve(true)
+          setImage(`file:// + ${output_path}`)
+        } else if (ReturnCode.isCancel(returnCode)) {
+          Toast.show('Cancel', Toast.LONG);
+          resolve(false)
+        } else {
+          Toast.show('Error', Toast.LONG);
+          resolve(false)
+        }
+      });
+    })
+  };
+  useEffect(() => {
+    generate_thumbnail()
+  }, [])
+
+
 
 
   const handlePostVideo = async () => {
@@ -239,7 +210,6 @@ const PostVideoScreen = () => {
     if (webviewState.url.includes('https://example.com/return')) {
 
       const urlValues = queryString.parseUrl(webviewState.url)
-      // console.log("my urls value", urlValues)
       const { token } = urlValues.query
       if (!!token) {
         paymentSucess(token)
@@ -266,28 +236,6 @@ const PostVideoScreen = () => {
   }
 
 
-
-
-  //   const handlePostVideo = ()=>{
-  //     console.log("video uri:", route?.params?.pathVideo)
-  //     console.log("video name:", route?.params?.pathVideo.split("/").reverse()[0])
-
-  //     // const data = new FormData()
-  //     // data.append('video', route?.params?.pathVideo, route?.params?.pathVideo.split('/').reverse()[0])
-  //     // data.append('caption', caption)
-  //     const data = {
-  //       name: 'shubham ghanghotia'
-  //     }
-  // console.log(data)
-
-
-  //     axios.post("http://192.168.0.102:3000/videos/video", data, headers, {
-  //       'Content-Type': 'multipart/form-data'
-  //     })
-  //     .then((res)=>{
-  //       console.log(res)
-  //     })
-  //   }
 
   const userinfo = [
     {
@@ -337,29 +285,17 @@ const PostVideoScreen = () => {
     },
   ];
 
-  const handleScroll = (event) => {
-    const { contentOffset, layoutMeasurement, contentSize } = event.nativeEvent;
-    console.log('contentOffset:', contentOffset)
-    console.log('layoutMeasurement:', layoutMeasurement)
-    console.log('contentSize,', contentSize)
-    const maxScrollPosition = contentSize.height - layoutMeasurement.height;
-    const scrollPositionPercentage = (contentOffset.y / maxScrollPosition) * 100;
-
-    // Calculate the new modal height based on the scroll position
-    const newModalHeight = height * 0.8 + (scrollPositionPercentage * 3);
-    setModalizeHeight(newModalHeight);
-  };
-
-  console.log(countries)
-
-
-
   const handleClickAddress = e => {
     let txt = caption.trim();
     if (iconCaption.includes(txt[txt.length - 1])) txt = txt.slice(0, -1);
     console.log(txt);
     setCaption(txt.trim() + ' ◉' + e);
   };
+
+
+
+
+
 
   return (
     <Container
@@ -375,7 +311,7 @@ const PostVideoScreen = () => {
       />
       {showModal && <ModalLoading visible={showModal} />}
       <TopPostVideo
-        pathVideo={route.params.pathVideo}
+        pathVideo={video?.video_url}
         caption={caption}
         setCaption={text => setCaption(text)}
         image={image}
@@ -480,14 +416,19 @@ const PostVideoScreen = () => {
         </View>
       </Modal>
 
-      {/* displaying modalize for managing the taging section */}
-      <Modalize
-        snapPoint={600}
-        modalHeight={modalizeHeight}
-        ref={modalizeRef}
-        handlePosition={(v) => { console.log(v) }}
-      >
-        <View style={{ height: modalizeHeight }}>
+
+      <Modal visible={show_tag_modal} transparent={true} animationType='slide'>
+        <Pressable
+          style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.4)' }}
+          onPress={() => { setShow_tag_modal(false) }} />
+        <View style={{
+          height: height * 0.6,
+          backgroundColor: '#fff',
+          position: 'absolute',
+          bottom: 0,
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20
+        }}>
           <View style={{
             width: width,
             flexDirection: 'row',
@@ -495,13 +436,11 @@ const PostVideoScreen = () => {
             paddingHorizontal: width * 0.05,
             borderBottomWidth: 1,
             borderColor: 'rgba(0, 0, 0, 0.2)',
-            marginTop: 10
-
+            marginTop: 10,
+            justifyContent: 'center'
           }}>
-            <TouchableOpacity onPress={() => { setShow_search(false) }}>
-              <AntDesign name='search1' size={20} />
-            </TouchableOpacity>
-            <View style={{ width: width, }}>
+            <AntDesign name='search1' size={20} color={'#020202'} />
+            <View style={{ flex: 1 }}>
               <TextInput
                 placeholder='Search'
                 onChangeText={handleSearch}
@@ -511,16 +450,18 @@ const PostVideoScreen = () => {
                 }}
               />
             </View>
+            <Pressable onPress={() => { setShow_tag_modal(false) }}>
+              <Entypo name='cross' size={30} color={'#020202'} />
+            </Pressable>
           </View>
-          {/* <View style={[styles.tag_main_container, {justifyContent: 'center'}]}>
-            
+          <View style={[styles.tag_main_container, { justifyContent: 'center' }]}>
+            {/*             
             <TouchableOpacity style={styles.tag_button}>
               <Text style={{ color: 'white' }}>Tag everyone</Text>
-            </TouchableOpacity>
-          </View> */}
+            </TouchableOpacity> */}
+          </View>
           <FlatList
-            data={filteredUsers ? filteredUsers : userinfo}
-            onScroll={handleScroll}
+            data={filteredUsers ? filteredUsers : following_people}
             scrollEventThrottle={20}
             renderItem={({ item, index }) => (
               <View style={styles.tag_main_container}>
@@ -529,7 +470,7 @@ const PostVideoScreen = () => {
                   alignItems: 'center'
                 }}>
                   <Image
-                    source={{ uri: item.img }}
+                    source={item?.profile_pic ? { uri: item?.profile_pic } : USER_FILLED_IMG}
                     style={{
                       width: 50,
                       height: 50,
@@ -537,7 +478,10 @@ const PostVideoScreen = () => {
                       marginRight: 20
                     }}
                   />
-                  <Text>{item.name}</Text>
+                  <View>
+                  <Text style={styles.nickname}>{item?.nickname}</Text>
+                  <Text style={styles.username}>@{item?.username}</Text>
+                  </View>
                 </View>
                 <TouchableOpacity style={styles.tag_button}>
                   <Text style={{ color: 'white' }}>Tag</Text>
@@ -546,7 +490,8 @@ const PostVideoScreen = () => {
             )}
           />
         </View>
-      </Modalize>
+      </Modal>
+
     </Container>
   );
 };
@@ -581,9 +526,16 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   tag_button: {
-    backgroundColor: 'blue',
+    backgroundColor: 'red',
     paddingHorizontal: 20,
     paddingVertical: 5,
     borderRadius: 5
+  },
+  nickname: {
+    fontSize: 16,
+    color: '#020202'
+  },
+  username: {
+    fontSize: 12
   }
 });

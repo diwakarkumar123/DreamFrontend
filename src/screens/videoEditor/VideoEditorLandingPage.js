@@ -26,7 +26,8 @@ import {
     PanGestureHandler,
     TapGestureHandler,
     State,
-    TapGesture
+    TapGesture,
+
 } from 'react-native-gesture-handler'
 import Animated, {
     interpolate,
@@ -37,7 +38,8 @@ import Animated, {
     useSharedValue,
     withTiming,
     useDerivedValue,
-    withSpring
+    withSpring,
+
 } from 'react-native-reanimated';
 import LeftIcon from './components/LeftIcon';
 import MainEditor from './components/MainEditor';
@@ -48,9 +50,9 @@ import { stateList } from './State';
 import { useDispatch, useSelector } from 'react-redux';
 import { change_video_url, change_loading } from '../../store/videoSlice';
 import Recording from './components/Recording';
+import TopSheetMusicSelection from './components/TopSheetMusicSelection';
+import SweetStickers from './sticker/SweetStickers';
 const { width, height } = Dimensions.get('screen')
-
-
 export const content_width = {
     LEFT_CONTAINER: {
         width: 50,
@@ -99,12 +101,24 @@ const VideoEditorLandingPage = () => {
     const [screenDimensions, setScreenDimensions] = useState(Dimensions.get('window'));
     const { width, height } = Dimensions.get('window')
     const [start_recording, setStart_recording] = useState(true)
+    const [show_music_selection, setShow_music_selection] = useState(true)
+    const [text_overlay, setText_overlay] = useState('')
     const [property_settings, setProperty_settings] = useState({
         visible: false
     })
     const video = useSelector(state => state.video)
     const play_video = useSelector(state => state?.video?.play_video)
     const show_recording = useSelector(state => state?.video?.show_recording)
+    const sticker_top_position = useSharedValue(10)
+    const sticker_left_position = useSharedValue(10)
+    const sticker_right_position = useSharedValue(10)
+    const sticker_bottom_position = useSharedValue(10)
+    const [textSize, setTextSize] = useState({ width: 0, height: 0 });
+
+    const handleTextLayout = (event) => {
+        const { width, height } = event.nativeEvent.layout;
+        setTextSize({ width, height });
+    };
     const content_width = {
         LEFT_CONTAINER: {
             width: 50,
@@ -133,79 +147,75 @@ const VideoEditorLandingPage = () => {
     const [show_loader, setShow_loader] = useState(false)
     const [video_path, setVideo_path] = useState('')
 
+
     useEffect(() => {
+        // DETECT WHEATHER THE LIST IS EMPTY OR NOT IF EMPTY THEN ADD THE CURRENT URL OF THE VIDEO TO IT
         if (stateList.size == 0) {
-            stateList.addState(route?.params?.pathVideo.replace(/^file:\/\//, ""))
+            stateList.addState(video?.video_url)
             dispatch(change_video_url(stateList.current.data))
         } else {
             dispatch(change_video_url(stateList.current.data))
         }
     }, [])
 
+    // EFFECT FOR UPDATING THE DIMENSION OF THE SCREEN SO THAT IF THE ORIENTATION OF THE SCREEN CHANGES THEY MANAGE THE THINGS
     useEffect(() => {
         const updateDimensions = ({ window }) => {
             setScreenDimensions(window);
         };
-
         Dimensions.addEventListener('change', updateDimensions);
-
-        // Clean up the listener when the component unmounts
         return () => {
-            // Dimensions.removeEventListener('change', updateDimensions);
         };
     }, []);
 
-    // console.log(video_path)
-    // console.log(stateList.size)
+    // EFFECT FOR CHANGING THE ORIENTATION OF SCREEN 
+    useEffect(() => {
+        Orientation.lockToLandscape()
+        return () => {
+            Orientation.unlockAllOrientations();
+        };
+    }, []);
 
 
 
-    // const applyWarmEffect = async ()=>{
-    //     const inputfile = original_video_path;
-    //     const cache_path = await RNFS.CachesDirectoryPath;
-    //     const output_path = `${cache_path}/warn_video.mp4`;
-    //     const command = `-i ${inputfile} -vf "colorlevels=rimin=30/g=0/b=0,curves=all='0/0.8 1/1'" ${output_path}`;
-    //     FFmpegKit.execute(command)
-    //     .then(async(session)=>{
-    //         const returncode = await session.getReturnCode()
-    //         if(returncode){
-    //             console.log("effect succefully applyied")
-    //             console.log("video editing succesfull")
-    //             setOutput_video_path('')
-    //             setTrimmed_video_path(output_path)
-    //         }
-    //     })
-    //     .catch((err)=>{
-    //         console.log("video editing error")
-    //     })
 
-    // }
-
-    // function for transposing the video to right and left
+    // WORK FLOW OF VIDEO EDIITNG 
+    // 1. CHAGE THE LOADER TO TRUE, SO THAT USER FEELS SOMETHING HAPPENING 
+    // 2. GET THE PATH OF CACHE DIRECTORY PATH.
+    // 3. MAKE A FILENAME FOR THE EDITED VIDEO TO STORE WITH THAT NAME.
+    // 4. MAKE THE PATH, WHERE YOU WANT TO STORE THE VIDEO
+    // 5. WRITE FFMPEG COMMAND FOR VIDEO EDITING
+    // 6. EXECUTE THE FFMPEG COMMAND
+    // 7. IF SUCCESSFULLY EXECUTED THEN ADD THE OUTPUT PATH TO STATELIST FOR MANAGING EVERYTHING
+    // 8. THEN AFTER ADD THE OUTPUT FILE TO REDUX SO THE VIDEO START PLAYING ON THE SCREEN
 
 
+
+
+
+
+    // FUNCTION FOR ROTATING THE VIDEO 
     const rotateVideo = async () => {
         console.log("video rotation")
-        dispatch(change_loading(true))
-        const cache_dir_path = await RNFS.CachesDirectoryPath;
-        const filename = new Date().getTime()
-        const output_path = `${cache_dir_path}/${filename}.mp4`
-        const command = `-i ${video.video_url} -vf "transpose=0" ${output_path}`;
+        dispatch(change_loading(true)) // CHANGE THE LOADING TO TRUE
+        const cache_dir_path = await RNFS.CachesDirectoryPath; // GETTING THE PATH OF CACHE DIRECTORY 
+        const filename = new Date().getTime() // MAKING THE FILENAME OF THE OF THE VIDEO BY THE TIMESTAMP
+        const output_path = `${cache_dir_path}/${filename}.mp4` // OUTPUT FILE PATH WHEN THE VIDEO IS EDITED THEY STORD HERE
+        const command = `-i ${video.video_url} -vf "transpose=0" ${output_path}`; // FFMPEG COMMAND FOR ROTATING THE VIDEO
+        // FUNCTION FOR EXECUTING THE FFMPEG COMMAND
         FFmpegKit.executeAsync(command, async (session) => {
-            const returnCode = await session.getReturnCode();
+            const returnCode = await session.getReturnCode(); // GETTING THE RETURN CODE OF THE EXECUTION
             if (ReturnCode.isSuccess(returnCode)) {
                 console.log('success')
-                stateList.addState(output_path)
-                dispatch(change_video_url(stateList.current.data))
-                dispatch(change_loading(false))
+                stateList.addState(output_path) // IF THE VIDEO EDITING IS SUCCESSFULL SET THE OUTPUT FILE PATH THE STATELIST. STATELIST IS A DOUBLY LINKED LIST IMPORTED FROM STATE FILE
+                dispatch(change_video_url(stateList.current.data)) // CHANGING THE CURRENT EDITED PATH OF VIDEO TO REDUX FOR PLAYING THE VIDEO ON THE SCREEN
+                dispatch(change_loading(false)) // SET OUT THE LOADING VIDEO TO FALSE
             } else if (ReturnCode.isCancel(returnCode)) {
                 console.log("cancel")
                 dispatch(change_loading(false))
             } else {
                 dispatch(change_loading(false))
                 console.log('error')
-
-
             }
         });
     };
@@ -359,12 +369,8 @@ const VideoEditorLandingPage = () => {
 
 
 
-    useEffect(() => {
-        Orientation.lockToLandscape()
-        return () => {
-            Orientation.unlockAllOrientations();
-        };
-    }, []);
+
+    // DATA OF THE LEFT ICONS
     const data = [
         {
             id: 1,
@@ -373,25 +379,29 @@ const VideoEditorLandingPage = () => {
             active: true,
             onPress: () => {
                 navigation.goBack()
-                // resize_video()
             }
         },
         {
             id: 2,
             group_name: 'EvilIcons',
-            icon_name: 'undo',
-            active: false,
+            icon_name: 'undo', // UNDO MEANS GOING BACK ONE STEP
+            active: stateList?.current?.prev || false, // FALSE MEANS, CURRENTLY THEIER IS NOTHING HAPEENING WITH VIDEO, BECOME TRUE IF SOMETHING HAPPENING WITH THE VIDEO.
             onPress: () => {
-                console.log("pressed")
+                if (stateList?.current?.prev) {
+                    stateList.undo()
+                    dispatch(change_video_url(stateList.current.data))
+                }
             }
         },
         {
             id: 3,
             group_name: 'EvilIcons',
-            icon_name: 'redo',
-            active: false,
+            icon_name: 'redo', // REDO MEANS, IF SOMEONE EDITIED THE VIDEO AND THEY ARE NOT AT THE LAST EDITED VIDEO PATH 
+            active: stateList?.current?.next || false, // THEY BECOME TRUE IF SOMEONE CLICK UNDO ITEM BEFORE.
             onPress: () => {
-                mirroringHorizontally()
+                if (stateList?.current.next)
+                    stateList.redo()
+                dispatch(change_video_url(stateList.current.data))
             }
         },
         {
@@ -605,6 +615,14 @@ const VideoEditorLandingPage = () => {
             setShow_editor(e => !e)
         }
     }
+    const stickerAnimatedStyle = useAnimatedStyle(() => {
+        return {
+            top: sticker_top_position.value,
+            bottom: sticker_bottom_position.value,
+            left: sticker_left_position.value,
+            right: sticker_right_position.value
+        }
+    })
 
 
     const handleNestedGesture = useAnimatedGestureHandler({
@@ -671,22 +689,12 @@ const VideoEditorLandingPage = () => {
                 dictionary: context.dictionary,
                 width: context.width,
             }
-
-            // console.log("onActive", gesture_event, gesture_context)
         },
         onEnd: (event, context) => {
             const { velocityX } = event;
             const snapThreshold = 100;
             const direction = velocityX > 0 ? 1 : -1;
             const target_width = direction > 0 ? 0 : -800;
-
-            // if(Math.abs(velocityX) > snapThreshold){
-            //     selected_part.value = withTiming(target_width)
-            // } else{
-            //     selected_part.value  = withTiming(0)
-            // }
-
-
             const gesture_event = {
                 absoluteX: event.absoluteX,
                 absoluteY: event.absoluteY,
@@ -704,9 +712,6 @@ const VideoEditorLandingPage = () => {
                 dictionary: context.dictionary,
                 width: context.width,
             }
-
-            // console.log("onEnd", gesture_event, gesture_context)
-
         },
 
 
@@ -724,6 +729,58 @@ const VideoEditorLandingPage = () => {
             right
         }
     })
+    const minX = 0; // Minimum X coordinate
+    const minY = - 15; // Minimum Y coordinate
+    const maxX = width - 350; // Maximum X coordinate
+    const maxY = height * 0.5; // Max
+
+    const handleStickerGesture = useAnimatedGestureHandler({
+        onStart: (_, ctx) => {
+            ctx.startTop = sticker_top_position.value;
+            ctx.startLeft = sticker_left_position.value;
+            ctx.startBottom = sticker_bottom_position.value;
+            ctx.startRight = sticker_right_position.value;
+        },
+        onActive: (event, ctx) => {
+            runOnJS(clamp)
+            const newTop = ctx.startTop + event.translationY;
+            const newLeft = ctx.startLeft + event.translationX;
+            const newBottom = ctx.startBottom - event.translationY;
+            const newRight = ctx.startRight - event.translationX;
+            runOnJS(updateStickerPosition)(
+                newTop,
+                newLeft,
+                newBottom,
+                newRight,
+                minY,
+                minX,
+                maxY,
+                maxX
+            );
+        },
+    });
+
+
+    function updateStickerPosition(
+        newTop,
+        newLeft,
+        newBottom,
+        newRight,
+        minY,
+        minX,
+        maxY,
+        maxX
+    ) {
+        sticker_top_position.value = clamp(newTop, minY, maxY);
+        sticker_left_position.value = clamp(newLeft, minX, maxX);
+        sticker_bottom_position.value = clamp(newBottom, minY, maxY);
+        sticker_right_position.value = clamp(newRight, minX, maxX);
+    }
+
+    function clamp(value, min, max) {
+        return Math.min(Math.max(value, min), max);
+    }
+
 
 
 
@@ -767,7 +824,7 @@ const VideoEditorLandingPage = () => {
                                         icon_name={item.icon_name}
                                         size={25}
                                         onPress={item.onPress}
-                                        color={'white'} />
+                                        color={item?.active ? '#fff' : 'rgba(255, 255, 255, 0.4)'} />
                                 </View>
                             )}
                         />
@@ -786,67 +843,100 @@ const VideoEditorLandingPage = () => {
                     }}>
 
                         {/* Top View */}
+                        <View style={{
+                            width: width - 50,
+                            height: height * 0.62,
+                            backgroundColor: 'white',
+                            flexDirection: 'row'
+                        }}>
+
+                            {/* Left view  */}
+                            {/* video main view for handeling many thing */}
                             <View style={{
-                                width: width - 50,
-                                height: height * 0.62,
-                                backgroundColor: 'white',
-                                flexDirection: 'row'
+                                width: content_width.RIGHT_TOP_LEFT.width,
+                                height: content_width.RIGHT_TOP_LEFT.height,
+                                backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                                borderRightWidth: 5,
+                                borderRightColor: '#020202',
+                                borderLeftWidth: 5,
                             }}>
 
-                                {/* Left view  */}
-                                {/* video main view for handeling many thing */}
-                                <View style={{
-                                    width: content_width.RIGHT_TOP_LEFT.width,
-                                    height: content_width.RIGHT_TOP_LEFT.height,
-                                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                                    borderRightWidth: 5,
-                                    borderRightColor: '#020202',
-                                    borderLeftWidth: 5,
-                                }}>
+                                {text_overlay && (
+                                    <PanGestureHandler onGestureEvent={handleStickerGesture}>
+                                        <Animated.Text onLayout={handleTextLayout} style={[{
+                                            position: 'absolute',
+                                            zIndex: 1000,
+                                            color: text_overlay?.color,
+                                            fontSize: text_overlay?.fontSize,
+                                            // fontWeight: text.fontWeight,
+                                            // fontStyle: text.fontStyle,
+                                            // lineHeight: text.lineHeight,
+                                            // letterSpacing: text.letterSpacing,
+                                            textAlign: text_overlay?.textAlign,
+                                            // textAlignVertical: text.textAlignVertical,
+                                            // textDecorationLine: text.textDecorationLine,
+                                            // textDecorationColor: text.textDecorationColor,
+                                            // textDecorationStyle: text.textDecorationStyle,
+                                            // textTransform: text.textTransform,
+                                            // textShadowColor: text.textShadowColor,
+                                            // textShadowOffset: { width: text?.textShadowOffset?.width, height: text?.textShadowOffset?.height },
+                                            // textShadowRadius: text.textShadowRadius,
+                                            backgroundColor: text_overlay?.backgroundColor,
+                                            // opacity: text.opacity,
+                                            // elevation: text.elevation,
+                                            fontFamily: text_overlay?.fontFamily,
+                                        }, stickerAnimatedStyle]}>
 
-                                    {video &&
-                                        <Video
-                                            source={{ uri: `file://` + video.video_url }}
-                                            style={{ flex: 1 }}
-                                            resizeMode='contain'
-                                            paused={play_video}
-                                            repeat={false}
-                                            filterEnabled={false}
-                                            controls={false}
-                                        />}
-                                </View>
+                                            {text_overlay?.value}
 
-                                {/* main editor view for handeling all the editing functionality */}
-                                <View style={{
-                                    width: content_width.RIGHT_TOP_RIGHT.width,
-                                    height: content_width.RIGHT_TOP_RIGHT.height,
-                                    backgroundColor: 'grey',
-                                }}>
-                                    {!show_editor && !show_recording && (
-                                        <CircularPattern
-                                            setShow_media={setShow_media}
-                                            setShow_editor={setShow_editor}
-                                            setOPen_top_sheet={setOPen_top_sheet}
-                                        />
-                                    )}
-                                    {show_editor && (
-                                        <MainEditor
-                                            setShow_editor={setShow_editor}
-                                            show_editor={show_editor}
-                                            rotateVideo={rotateVideo}
-                                            rotateAntiClockwiseVideo={rotateAntiClockwiseVideo}
-                                            mirroringHorizontally={mirroringHorizontally}
-                                            mirroringVertically={mirroringVertically}
+                                        </Animated.Text>
+                                    </PanGestureHandler>
+                                )}
 
-                                            reverse_video={reverse_video} />
-                                    )}
-                                    {show_recording && !show_editor && (
-                                        <Recording />
-                                    )}
-                                </View>
+                                {video &&
+                                    <Video
+                                        source={{ uri: `file://` + video?.video_url }}
+                                        style={{ flex: 1 }}
+                                        resizeMode='contain'
+                                        paused={play_video}
+                                        repeat={false}
+                                        filterEnabled={false}
+                                        controls={false}
+                                    />}
                             </View>
-                        
-                       
+
+                            {/* main editor view for handeling all the editing functionality */}
+                            <View style={{
+                                width: content_width.RIGHT_TOP_RIGHT.width,
+                                height: content_width.RIGHT_TOP_RIGHT.height,
+                                backgroundColor: 'grey',
+                            }}>
+                                {!show_editor && !show_recording && (
+                                    <CircularPattern
+                                        setShow_media={setShow_media}
+                                        setShow_editor={setShow_editor}
+                                        setOPen_top_sheet={setOPen_top_sheet}
+                                        setShow_music_selection={setShow_music_selection}
+                                        setText_overlay={setText_overlay}
+                                    />
+                                )}
+                                {show_editor && (
+                                    <MainEditor
+                                        setShow_editor={setShow_editor}
+                                        show_editor={show_editor}
+                                        rotateVideo={rotateVideo}
+                                        rotateAntiClockwiseVideo={rotateAntiClockwiseVideo}
+                                        mirroringHorizontally={mirroringHorizontally}
+                                        mirroringVertically={mirroringVertically}
+                                        reverse_video={reverse_video} />
+                                )}
+                                {show_recording && !show_editor && (
+                                    <Recording />
+                                )}
+                            </View>
+                        </View>
+
+
 
 
 
@@ -928,15 +1018,29 @@ const VideoEditorLandingPage = () => {
             </GestureHandlerRootView>
             {/* <Modal visible={property_settings.visible}> */}
             {open_top_sheet && (
-                            <TopSheetMediaSelection
-                                open_top_sheet={open_top_sheet}
-                                setOPen_top_sheet={setOPen_top_sheet} />
-
-                        )}
+                <TopSheetMediaSelection
+                    open_top_sheet={open_top_sheet}
+                    setOPen_top_sheet={setOPen_top_sheet} />)}
+            {show_music_selection && (
+                <TopSheetMusicSelection
+                    setShow_music_selection={setShow_music_selection}
+                />
+            )}
 
             <PropertySettings property_settings={property_settings} setProperty_settings={setProperty_settings} />
             {/* </Modal> */}
-            {video?.show_loader && <View style={styles.loader}>
+            {video?.show_loader && <View style={{
+                position: 'absolute',
+                top: 0,
+                bottom: 0,
+                left: 0,
+                right: 0,
+                backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                width: width,
+                height: height,
+                justifyContent: 'center',
+                alignItems: 'center'
+            }}>
                 <Image
                     source={TIKTOK_LOADER_GIF}
                     style={{ width: 50, height: 50 }}

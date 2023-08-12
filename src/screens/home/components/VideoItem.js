@@ -49,8 +49,8 @@ const { height, width } = Dimensions.get('screen');
 const VideoItem = React.forwardRef(({ item, index, onEnd, flatListRef }, ref) => {
 
   // const { id, caption, url, author, audio, like, comment } = item;
-  const { id, user_id, description, video, thum, gif, view, section, sound_id, privacy_type, allow_comments, allow_duet, block, duet_video_id, old_video_id, duration, promote, created, like, comment, shared, diamond_value, profile_pic, user } = item;
-
+  const { id, user_id, description, video, thum, gif, view, section, sound_id, privacy_type, allow_comments, allow_duet, block, duet_video_id, old_video_id, duration, promote, created, like, comment, shared, diamond_value, profile_pic, user, likes } = item;
+   
   const [showFullText, setShowFullText] = useState(description?.length > 60)
   const url = `https://dpcst9y3un003.cloudfront.net/${video}`
 
@@ -61,15 +61,10 @@ const VideoItem = React.forwardRef(({ item, index, onEnd, flatListRef }, ref) =>
   const [showText, setShowText] = useState(false)
 
   const dispatch = useDispatch()
-
-  const isLogin = useSelector(state => state.my_data.isLogin)
-
+  const isLogin = useSelector(state => state?.my_data.isLogin)
   const navigation = useNavigation()
-
-  const my_data = useSelector(state => state.my_data.my_profile_data)
-
+  const my_data = useSelector(state => state?.my_data?.my_profile_data)
   const [showGiftModal, setShowGiftModal] = useState(false)
-
   const [showDimanondSelectionModal, setShowDimanondSelectionModal] = useState({
     isVisible: false,
     item: null
@@ -208,6 +203,7 @@ const VideoItem = React.forwardRef(({ item, index, onEnd, flatListRef }, ref) =>
         author={thum}
         idVideo={id}
         share={shared}
+        likes={likes}
         item={item}
       />
 

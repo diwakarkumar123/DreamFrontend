@@ -90,6 +90,16 @@ const getMyAllChatedPerson = async (token) => {
     return result.data;
 }
 
+// FUNCTION FOR GETTING ALL THE FOLLOWING PERSONS
+const getAllFollowingsUsers = async (token)=>{
+    const config = {
+        headers: { Authorization: `Bearer ${token}` }
+    }
+    const url = `${SERVER_API_URL}/users/getAllFollowingsUsers`;
+    const result = await axios.get(url, config)
+    return result.data;
+}
+
 
 
 export {
@@ -103,5 +113,6 @@ export {
     getFollowersDetails,
     getFollowingsDetails,
     getAllMessages,
-    getMyAllChatedPerson
+    getMyAllChatedPerson,
+    getAllFollowingsUsers
 }

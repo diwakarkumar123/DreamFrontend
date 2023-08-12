@@ -1,24 +1,25 @@
-import { StyleSheet, Text, Pressable, Image } from 'react-native';
-import React from 'react';
+import { StyleSheet, Text, Pressable, Image, Modal, View } from 'react-native';
+import React, { useState } from 'react';
 import { BORDER, COLOR, TEXT } from '../../../configs/styles/index';
-import { Illustration_IMG } from '../../../configs/source';
+import { Illustration_IMG, TIKTOK_LOADER_GIF } from '../../../configs/source';
 import { launchImageLibrary } from 'react-native-image-picker';
 import RNFS from 'react-native-fs';
 
 
 const Upload = ({ endRecord }) => {
+  const [show_loader, setShow_loader] = useState(false)
   const handleClick = async () => {
     try {
-      const options = { mediaType: 'video' };
-
+      const options = { mediaType: 'video', };
       const result = await launchImageLibrary(options);
+      setShow_loader(true)
       const sourceUri = result.assets[0].uri;
       const cache_path = RNFS.CachesDirectoryPath;
       const out_put_path = `${cache_path}/selected_video.mp4`
       RNFS.copyFile(sourceUri, out_put_path)
         .then(() => {
           const fileUri = `file://${out_put_path}`;
-          console.log(fileUri)
+          setShow_loader(false)
           endRecord(fileUri, result?.assets[0]?.duration);
         })
         .catch((err) => {
@@ -30,10 +31,26 @@ const Upload = ({ endRecord }) => {
   };
 
   return (
-    <Pressable onPress={handleClick} style={styles.container}>
-      <Image source={Illustration_IMG} style={styles.icon} />
-      <Text style={styles.text}>Upload</Text>
-    </Pressable>
+    <>
+      <Pressable onPress={handleClick} style={styles.container}>
+        <Image source={Illustration_IMG} style={styles.icon} />
+        <Text style={styles.text}>Upload</Text>
+      </Pressable>
+      <Modal visible={show_loader} transparent={true}>
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'rgba(0, 0, 0, 0.7)'
+          }}>
+          <Image
+            source={TIKTOK_LOADER_GIF}
+            style={{ width: 50, height: 50 }}
+          />
+        </View>
+      </Modal>
+    </>
   );
 };
 

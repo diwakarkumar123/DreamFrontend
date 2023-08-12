@@ -5,6 +5,7 @@ import LeftIcon from './LeftIcon'
 import RNFS from 'react-native-fs'
 import { readAllFolder } from '../utils/ReadAllFiles'
 import Entypo from 'react-native-vector-icons/Entypo'
+import Animated, {useAnimatedStyle, useSharedValue, withSpring, withTiming} from 'react-native-reanimated'
 const { width, height } = Dimensions.get('window')
 
 const TopSheetMediaSelection = ({ setOPen_top_sheet }) => {
@@ -42,7 +43,7 @@ const TopSheetMediaSelection = ({ setOPen_top_sheet }) => {
     ]
     useEffect(() => {
         const updateDimensions = ({ window }) => {
-            setScreenDimensions(window);
+           
         };
 
         Dimensions.addEventListener('change', updateDimensions);
@@ -52,8 +53,6 @@ const TopSheetMediaSelection = ({ setOPen_top_sheet }) => {
             // Dimensions.removeEventListener('change', updateDimensions);
         };
     }, []);
-
-    console.log(width, height)
 
 
     // const readAllFolder = async () => {
@@ -140,7 +139,8 @@ const TopSheetMediaSelection = ({ setOPen_top_sheet }) => {
             left: 0,
             right: 0,
             borderBottomWidth: 1,
-            borderBottomColor: '#020202'
+            borderBottomColor: '#020202',
+            flexDirection: 'row'
         },
         left_icon: {
             width: 50,
@@ -156,21 +156,34 @@ const TopSheetMediaSelection = ({ setOPen_top_sheet }) => {
             borderTopWidth: 0.5,
             borderColor: 'white',
             borderRightWidth: 0,
-            borderBottomWidth: 10
+            borderBottomWidth: 1
         },
         text: {
             color: 'white',
             marginTop: 5
         },
+        right_view: {
+            width: width - 50,
+            backgroundColor: '#fff',
+            height: height * 0.62,
+        },
+        right_top_view: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            backgroundColor: 'red',
+            paddingHorizontal: 10,
+            paddingVertical: 10
+        }
     })
 
 
 
-
     return (
-        <View style={styles.main_container}>
+        <Animated.View style={[styles.main_container]}>
 
 
+            {/* Left view */}
             <View style={styles.left_icon}>
                 <FlatList
                     data={data}
@@ -187,45 +200,41 @@ const TopSheetMediaSelection = ({ setOPen_top_sheet }) => {
                     )}
                 />
             </View>
+            {/* Left view ended  */}
+
+
+            {/* right view */}
+            <View style={styles.right_view}>
 
 
 
-
-
-            {/* right view  */}
-            <View style={{ width: width - 50, position: 'absolute', right: 0, top: 0, bottom: 0 }}>
-
-
-                {/* right top view  */}
-                <View style={styles.topView}>
-                    <View style={styles.top_left_view}>
-                        <LeftIcon
-                            group_name={"Entypo"}
-                            icon_name={'folder-images'}
-                            size={25}
-                            color={'white'} />
-                        <Text style={[styles.text, { fontSize: 16, fontWeight: '600' }]}>Media Browser</Text>
+                <View style={styles.right_top_view}>
+                    <View style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        backgroundColor: 'red'
+                    }}>
+                        <LeftIcon group_name={'FontAwesome5'} icon_name={'photo-video'} color={'#fff'} size={30}  />
+                        <Text style={{ color: '#fff', fontSize: 18, fontWeight: '600', marginLeft: 10 }}>Media browser</Text>
                     </View>
-                    <TouchableOpacity onPress={handleCancel}>
-                        <Entypo name='cross' size={30} color={'white'} />
-                    </TouchableOpacity>
+                    <LeftIcon group_name={'Entypo'} icon_name={'cross'} color={'#fff'} size={30} onPress={()=>{
+                        setOPen_top_sheet(p => !p)}} />
                 </View>
-                {/* right bottom view  */}
-                {folder_name && <View style={{ width: width - 50, height: 200, position: 'absolute', right: 0, top: 50 }}>
-                    <FlatList
-                        data={folder_name}
-                        renderItem={({ item, index }) => (
-                            <View>
-                                <Text style={{ color: 'black' }}>{item.folderName}</Text>
-                            </View>
 
-                        )}
-                    />
-                </View>}
+
+
+
+
+
+
             </View>
+            {/* right view ended */}
 
 
-        </View>
+
+
+
+        </Animated.View>
     )
 }
 

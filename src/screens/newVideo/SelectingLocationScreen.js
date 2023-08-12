@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View, TouchableOpacity, FlatList, Dimensions } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, FlatList, Dimensions, StatusBar } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { useNavigation } from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import EvilIcons from 'react-native-vector-icons/EvilIcons'
@@ -8,8 +8,11 @@ import { getAllCountries } from '../../apis/countryApi'
 import axios from 'axios'
 import CheckBox from '@react-native-community/checkbox';
 import { TextInput } from 'react-native-gesture-handler'
-
+import * as countryApi from '../../apis/countryApi'
+import * as Localize from 'react-native-localize'
+import DeviceInfo from 'react-native-device-info'
 const { width, height } = Dimensions.get("window")
+
 
 
 const SelectingLocationScreen = ({ route }) => {
@@ -20,10 +23,18 @@ const SelectingLocationScreen = ({ route }) => {
     const [filteredUsers, setFilteredUsers] = useState(data);
     const [show_search, setShow_search] = useState(false)
     const [selected_country, setSelected_country] = useState(['s'])
-
     const { setCountries, setCities, countries, cities } = route.params;
 
-    console.log(countries, cities)
+
+    const device_info = async ()=>{
+        const result = await DeviceInfo.getFreeDiskStorage()
+        console.log(result)
+        
+    }
+    useEffect(()=>{
+        device_info()
+    }, [])
+    
 
     const handleSearch = (text) => {
         setSearchText(text);
@@ -31,29 +42,29 @@ const SelectingLocationScreen = ({ route }) => {
         const filteredData = data.filter((user) =>
             user.name.toLowerCase().startsWith(text.toLowerCase())
         );
-
         setFilteredUsers(filteredData);
     };
 
 
-
-    const fetchCountry = () => {
-        axios.get('http://192.168.1.8:3000/country/allCountry')
-            .then((res) => {
-                setFilteredUsers(res.data)
-                setData(res.data)
-            })
+    // FUNCTION FOR GETTING THE COUNTRY DATA FROM BACKEND
+    const getCountry = async () => {
+        try {
+            const result = await countryApi.getAllCountries()
+            setData(result.payload)
+        } catch (error) {
+            console.log(error)
+        }
     }
-
     useEffect(() => {
-        fetchCountry()
+        getCountry()
     }, [])
 
 
-console.log('countries', countries)
-console.log("cities", cities)
+
+
 
     const Country_card = ({ item, index }) => {
+            const code = item?.short_name;
 
         const toggle_switch = (val) => {
             if (selected_country.includes(item)) {
@@ -86,11 +97,10 @@ console.log("cities", cities)
                 </View>
                 <TouchableOpacity
                     onPress={() => {
-                        setCountry_code(item.short_name)
-                        navigation.navigate('SelectingCitiesScreen', { country_code, setCountries, setCities, countries, cities })
+                        navigation.navigate('SelectingCitiesScreen', { code, setCountries, setCities, countries, cities })
                     }}
                 >
-                    <AntDesign name='arrowright' size={20} />
+                    <AntDesign name='arrowright' size={25} />
                 </TouchableOpacity>
             </View>
         )
@@ -100,9 +110,9 @@ console.log("cities", cities)
     const handleInsertIds = (data) => {
         const ids = data.map((item) => item.id);
         setCountries(ids);
-      };
+    };
 
-    
+
 
 
 
@@ -110,10 +120,10 @@ console.log("cities", cities)
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
             {show_search && <View style={styles.header}>
-                <TouchableOpacity onPress={() => { 
+                <TouchableOpacity onPress={() => {
                     setCountries([])
-                    navigation.goBack() 
-                    }}>
+                    navigation.goBack()
+                }}>
                     <AntDesign name='arrowleft' size={20} />
                 </TouchableOpacity>
                 <Text style={[styles.headerText, { marginTop: 0 }]}>
@@ -133,10 +143,10 @@ console.log("cities", cities)
                 borderColor: 'rgba(0, 0, 0, 0.2)'
 
             }}>
-                <TouchableOpacity onPress={() => { 
+                <TouchableOpacity onPress={() => {
                     setCountries([])
                     navigation.goBack()
-                     }}>
+                }}>
                     <AntDesign name='arrowleft' size={20} />
                 </TouchableOpacity>
                 <View style={{ width: width * 0.8, }}>
@@ -149,7 +159,7 @@ console.log("cities", cities)
                         }}
                     />
                 </View>
-                <TouchableOpacity onPress={()=>{navigation.goBack()}}>
+                <TouchableOpacity onPress={() => { navigation.goBack() }}>
                     <AntDesign name='check' size={25} color={'blue'} />
                 </TouchableOpacity>
             </View>}
@@ -180,7 +190,7 @@ console.log("cities", cities)
                     />
                 </View>
                 <FlatList
-                    data={filteredUsers}
+                    data={filteredUsers ? filteredUsers : data}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item, index }) => (
                         <Country_card item={item} index={index} />
@@ -188,6 +198,7 @@ console.log("cities", cities)
                 />
 
             </View>
+
 
         </SafeAreaView>
     )

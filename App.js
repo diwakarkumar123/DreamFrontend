@@ -13,7 +13,7 @@ import Index from './src/screens';
 import PostVideoScreen from './src/screens/newVideo/PostVideoScreen';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import SettingScreen from './src/screens/setting/SettingScreen';
-import { LogBox, NativeModules } from 'react-native';
+import { LogBox } from 'react-native';
 import Promotion from './src/screens/promotion/Promotion';
 import Payments from './src/screens/promotion/Payments';
 import ProfileScreen from './src/profile/ProfileScreen'
@@ -46,7 +46,7 @@ import RNBootSplash from "react-native-bootsplash";
 import BasicAccount from './src/screens/profile/profile/screen/BasicAccount';
 import PremiumAccount from './src/screens/profile/profile/screen/PremiumAccount';
 import BusinessAccount from './src/screens/profile/profile/screen/BusinessAccount';
-import { NativeMethods } from 'react-native'
+import { NativeMethods, NativeModules } from 'react-native'
 import VideoGift from './src/screens/gift/VideoGift';
 import { PermissionsAndroid } from 'react-native';
 import messaging from '@react-native-firebase/messaging';
@@ -67,7 +67,11 @@ import ColorPicking from './src/screens/inbox/component/ColorPicking';
 import AudioCall from './src/screens/inbox/screen/AudioCall';
 import VideoCall from './src/screens/inbox/screen/VideoCall';
 import DiamondAnalytics from './src/screens/profile/profile/Insights/DiamondAnalytics';
-
+import Screen from './src/Screen';
+import RenderTextInput from './src/screens/videoEditor/components/RenderTextInput';
+import FontPicker from './src/screens/videoEditor/sticker/FontPicker';
+import ColorPicker from './src/screens/videoEditor/sticker/ColorPicker';
+import * as Localize from 'react-native-localize'
 
 
 
@@ -87,6 +91,8 @@ const App = () => {
   const [interactionTime, setInteractionTime] = useState(0);
   const [startTime, setStartTime] = useState(Date.now());
 
+
+  
 
   const appState = useAppState();
 
@@ -434,6 +440,39 @@ const App = () => {
                 headerShown: false,
                 animationEnabled: false,
               }} />
+
+            <Stack.Screen
+              name="Screen"
+              component={Screen}
+              options={{
+                headerShown: false,
+                animationEnabled: false,
+              }} />
+
+            <Stack.Screen
+              name="RenderTextInput"
+              component={RenderTextInput}
+              options={{
+                headerShown: false,
+                animationEnabled: false,
+              }} />
+
+            <Stack.Screen
+              name="FontPicker"
+              component={FontPicker}
+              options={{
+                headerShown: false,
+                animationEnabled: false,
+              }} />
+
+            <Stack.Screen
+              name="ColorPicker"
+              component={ColorPicker}
+              options={{
+                headerShown: false,
+                animationEnabled: false,
+              }} />
+
 
             {/* <Stack.Screen name="ProfileScreen" component={ProfileScreen} /> */}
             <Stack.Screen name="SettingScreen" component={SettingScreen} />

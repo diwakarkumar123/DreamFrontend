@@ -14,7 +14,6 @@ const NewVideoScreen = () => {
   const isFocused = useIsFocused();
   const [uri, setUri] = useState('');
   const [duration, setDuration] = useState('')
-
   const camera = useRef(null);
 
   const [isRecord, setIsRecord] = useState(false);
@@ -27,12 +26,15 @@ const NewVideoScreen = () => {
     async myUri => {
       setTimeout(() => {
         navigation.navigate('PreviewVideoScreen', {
-          pathVideo: uri || myUri,
+          pathVideo: myUri,
         });
       }, 1500);
     },
     [uri, navigation],
   );
+
+
+
 
   return (
     <View style={styles.container}>
@@ -61,10 +63,10 @@ const NewVideoScreen = () => {
             startRecording={startRecording}
             isRecord={isRecord}
             camera={camera}
-            endRecord={endRecord}
+            endRecord={()=>{endRecord(uri)}}
           />
         </View>
-        {!isRecord && <Upload endRecord={endRecord} />}
+        {!isRecord && <Upload endRecord={endRecord} setUri={setUri} />}
       </View>
     </View>
   );
@@ -76,7 +78,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    // backgroundColor: 'black',
   },
   preview: {
     flex: 1,

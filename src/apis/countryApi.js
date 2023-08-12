@@ -1,15 +1,25 @@
+import axios from 'axios';
 import { SERVER_API_URL } from '../constants/constants';
-import { useEffect, useState } from 'react';
 
 
-const getAllCountries = async ()=>{
-   const country = await axios.get(`${SERVER_API_URL}/country/allCountry`)
-   return country.data
-    
+const getAllCountries = async () => {
+   const url = `${SERVER_API_URL}/country/allCountry`;
+   const result = await axios.get(url)
+   return result.data
 }
 
 
-export {getAllCountries};
+
+
+const getCitiesByCountryCode = async (country_code) => {
+   const url = `${SERVER_API_URL}/country/getCitiesByCode/${country_code}`;
+   const result = await axios.get(url)
+   return result.data
+}
+
+
+
+export { getAllCountries, getCitiesByCountryCode };
 
 
 

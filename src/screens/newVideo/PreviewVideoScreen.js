@@ -6,6 +6,7 @@ import {
   Image,
   StatusBar,
   TouchableOpacity,
+  Modal,
 } from 'react-native';
 import React, { useState } from 'react';
 import Video from 'react-native-video';
@@ -17,12 +18,18 @@ import {
   MUSIC_ICON_IMG,
   SPEED_IMG,
   TIMESTAMP_IMG,
+  TIKTOK_LOADER_GIF
 } from '../../configs/source';
 import { Container, CText, Icon } from '../../components';
 import CloseButton from './components/CloseButton';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { STATUSBAR_HEIGHT } from '../../constants/constants';
-import { FFmpegKit } from 'ffmpeg-kit-react-native';
+import Toast from 'react-native-simple-toast'
+import { FFmpegKit, ReturnCode } from 'ffmpeg-kit-react-native';
+import RNFS from 'react-native-fs';
+import { useDispatch } from 'react-redux';
+import { change_video_url } from '../../store/videoSlice';
+
 
 
 
@@ -41,62 +48,52 @@ const options = [
 const PreviewVideoScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
+  const dispatch = useDispatch()
   const [isFocused, setIsFocused] = useState(true);
   const [pauseVideo, setPauseVideo] = useState(false);
-
-
-  //   FFmpegKit.execute(route?.params?.pathVideo)
-  //     .then(async (session) => {
-  //       // Unique session id created for this execution
-  //       const sessionId = session.getSessionId();
-  //       console.log('sessionId', sessionId)
-
-  //       // Command arguments as a single string
-  //       const command = session.getCommand();
-  //       console.log('command', command)
-  //       // Command arguments
-  //       const commandArguments = session.getArguments();
-  //       console.log('commandArguments', commandArguments)
-  //       // State of the execution. Shows whether it is still running or completed
-  //       const state = await session.getState();
-  //       console.log('state', state)
-  //       // Return code for completed sessions. Will be undefined if session is still running or FFmpegKit fails to run it
-  //       const returnCode = await session.getReturnCode()
-  //       console.log('returnCode', returnCode)
-  //       const startTime = session.getStartTime();
-  //       const endTime = await session.getEndTime();
-  //       const duration = await session.getDuration();
-  //       console.log('startTime', startTime)
-  //       console.log('endTime', endTime)
-  //       console.log('duration', duration)
-  //       // Console output generated for this execution
-  //       const output = await session.getOutput();
-  //       console.log('outputs', output)
-  //       // The stack trace if FFmpegKit fails to run a command
-  //       const failStackTrace = await session.getFailStackTrace()
-  // console.log('failStackTrace', failStackTrace)
-  //       // The list of logs generated for this execution
-  //       const logs = await session.getLogs();
-  //       console.log('logs', logs)
-  //       // The list of statistics generated for this execution (only available on FFmpegSession)
-  //       const statistics = await session.getStatistics();
-  // console.log('statistics', statistics)
-  //     })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  const [show_loader, setShow_loader] = useState(false)
+  const resize_video = async () => {
+    setShow_loader(true)
+    const cache_dir_path = await RNFS.CachesDirectoryPath;
+    const filename = new Date().getTime()
+    const output_path = `${cache_dir_path}/${filename}.mp4`
+    const command = `-i ${route?.params?.pathVideo} -vf \"scale=iw*min (720/iw\\,1280/ih):ih*min (720/iw\\,1280/ih),pad=720:1280: (720-iw*min (720/iw\\,1280/ih))/2: (1280-ih*min (720/iw\\,1280/ih))/2\" -c:a copy ${output_path}`;
+    return new Promise ((resolve, reject)=>{
+      FFmpegKit.executeAsync(command, async (session) => {
+        const returnCode = await session.getReturnCode();
+        if (ReturnCode.isSuccess(returnCode)) {
+          console.log('success')
+          dispatch(change_video_url(output_path))
+          setShow_loader(false)
+          resolve(true)
+        } else if (ReturnCode.isCancel(returnCode)) {
+          Toast.show('Cancel', Toast.LONG);
+          setShow_loader(false)
+          resolve(false)
+        } else {
+          Toast.show('Error', Toast.LONG);
+          setShow_loader(false)
+          resolve(false)
+        }
+      });
+    })
+  };
+  const handleNavigation = async (destination) => {
+    const isSuccess = await resize_video();
+  
+    if (isSuccess) {
+      navigation.navigate(destination);
+    } else {
+    }
+  };
+  
+  const handleContinue = () => {
+    handleNavigation('PostVideoScreen');
+  };
+  
+  const handleEditing = () => {
+    handleNavigation('VideoEditorLandingPage');
+  };
 
   if (isFocused) {
     return (
@@ -122,10 +119,10 @@ const PreviewVideoScreen = () => {
           marginTop={STATUSBAR_HEIGHT}
           position={'absolute'}
           zIndex={100}>
-            <CloseButton icon={ARROW_BACK_IMG} />
+          <CloseButton icon={ARROW_BACK_IMG} />
         </Container>
 
-
+        {/* 
         <View style={styles.audioTop}>
           <View style={styles.containerAudio}>
             <Icon
@@ -136,8 +133,8 @@ const PreviewVideoScreen = () => {
             />
             <Text style={styles.txtAudio}>More sounds</Text>
           </View>
-        </View>
-
+        </View> */}
+        {/* 
         <View style={styles.actionRight}>
           {options.map((option, index) => {
             return (
@@ -150,27 +147,36 @@ const PreviewVideoScreen = () => {
               </Pressable>
             );
           })}
-        </View>
+        </View> */}
+
+
+
         <View style={styles.actionBottom}>
           <Pressable
             style={[styles.button, { backgroundColor: COLOR.WHITE }]}
-            onPress={() => navigation.navigate('VideoEditorLandingPage', { pathVideo: route?.params?.pathVideo })}>
+            onPress={handleEditing}>
             <CText>Edit</CText>
           </Pressable>
           <Pressable
             style={[styles.button, { backgroundColor: COLOR.DANGER }]}
-            onPress={() => {
-              setPauseVideo(true);
-              setIsFocused(true);
-              setTimeout(() => {
-                navigation.replace('PostVideoScreen', {
-                  pathVideo: route?.params?.pathVideo,
-                });
-              }, 2000);
-            }}>
+            onPress={handleContinue}>
             <CText color={COLOR.WHITE}>Continue</CText>
           </Pressable>
         </View>
+        <Modal visible={show_loader} transparent={true}>
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'rgba(0, 0, 0, 0.7)'
+          }}>
+          <Image
+            source={TIKTOK_LOADER_GIF}
+            style={{ width: 50, height: 50 }}
+          />
+        </View>
+      </Modal>
       </View >
     );
   } else {

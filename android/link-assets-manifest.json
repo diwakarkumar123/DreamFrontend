@@ -1,0 +1,181 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/fonts/Arabic/IBMPlexSansArabic-Bold.ttf",
+      "sha1": "cb04c8d7dea87049b9de13524547bba6336dafcc"
+    },
+    {
+      "path": "src/assets/fonts/Arabic/IBMPlexSansArabic-ExtraLight.ttf",
+      "sha1": "805388c2de4ce2accca13f3b78159f247635339a"
+    },
+    {
+      "path": "src/assets/fonts/Arabic/IBMPlexSansArabic-Light.ttf",
+      "sha1": "d635ad1a5490c5c06709211dff64d648cb1b2ca6"
+    },
+    {
+      "path": "src/assets/fonts/Arabic/IBMPlexSansArabic-Medium.ttf",
+      "sha1": "739029bf018cb24106b885d6f17fb404dd658910"
+    },
+    {
+      "path": "src/assets/fonts/Arabic/IBMPlexSansArabic-Regular.ttf",
+      "sha1": "1fbb97720fa14853a4e2cb276638d792b0c5f251"
+    },
+    {
+      "path": "src/assets/fonts/Arabic/IBMPlexSansArabic-SemiBold.ttf",
+      "sha1": "3aae40f82a0b0c0af24889eb01850dc39be3a99d"
+    },
+    {
+      "path": "src/assets/fonts/Arabic/IBMPlexSansArabic-Thin.ttf",
+      "sha1": "7c3da475895643c2c8eb5d269bae9d35d7b5b7ed"
+    },
+    {
+      "path": "src/assets/fonts/BeVietnamPro/BeVietnamPro-Black.ttf",
+      "sha1": "58b8286dd546e4ee441c0b8b0d81e53ec8e61ebd"
+    },
+    {
+      "path": "src/assets/fonts/BeVietnamPro/BeVietnamPro-BlackItalic.ttf",
+      "sha1": "0ee399ad4de08349580293ab4d19f6705fa47ea9"
+    },
+    {
+      "path": "src/assets/fonts/BeVietnamPro/BeVietnamPro-Bold.ttf",
+      "sha1": "9e41c6d65163184145417360d59201fc88c19699"
+    },
+    {
+      "path": "src/assets/fonts/BeVietnamPro/BeVietnamPro-BoldItalic.ttf",
+      "sha1": "dd1af07afe7ac23686744abb037fbf0449fc21c3"
+    },
+    {
+      "path": "src/assets/fonts/BeVietnamPro/BeVietnamPro-ExtraBold.ttf",
+      "sha1": "ab127dbf0dbb589095ab11cf00782342c6382791"
+    },
+    {
+      "path": "src/assets/fonts/BeVietnamPro/BeVietnamPro-ExtraBoldItalic.ttf",
+      "sha1": "94aefa1bb1dbfe69aaf54d413bc99f5d5167963d"
+    },
+    {
+      "path": "src/assets/fonts/BeVietnamPro/BeVietnamPro-ExtraLight.ttf",
+      "sha1": "f08c887892a63e2728a57c9eaac71a93f3342f38"
+    },
+    {
+      "path": "src/assets/fonts/BeVietnamPro/BeVietnamPro-ExtraLightItalic.ttf",
+      "sha1": "3bf67340d4b7caffe2ef2a5d58af33e30f979631"
+    },
+    {
+      "path": "src/assets/fonts/BeVietnamPro/BeVietnamPro-Italic.ttf",
+      "sha1": "e963382e809a01e844bdf46bb2cd78249b3e86d9"
+    },
+    {
+      "path": "src/assets/fonts/BeVietnamPro/BeVietnamPro-Light.ttf",
+      "sha1": "ac3cb544ac3c26293b062597c5de7a6b6bf5298d"
+    },
+    {
+      "path": "src/assets/fonts/BeVietnamPro/BeVietnamPro-LightItalic.ttf",
+      "sha1": "7c78c1e53ca68da34542eb9f4daf1582e96ab769"
+    },
+    {
+      "path": "src/assets/fonts/BeVietnamPro/BeVietnamPro-Medium.ttf",
+      "sha1": "cb86792139ff9af20eb7db84d450aa54b77d25f5"
+    },
+    {
+      "path": "src/assets/fonts/BeVietnamPro/BeVietnamPro-MediumItalic.ttf",
+      "sha1": "a89ed2c89959e061f0f9e33aaf7cab5cbad4e82c"
+    },
+    {
+      "path": "src/assets/fonts/BeVietnamPro/BeVietnamPro-Regular.ttf",
+      "sha1": "5b47e923219d3adcbe0fbf01e5f696373ab2fc48"
+    },
+    {
+      "path": "src/assets/fonts/BeVietnamPro/BeVietnamPro-SemiBold.ttf",
+      "sha1": "6aa6f0f4567e280db4670a55af4f0d3a3addd771"
+    },
+    {
+      "path": "src/assets/fonts/BeVietnamPro/BeVietnamPro-SemiBoldItalic.ttf",
+      "sha1": "e0709ca1e418c664c2ed2f09b2e24f0142ef5396"
+    },
+    {
+      "path": "src/assets/fonts/BeVietnamPro/BeVietnamPro-Thin.ttf",
+      "sha1": "4ca325cbc3a22b1c52620b4dbdd081796454a136"
+    },
+    {
+      "path": "src/assets/fonts/BeVietnamPro/BeVietnamPro-ThinItalic.ttf",
+      "sha1": "522bd11702863a4ede26273c3794f64dae2e7d62"
+    },
+    {
+      "path": "src/assets/fonts/Borel-Regular.ttf",
+      "sha1": "93af82eec3087358e36d188076acee45492dad6a"
+    },
+    {
+      "path": "src/assets/fonts/Lato/lato-black.ttf",
+      "sha1": "c6e21d7bc3ba91b5c6b6c0840f27aaf9dcbff400"
+    },
+    {
+      "path": "src/assets/fonts/Lato/lato-blackitalic.ttf",
+      "sha1": "2641cbac6686f43e28f5de330b3f2a906c6cf8ed"
+    },
+    {
+      "path": "src/assets/fonts/Lato/lato-bold.ttf",
+      "sha1": "85434c5e39619ac810661bb1581de9cc12b171bc"
+    },
+    {
+      "path": "src/assets/fonts/Lato/lato-bolditalic.ttf",
+      "sha1": "d7bd7b0e86971bf12bdfd5499cde2ff568b6c8c0"
+    },
+    {
+      "path": "src/assets/fonts/Lato/lato-hairline.ttf",
+      "sha1": "f548a9cdcfef85205a338830c266cfba6fcee87c"
+    },
+    {
+      "path": "src/assets/fonts/Lato/lato-hairlineitalic.ttf",
+      "sha1": "a3dac7e42ac979dff04a5f1f7598b42e9db97471"
+    },
+    {
+      "path": "src/assets/fonts/Lato/lato-heavy.ttf",
+      "sha1": "c7ab28d1983b78f57b6f9588b370e210e588ad56"
+    },
+    {
+      "path": "src/assets/fonts/Lato/lato-heavyitalic.ttf",
+      "sha1": "c28450400531bdaadb2587a4e4214ce97a80618c"
+    },
+    {
+      "path": "src/assets/fonts/Lato/lato-italic.ttf",
+      "sha1": "44ec6f164063101247bf55b5975c16caae3d411d"
+    },
+    {
+      "path": "src/assets/fonts/Lato/lato-light.ttf",
+      "sha1": "be6e04c6bb642a0df26fa68eb4b08e567bda4d59"
+    },
+    {
+      "path": "src/assets/fonts/Lato/lato-lightitalic.ttf",
+      "sha1": "2543c7ab513f9544679bc244ecc570785f692779"
+    },
+    {
+      "path": "src/assets/fonts/Lato/lato-medium.ttf",
+      "sha1": "d5950090e7211e3e15f58604d0181c71a460ebed"
+    },
+    {
+      "path": "src/assets/fonts/Lato/lato-mediumitalic.ttf",
+      "sha1": "87b01180f83ca35b0d7f293c8d5af6a8444b53c4"
+    },
+    {
+      "path": "src/assets/fonts/Lato/lato-regular.ttf",
+      "sha1": "68054b595e5660628bacb63431052667abae515d"
+    },
+    {
+      "path": "src/assets/fonts/Lato/lato-semibold.ttf",
+      "sha1": "6cae2d067bf63873cda05186746a704eede8cc00"
+    },
+    {
+      "path": "src/assets/fonts/Lato/lato-semibolditalic.ttf",
+      "sha1": "d466ca80185ca4201e0fdc6244a52b4a2ccaa51d"
+    },
+    {
+      "path": "src/assets/fonts/Lato/lato-thin.ttf",
+      "sha1": "f9a4c18f0ddb66d31e3ad2ff4a9c4efbab8dd1c3"
+    },
+    {
+      "path": "src/assets/fonts/Lato/lato-thinitalic.ttf",
+      "sha1": "cc4af548a23f40387f9d0af73ba637ade2a0ecd0"
+    }
+  ]
+}

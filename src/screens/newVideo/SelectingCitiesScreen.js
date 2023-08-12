@@ -8,47 +8,39 @@ import { FlatList } from 'react-native-gesture-handler';
 import CheckBox from '@react-native-community/checkbox';
 import { useNavigation } from '@react-navigation/native';
 import { ToggleButton } from 'react-native-paper';
-
-
+import * as countryApi from '../../apis/countryApi'
 
 const { width, height } = Dimensions.get('window')
 
 
+
+
+
+
 const SelectingCitiesScreen = ({ route }) => {
-    const { country_code, setCountries, setCities, countries, cities } = route.params;
+    const {code, setCountries, setCities, countries, cities } = route.params;
     const [data, setData] = useState('')
     const navigation = useNavigation()
     const [show_search, setShow_search] = useState(false)
     const [filteredUsers, setFilteredUsers] = useState('');
     const [searchText, setSearchText] = useState("");
     const [selected_country, setSelected_country] = useState(["s"])
-
-    
-
-
-    const fetchCities = () => {
-        axios.get(`http://192.168.1.8:3000/country/getCitiesByCode?q=${country_code}`)
-            .then((res) => {
-
-                setFilteredUsers(res.data)
-                setData(res.data)
-
-            })
-            .catch((err) => { console.log(err) })
+    const getAllCitiesByCountryCode = async () => {
+        try {
+            const result = await countryApi.getCitiesByCountryCode(code)
+            setData(result.payload)
+        } catch (error) {
+            // console.log(error)
+        }
     }
-
     useEffect(() => {
-        fetchCities()
-    }, [country_code])
-
+        getAllCitiesByCountryCode()
+    }, [code])
 
     const handleSearch = (text) => {
-        setSearchText(text);
-
         const filteredData = data.filter((user) =>
             user.name.toLowerCase().startsWith(text.toLowerCase())
         );
-
         setFilteredUsers(filteredData);
     };
 
@@ -56,11 +48,11 @@ const SelectingCitiesScreen = ({ route }) => {
     const handleInsertIds = (data) => {
         const ids = data.map((item) => item.id);
         setCities(ids);
-      };
+    };
 
-    
 
-    
+
+
 
     const Country_card = ({ item, index }) => {
 
@@ -117,8 +109,8 @@ const SelectingCitiesScreen = ({ route }) => {
             }}>
                 <TouchableOpacity onPress={() => {
                     // setCities([])
-                    navigation.goBack() 
-                     }}>
+                    navigation.goBack()
+                }}>
                     <AntDesign name='arrowleft' size={20} />
                 </TouchableOpacity>
                 <View style={{ width: width * 0.8, }}>
@@ -131,8 +123,8 @@ const SelectingCitiesScreen = ({ route }) => {
                         }}
                     />
                 </View>
-                <TouchableOpacity onPress={()=>{navigation.goBack()}}>
-                    <AntDesign name='check' size={25} color={'blue'} />
+                <TouchableOpacity onPress={() => { navigation.goBack() }}>
+                    <AntDesign name='check' size={30} color={'blue'} />
                 </TouchableOpacity>
             </View>}
 
@@ -162,7 +154,7 @@ const SelectingCitiesScreen = ({ route }) => {
                 </View>
 
                 <FlatList
-                    data={filteredUsers}
+                    data={filteredUsers ? filteredUsers : data}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item, index }) => (
                         <Country_card item={item} index={index} />

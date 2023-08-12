@@ -1,4 +1,5 @@
-// making class for handleing the state of video editing progress
+
+// LINKED LIST FOR HANDELING THE VIDEO PATH OF EVERY EDIITNG STEP
 class Node {
     constructor(data) {
         this.data = data;

@@ -100,8 +100,8 @@ android {
         applicationId "com.nojomalmadina.appdream"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 7
-        versionName "1.5"
+        versionCode 8
+        versionName "1.8"
         missingDimensionStrategy 'react-native-camera', 'general'
         multiDexEnabled true
         buildConfigField "String", "TWITTER_CONSUMER_KEY", "\"4lYiTuDOnwHD0oAIRh6Iwan03\""

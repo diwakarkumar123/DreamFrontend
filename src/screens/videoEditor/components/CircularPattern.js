@@ -38,7 +38,9 @@ const CircularPattern = ({
   openHandler_modal,
   setShow_media,
   setShow_editor,
-  setOPen_top_sheet
+  setOPen_top_sheet,
+  setShow_music_selection,
+  setText_overlay
 }) => {
   const navigation = useNavigation();
   const [layer, setLayer] = useState(false);
@@ -163,7 +165,7 @@ const CircularPattern = ({
 
 
               {/* Music button for selecting music from user devices */}
-              <Pressable style={[styles.icon_style, { marginBottom: 5 }]}>
+              <Pressable style={[styles.icon_style, { marginBottom: 5 }]} onPress={()=>{setShow_music_selection(p => !p)}}>
                 <Music
                   name="music"
                   style={{
@@ -246,7 +248,7 @@ const CircularPattern = ({
                 alignItems: 'center',
                 padding: 10
               }}
-              onPress={() => { setShow_media(p => !p) }}>
+              onPress={()=>{navigation.navigate('RenderTextInput', {setText_overlay})}}>
               <MaterialCommunityIcons
                 name="format-text"
                 style={{ fontSize: 25, color: '#020202', marginLeft: 3 }}
@@ -262,7 +264,7 @@ const CircularPattern = ({
                 alignItems: 'center',
                 padding: 10
               }}
-              onPress={() => { setShow_media(p => !p) }}>
+              onPress={()=>{navigation.navigate('RenderTextInput', {setText_overlay})}}>
               <MaterialCommunityIcons
                 name="sticker"
                 style={{ fontSize: 25, color: '#020202', marginLeft: 3 }}
@@ -310,7 +312,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginRight: 20,
     marginTop: 20,
-    marginBottom: 80
+    marginBottom: 70
   },
 
   camera: {

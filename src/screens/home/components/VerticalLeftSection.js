@@ -44,13 +44,16 @@ const window = {
 
 
 const VerticalLeftSection = React.forwardRef(
-  ({ idVideo, comment = 0, author, share, item }, ref) => {
+  ({ idVideo, comment = 0, author, share, likes, item }, ref) => {
     const dispatch = useDispatch();
     const { t, i18n } = useTranslation()
-    const [num_like, setNum_like] = useState(item?.like)
-    const [isLike, setIsLike] = useState(false)
-    const navigation = useNavigation();
+    const [num_like, setNum_like] = useState(likes?.length)
     const my_data = useSelector(state => state.my_data.my_profile_data)
+    const isIdPresent = likes?.some(item => item?.sender_id === my_data?.id);
+    const [isLike, setIsLike] = useState(isIdPresent)
+    const navigation = useNavigation();
+
+
 
     const handleShare = () => {
       if (my_data) {
@@ -58,13 +61,12 @@ const VerticalLeftSection = React.forwardRef(
           title: 'Share via',
           message: 'Check out this awesome video!',
           url: 'https://your-video-url.com',
-          // You can include more options like email, subject, etc. based on your requirements
         };
 
         Share.open(shareOptions)
           .then((res) => console.log('Shared successfully:', res))
           .catch((err) => console.log('Error sharing:', err));
-      } else{
+      } else {
         dispatch(setModalSignIn(true))
       }
     };
@@ -105,23 +107,32 @@ const VerticalLeftSection = React.forwardRef(
       // dispatch(setBottomSheetSignIn(true));
     }, []);
 
+
+    // FUNCTION FOR HANDELING LIKING AND UNLKING THE VIDEO
     const handleLike = async () => {
       const video_id = item?.id;
       const reciever_id = item?.user_id;
-      const data = { video_id, reciever_id }
+      const data = { video_id, reciever_id, unlike: false }
+
       if (my_data) {
         if (isLike) {
           setIsLike(false)
+          console.log('unliking called')
           setNum_like(p => p - 1)
-        } else {
-          like(data, my_data?.auth_token)
+          like({ video_id, reciever_id, unlike: true }, my_data?.auth_token)
             .then((r) => {
-              setIsLike(true)
-              setNum_like(p => p + 1)
               console.log(r)
             })
             .catch((err) => {
               console.log(err)
+            })
+        } else {
+          setIsLike(true)
+          setNum_like(p => p + 1)
+          like(data, my_data?.auth_token)
+            .then((r) => {
+            })
+            .catch((err) => {
             })
         }
       } else {
@@ -136,13 +147,13 @@ const VerticalLeftSection = React.forwardRef(
 
           {!isLike && <ItemVertical
             source={HEART_IMG}
-            text={num_like}
+            text={num_like || 0}
             onPress={handleLike}
           />}
           {isLike && <ItemVertical
             source={HEART_TRUE_IMG}
             onPress={handleLike}
-            text={num_like}
+            text={num_like || 0}
           />}
 
         </Container>

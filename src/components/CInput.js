@@ -47,7 +47,7 @@ const CInput = forwardRef((props, ref) => {
         onSubmitEditing={onSubmitEditing}
         multiline={multiline}
         textAlignVertical={textAlignVertical}
-        ref={ref} // Forward the ref to the TextInput
+        ref={ref}
       />
       {iconRight && (
         <Icon
