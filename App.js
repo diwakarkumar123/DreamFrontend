@@ -72,6 +72,11 @@ import RenderTextInput from './src/screens/videoEditor/components/RenderTextInpu
 import FontPicker from './src/screens/videoEditor/sticker/FontPicker';
 import ColorPicker from './src/screens/videoEditor/sticker/ColorPicker';
 import * as Localize from 'react-native-localize'
+import AccountSettingSecondScreen from './src/screens/profile/profile/screen/AccountSettingSecondScreen';
+import BusinessAccountCategories from './src/screens/profile/profile/screen/BusinessAccountCategories';
+import BusinessAccount1 from './src/screens/profile/profile/screen/business/BusinessAccount1';
+import BusinessAccount2 from './src/screens/profile/profile/screen/business/BusinessAccount2';
+import BusinessAccount3 from './src/screens/profile/profile/screen/business/BusinessAccount3';
 
 
 
@@ -92,7 +97,7 @@ const App = () => {
   const [startTime, setStartTime] = useState(Date.now());
 
 
-  
+
 
   const appState = useAppState();
 
@@ -468,6 +473,46 @@ const App = () => {
             <Stack.Screen
               name="ColorPicker"
               component={ColorPicker}
+              options={{
+                headerShown: false,
+                animationEnabled: false,
+              }} />
+
+            <Stack.Screen
+              name="AccountSettingSecondScreen"
+              component={AccountSettingSecondScreen}
+              options={{
+                headerShown: false,
+                animationEnabled: false,
+              }} />
+
+            <Stack.Screen
+              name="BusinessAccountCategories"
+              component={BusinessAccountCategories}
+              options={{
+                headerShown: false,
+                animationEnabled: false,
+              }} />
+
+            <Stack.Screen
+              name="BusinessAccount1"
+              component={BusinessAccount1}
+              options={{
+                headerShown: false,
+                animationEnabled: false,
+              }} />
+
+            <Stack.Screen
+              name="BusinessAccount2"
+              component={BusinessAccount2}
+              options={{
+                headerShown: false,
+                animationEnabled: false,
+              }} />
+
+            <Stack.Screen
+              name="BusinessAccount3"
+              component={BusinessAccount3}
               options={{
                 headerShown: false,
                 animationEnabled: false,

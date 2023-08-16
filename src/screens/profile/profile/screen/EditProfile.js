@@ -116,7 +116,7 @@ const EditProfile = () => {
       mediaType: 'video',
       quality: 1,
       durationLimit: 10
-      
+
     })
     console.log(result)
     if (!result.didCancel) {
@@ -518,23 +518,28 @@ const EditProfile = () => {
           data={list}
           ListHeaderComponent={RenderHeaderItem}
           renderItem={({ item, index }) => (
-            <Body applyPadding={false} style={styles.secondContainer}>
-              <Text style={styles.txt}>{item.name}</Text>
-              <Body applyPadding={false} style={styles.leftContainer}>
-                <Text style={[styles.txt, { color: 'rgba(0, 0, 0, 0.4)' }]}>{item?.value?.slice(0, 25)}</Text>
-                <TouchableOpacity
-                  style={{ marginLeft: 5 }}
-                  onPress={item.onPress}
-                >
-                  <AntDesign name='right' size={25} color={'#020202'} />
-                </TouchableOpacity>
+            <Pressable onPress={item?.onPress}>
+              <Body applyPadding={false} style={styles.secondContainer}>
+                <Text style={styles.txt}>{item.name}</Text>
+                <Body applyPadding={false} style={styles.leftContainer}>
+                  <Text style={[styles.txt, { color: 'rgba(0, 0, 0, 0.4)' }]}>{item?.value?.slice(0, 25)}</Text>
+                  <TouchableOpacity
+                    style={{ marginLeft: 5 }}
+                    onPress={item.onPress}
+                  >
+                    <AntDesign name='right' size={25} color={'#020202'} />
+                  </TouchableOpacity>
+                </Body>
               </Body>
-            </Body>
+            </Pressable>
           )} />
       </Body>
 
+
+
       {/* nickname modal */}
       <Modal visible={show_nickname_modal} transparent={true}>
+        <Pressable style={styles.modal_background} onPress={() => { setShow_nickname_modal(false) }} />
         <Body applyPadding={false} style={styles.nickname_modal}>
           <Text style={styles.modal_text}>
             Nickname
@@ -542,21 +547,29 @@ const EditProfile = () => {
           <Body applyPadding={false} style={styles.modal_textInput}>
             <TextInput
               placeholder='Nickname'
-              style={{ paddingBottom: -10 }}
+              style={{ paddingBottom: -10, }}
               value={nickname}
               onChangeText={(val) => { setNickname(val) }}
             />
           </Body>
-          <TouchableOpacity
-            onPress={() => { handleNicknamePress(nickname) }}
-            style={styles.modal_button}>
-            <Text style={styles.modal_button_text}>Save</Text>
-          </TouchableOpacity>
+          <View style={styles.modal_button_view}>
+            <TouchableOpacity style={styles.modal_button} onPress={() => { setShow_nickname_modal(false) }}>
+              <Text style={styles.modal_button_text}>Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => { handleNicknamePress(nickname) }}
+              style={styles.modal_button}>
+              <Text style={styles.modal_button_text}>Save</Text>
+            </TouchableOpacity>
+          </View>
         </Body>
       </Modal>
 
+
+
       {/* gender modal */}
       <Modal visible={show_gender_modal} transparent={true}>
+        <Pressable style={styles.modal_background} onPress={() => { setShow_gender_modal(false) }} />
         <Body applyPadding={false} style={styles.nickname_modal}>
           <Text style={styles.modal_text}>
             Gender
@@ -623,18 +636,24 @@ const EditProfile = () => {
               </TouchableOpacity>
               <Text>Other</Text>
             </Body>
-
           </Body>
-          <TouchableOpacity
-            onPress={() => { handleGenderPress(gender) }}
-            style={styles.modal_button}>
-            <Text style={styles.modal_button_text}>Save</Text>
-          </TouchableOpacity>
+          <View style={styles.modal_button_view}>
+            <TouchableOpacity style={styles.modal_button} onPress={() => { setShow_gender_modal(false) }}>
+              <Text style={styles.modal_button_text}>Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => { handleGenderPress(gender) }}
+              style={styles.modal_button}>
+              <Text style={styles.modal_button_text}>Save</Text>
+            </TouchableOpacity>
+          </View>
         </Body>
       </Modal>
 
+
       {/* self introduction modal */}
       <Modal visible={show_self_introduction_modal} transparent={true}>
+        <Pressable style={styles.modal_background} onPress={() => { setshow_self_introduction_modal(false) }} />
         <Body applyPadding={false} style={styles.nickname_modal}>
           <Text style={styles.modal_text}>
             Self Introduction
@@ -647,16 +666,24 @@ const EditProfile = () => {
               onChangeText={(val) => { setSelf_introduction(val) }}
             />
           </Body>
-          <TouchableOpacity
-            onPress={() => { handleSelfIntroductionPress(self_introduction) }}
-            style={styles.modal_button}>
-            <Text style={styles.modal_button_text}>Save</Text>
-          </TouchableOpacity>
+          <View style={styles.modal_button_view}>
+            <TouchableOpacity style={styles.modal_button} onPress={() => { setshow_self_introduction_modal(false) }}>
+              <Text style={styles.modal_button_text}>Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => { handleSelfIntroductionPress(self_introduction) }}
+              style={styles.modal_button}>
+              <Text style={styles.modal_button_text}>Save</Text>
+            </TouchableOpacity>
+          </View>
         </Body>
       </Modal>
 
+
+
       {/* Emotion state */}
       <Modal visible={show_emotion_state_modal} transparent={true}>
+        <Pressable style={styles.modal_background} onPress={() => { setshow_emotion_state_modal(false) }} />
         <Body applyPadding={false} style={styles.nickname_modal}>
           <Text style={styles.modal_text}>
             Please select emotion state
@@ -676,18 +703,24 @@ const EditProfile = () => {
                 </TouchableOpacity>
               )}
             />
-
           </Body>
-          <TouchableOpacity
-            onPress={() => { handleEmotionStatePress(emotion_state) }}
-            style={styles.modal_button}>
-            <Text style={styles.modal_button_text}>Save</Text>
-          </TouchableOpacity>
+
+          <View style={styles.modal_button_view}>
+            <TouchableOpacity style={styles.modal_button} onPress={() => { setshow_emotion_state_modal(false) }}>
+              <Text style={styles.modal_button_text}>Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => { handleEmotionStatePress(emotion_state) }}
+              style={styles.modal_button}>
+              <Text style={styles.modal_button_text}>Save</Text>
+            </TouchableOpacity>
+          </View>
         </Body>
       </Modal>
 
       {/* height modal  */}
       <Modal visible={show_person_height_modal} transparent={true}>
+        <Pressable style={styles.modal_background} onPress={() => { setShow_person_height_modal(false) }} />
         <Body applyPadding={false} style={styles.nickname_modal}>
           <Text style={styles.modal_text}>
             Height
@@ -716,18 +749,24 @@ const EditProfile = () => {
                 color: person_height_unit == 'FT' ? '#FC1B87' : 'black'
               }}>FT</Text>
             </TouchableOpacity>
-
           </Body>
-          <TouchableOpacity
-            onPress={() => { handleHeightPress(person_height + " " + person_height_unit) }}
-            style={styles.modal_button}>
-            <Text style={styles.modal_button_text}>Save</Text>
-          </TouchableOpacity>
+
+          <View style={styles.modal_button_view}>
+            <TouchableOpacity style={styles.modal_button} onPress={() => { setShow_person_height_modal(false) }}>
+              <Text style={styles.modal_button_text}>Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => { handleHeightPress(person_height + " " + person_height_unit) }}
+              style={styles.modal_button}>
+              <Text style={styles.modal_button_text}>Save</Text>
+            </TouchableOpacity>
+          </View>
         </Body>
       </Modal>
 
       {/* weight modal */}
       <Modal visible={show_person_weight_modal} transparent={true}>
+        <Pressable style={styles.modal_background} onPress={() => { setShow_person_weight_modal(false) }} />
         <Body applyPadding={false} style={styles.nickname_modal}>
           <Text style={styles.modal_text}>
             Weight
@@ -757,16 +796,22 @@ const EditProfile = () => {
               }}>Lb</Text>
             </TouchableOpacity>
           </Body>
-          <TouchableOpacity
-            onPress={() => { handleWeightPress(person_weight + " " + person_weight_unit) }}
-            style={styles.modal_button}>
-            <Text style={styles.modal_button_text}>Save</Text>
-          </TouchableOpacity>
+          <View style={styles.modal_button_view}>
+            <TouchableOpacity style={styles.modal_button} onPress={() => { setShow_person_weight_modal(false) }}>
+              <Text style={styles.modal_button_text}>Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => { handleWeightPress(person_weight + " " + person_weight_unit) }}
+              style={styles.modal_button}>
+              <Text style={styles.modal_button_text}>Save</Text>
+            </TouchableOpacity>
+          </View>
         </Body>
       </Modal>
 
       {/* instagram modal */}
       <Modal visible={show_instagram_modal} transparent={true}>
+        <Pressable style={styles.modal_background} onPress={() => { setShow_instagram_modal(false) }} />
         <Body applyPadding={false} style={styles.nickname_modal}>
           <Text style={styles.modal_text}>
             Instagram
@@ -779,16 +824,22 @@ const EditProfile = () => {
               onChangeText={(val) => { setInstagram_id(val) }}
             />
           </Body>
-          <TouchableOpacity
-            onPress={() => { handleInstagramPress(instagram_id) }}
-            style={styles.modal_button}>
-            <Text style={styles.modal_button_text}>Save</Text>
-          </TouchableOpacity>
+          <View style={styles.modal_button_view}>
+            <TouchableOpacity style={styles.modal_button} onPress={() => { setShow_instagram_modal(false) }}>
+              <Text style={styles.modal_button_text}>Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => { handleInstagramPress(instagram_id) }}
+              style={styles.modal_button}>
+              <Text style={styles.modal_button_text}>Save</Text>
+            </TouchableOpacity>
+          </View>
         </Body>
       </Modal>
 
       {/* youtube modal */}
       <Modal visible={show_yt_modal} transparent={true}>
+        <Pressable style={styles.modal_background} onPress={() => { setShow_yt_modal(false) }} />
         <Body applyPadding={false} style={styles.nickname_modal}>
           <Text style={styles.modal_text}>
             Youtube
@@ -801,16 +852,22 @@ const EditProfile = () => {
               onChangeText={(val) => { setYt_channel(val) }}
             />
           </Body>
-          <TouchableOpacity
-            onPress={() => { handleYoutubePress(yt_channel) }}
-            style={styles.modal_button}>
-            <Text style={styles.modal_button_text}>Save</Text>
-          </TouchableOpacity>
+          <View style={styles.modal_button_view}>
+            <TouchableOpacity style={styles.modal_button} onPress={() => { setShow_yt_modal(false) }}>
+              <Text style={styles.modal_button_text}>Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => { handleYoutubePress(yt_channel) }}
+              style={styles.modal_button}>
+              <Text style={styles.modal_button_text}>Save</Text>
+            </TouchableOpacity>
+          </View>
         </Body>
       </Modal>
 
       {/* Facebook modal */}
       <Modal visible={show_facebook_modal} transparent={true}>
+        <Pressable style={styles.modal_background} onPress={() => { setShow_facebook_modal(false) }} />
         <Body applyPadding={false} style={styles.nickname_modal}>
           <Text style={styles.modal_text}>
             Facebook
@@ -823,16 +880,22 @@ const EditProfile = () => {
               onChangeText={(val) => { setFacebook(val) }}
             />
           </Body>
-          <TouchableOpacity
-            onPress={() => { handleFacebookPress(facebook) }}
-            style={styles.modal_button}>
-            <Text style={styles.modal_button_text}>Save</Text>
-          </TouchableOpacity>
+          <View style={styles.modal_button_view}>
+            <TouchableOpacity style={styles.modal_button} onPress={() => { setShow_facebook_modal(false) }}>
+              <Text style={styles.modal_button_text}>Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => { handleFacebookPress(facebook) }}
+              style={styles.modal_button}>
+              <Text style={styles.modal_button_text}>Save</Text>
+            </TouchableOpacity>
+          </View>
         </Body>
       </Modal>
 
       {/* twitter modal */}
       <Modal visible={show_twitter_modal} transparent={true}>
+        <Pressable style={styles.modal_background} onPress={() => { setShow_twitter_modal(false) }} />
         <Body applyPadding={false} style={styles.nickname_modal}>
           <Text style={styles.modal_text}>
             Twitter
@@ -845,11 +908,16 @@ const EditProfile = () => {
               onChangeText={(val) => { setTwitter(val) }}
             />
           </Body>
-          <TouchableOpacity
-            onPress={() => { handleTwitterPress(twitter) }}
-            style={styles.modal_button}>
-            <Text style={styles.modal_button_text}>Save</Text>
-          </TouchableOpacity>
+          <View style={styles.modal_button_view}>
+            <TouchableOpacity style={styles.modal_button} onPress={() => { setShow_twitter_modal(false) }}>
+              <Text style={styles.modal_button_text}>Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => { handleTwitterPress(twitter) }}
+              style={styles.modal_button}>
+              <Text style={styles.modal_button_text}>Save</Text>
+            </TouchableOpacity>
+          </View>
         </Body>
       </Modal>
 
@@ -1014,15 +1082,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: height * 0.03
   },
-  modal_button: {
-    backgroundColor: 'red',
-    width: width * 0.55,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 5,
-    borderRadius: 5,
-    marginTop: height * 0.04
-  },
+  // modal_button: {
+  //   backgroundColor: 'red',
+  //   paddingHorizontal: 20,
+  //   paddingVertical: 3,
+  //   borderRadius: 2
+  // },
   modal_button_text: {
     color: 'white'
   },
@@ -1066,14 +1131,18 @@ const styles = StyleSheet.create({
     zIndex: 1000
   },
   modal_button: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 20,
+    // alignItems: 'center',
+    // justifyContent: 'center',
+    // paddingHorizontal: 20,
+    // backgroundColor: 'red',
+    // width: '100%',
+    // paddingVertical: 5,
+    // position: 'absolute',
+    // bottom: 5,
     backgroundColor: 'red',
-    width: '100%',
-    paddingVertical: 5,
-    position: 'absolute',
-    bottom: 5
+    paddingHorizontal: 20,
+    paddingVertical: 3,
+    borderRadius: 2
   },
   modal_button1: {
     alignItems: 'center',
@@ -1082,6 +1151,18 @@ const styles = StyleSheet.create({
     borderRightWidth: 0.5,
     borderColor: 'black',
     borderLeftWidth: 0.5
+  },
+  modal_background: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)'
+  },
+  modal_button_view: {
+    flexDirection: 'row',
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    position: 'absolute',
+    bottom: 10
   }
 })
 

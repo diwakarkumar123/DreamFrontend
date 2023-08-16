@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native'
 
 const {width, height} = Dimensions.get('screen')
 
-const Header = ({ headertext }) => {
+const BusinessHeader = ({ headertext }) => {
     const navigation = useNavigation()
     return (
         <View style={styles.main_container}>
@@ -19,19 +19,19 @@ const Header = ({ headertext }) => {
     )
 }
 
-export default Header
+export default BusinessHeader
 
 const styles = StyleSheet.create({
     main_container: {
         width: width,
         flexDirection: 'row',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         paddingVertical: 15,
         paddingHorizontal: 0,
         alignItems: 'center',
         zIndex: 1000,
-        borderBottomWidth: 4,
-        borderColor: 'rgba(0, 0, 0, 0.05)'
+        borderBottomWidth: 0.5,
+        borderColor: 'red'
 
     },
     arrow_button: {
@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
     },
     txt: {
         fontSize: 20,
-        color: '#020202'
+        color: '#020202',
+        marginLeft: 50
     }
 })

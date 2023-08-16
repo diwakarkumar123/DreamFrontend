@@ -22,7 +22,25 @@ import {
     PROMOTION_VERIFICATION,
     PROMOTION_SHARE,
     PROMOTION_SECURITY,
-    PROMOTION_NOTIFICATION
+    PROMOTION_NOTIFICATION,
+
+
+    BLOCK_AVATAR,
+    DOWNLOAD_ICON,
+    PAYMENT,
+    // PROMOTION_BALANCE,
+    // PROMOTION_PRIVACY,
+    // PROMOTION_DOWNLOAD,
+    QR,
+    QUESTION_ANSWER,
+    SPIN_WHEEL,
+    SWITCH_ACCOUNT,
+    TERMS_POLICY,
+    TRANSFER_INFORMATION,
+    LOG_OUT,
+    Q_A,
+    POST,
+    LIVE_CENTER
 } from '../../../../configs/source'
 import { Switch } from 'react-native-paper'
 
@@ -30,7 +48,7 @@ const { width, height } = Dimensions.get('screen')
 
 const AccountScreen = () => {
     const navigation = useNavigation()
-    const data = [
+    const data1 = [
         {
             heading: 'Account',
             data: [
@@ -82,6 +100,20 @@ const AccountScreen = () => {
                     }
                 },
                 {
+                    name: 'Blog',
+                    image: PROMOTION_BLOG,
+                    onPress: () => {
+
+                    }
+                },
+                {
+                    name: 'Language',
+                    image: PROMOTION_LANGUAGE,
+                    onPress: () => {
+
+                    }
+                },
+                {
                     name: 'Language',
                     image: PROMOTION_LANGUAGE,
                     onPress: () => {
@@ -96,6 +128,13 @@ const AccountScreen = () => {
                 {
                     name: 'Diary',
                     image: PROMOTION_DIARY,
+                    onPress: () => {
+
+                    }
+                },
+                {
+                    name: 'Activities',
+                    image: PROMOTION_ACTIVITIES,
                     onPress: () => {
 
                     }
@@ -147,9 +186,166 @@ const AccountScreen = () => {
 
                     }
                 },
+                {
+                    name: 'Notification',
+                    image: PROMOTION_NOTIFICATION,
+                    onPress: () => {
+
+                    }
+                },
             ]
         }
     ]
+
+    const data = [
+        {
+            data: [
+                {
+                    name: 'Profits Law',
+                    image: PROMOTION_BALANCE,
+                    onPress: () => {
+                        navigation.navigate('Profits Law');
+                    },
+                },
+                {
+                    name: 'Block User List',
+                    image: BLOCK_AVATAR,
+                    onPress: () => {
+                        navigation.navigate('Block User List');
+                    },
+                },
+                {
+                    name: 'Draft Video',
+                    image: PROMOTION_BALANCE,
+                    onPress: () => {
+                        navigation.navigate('Draft Video');
+                    },
+                },
+                {
+                    name: 'QR Code',
+                    image: QR,
+                    onPress: () => {
+                        navigation.navigate('QR Code');
+                    },
+                },
+            ],
+        },
+        {
+            heading: 'Wheel Luck',
+            data: [
+                {
+                    name: 'Wheel Luck',
+                    image: SPIN_WHEEL,
+                    onPress: () => {
+                        navigation.navigate('Wheel luck');
+                    },
+                },
+                {
+                    name: 'Live Center',
+                    image: LIVE_CENTER,
+                    onPress: () => {
+                        navigation.navigate('Live Center');
+                    },
+                },
+                {
+                    name: ' Q & A',
+                    image: Q_A,
+                    onPress: () => {
+                        navigation.navigate('qusetion_answer');
+                    },
+                },
+                {
+                    name: 'Help',
+                    image: QUESTION_ANSWER,
+                    onPress: () => {
+                        navigation.navigate('Help');
+                    },
+                },
+                {
+                    name: 'Posts',
+                    image: POST,
+                    onPress: () => {
+                        navigation.navigate('Posts');
+                    },
+                },
+                {
+                    name: 'Terms and Privacy',
+                    image: TERMS_POLICY,
+                    onPress: () => {
+                        navigation.navigate('terms_policy')
+                    }
+                },
+            ],
+        },
+        {
+            heading: 'Payment methods',
+            data: [
+                {
+                    name: 'Payment methods',
+                    image: PAYMENT,
+                    onPress: () => {
+                        navigation.navigate('payment');
+                    },
+                },
+                {
+                    name: 'Avatar',
+                    image: BLOCK_AVATAR,
+                    onPress: () => {
+                        navigation.navigate('avatar');
+                    },
+                },
+                {
+                    name: 'Download Your Information',
+                    image: DOWNLOAD_ICON,
+                    onPress: () => {
+                        navigation.navigate('download_information');
+                    },
+                },
+                {
+                    name: 'Transfer a copy of Your Information',
+                    image: TRANSFER_INFORMATION,
+                    onPress: () => {
+                        navigation.navigate('transfer_information');
+                    },
+                },
+                {
+                    name: 'Privacy Policy',
+                    image: PROMOTION_PRIVACY,
+                    onPress: () => {
+                        navigation.navigate('privacy_policy');
+                    },
+                },
+                {
+                    name: 'About',
+                    image: QUESTION_ANSWER,
+                    onPress: () => {
+                        navigation.navigate('about');
+                    },
+                },
+            ],
+        },
+        {
+
+            data: [
+                {
+                    name: 'Switch account',
+                    image: SWITCH_ACCOUNT,
+                    onPress: () => {
+                        navigation.navigate('switch_account');
+                    },
+                },
+                {
+                    name: 'Log out',
+                    image: LOG_OUT,
+                    onPress: () => {
+                        navigation.navigate('logout');
+                    },
+                },
+
+
+            ],
+        },
+    ];
 
 
 
@@ -224,7 +420,7 @@ const AccountScreen = () => {
 
             <Body applyPadding={false} style={{ flex: 1 }}>
                 <SectionList
-                    sections={data}
+                    sections={data1}
                     ListHeaderComponent={HeaderComponents}
                     ListFooterComponent={FooterComponents}
                     keyExtractor={(item, index) => item + index}

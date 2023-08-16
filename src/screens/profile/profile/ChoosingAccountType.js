@@ -5,12 +5,19 @@ import { useNavigation } from '@react-navigation/native'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import { ImageStore } from 'react-native'
 import { SIGNUP_USER } from '../../../configs/source'
+import Header from './components/Header'
 
 
 
 const { width, height } = Dimensions.get('screen')
 
-const ChoosingAccountType = ({ onPress, HeaderText, descrptionHeader, description }) => {
+const ChoosingAccountType = ({
+    onPress,
+    HeaderText,
+    descrptionHeader,
+    description,
+    image
+}) => {
     const navigation = useNavigation()
 
 
@@ -20,19 +27,20 @@ const ChoosingAccountType = ({ onPress, HeaderText, descrptionHeader, descriptio
     return (
         <SafeAreaView style={styles.main_container}>
             {/* Displaying Header */}
-            <View style={styles.header}>
+            {/* <View style={styles.header}>
                 <TouchableOpacity style={styles.icon} onPress={() => { navigation.goBack() }}>
                     <AntDesign name='arrowleft' size={20} color={'#020202'} />
                 </TouchableOpacity>
                 <Text style={{ color: '#020202', fontWeight: '500', fontSize: 16 }}>{HeaderText}</Text>
-            </View>
+            </View> */}
+            <Header headertext={'Business Account'} />
 
 
             <View style={styles.body}>
                 <View style={{ width: width, alignItems: 'center' }}>
                     <Image
-                        source={SIGNUP_USER}
-                        style={{ width: 120, height: 120 }}
+                        source={image}
+                        style={styles.image}
                     />
                 </View>
                 <View style={{
@@ -41,8 +49,26 @@ const ChoosingAccountType = ({ onPress, HeaderText, descrptionHeader, descriptio
                     justifyContent: 'center',
                     marginTop: height * 0.05
                 }}>
-                    <Text style={{ fontSize: 18, color: 'black', fontWeight: '600' }}>{descrptionHeader}</Text>
-                    <Text style={{ fontSize: 16, color: 'black', fontWeight: '400', textAlign: 'center', marginTop: height * 0.02 }}>
+                    <Text
+                        style={{
+                            fontSize: 18,
+                            color: 'black',
+                            fontWeight: '600',
+                            textAlign: 'center',
+                            width: width * 0.95
+                        }}>
+                        {descrptionHeader}
+                    </Text>
+                    <Text
+                        style={{
+                            fontSize: 14,
+                            color: 'rgba(0, 0, 0, 0.6)',
+                            fontWeight: '600',
+                            textAlign: 'center',
+                            marginTop: height * 0.02,
+                            width: width * 0.95,
+                            lineHeight: 20
+                        }}>
                         {description}
                     </Text>
 
@@ -78,7 +104,7 @@ const styles = StyleSheet.create({
 
     },
     header: {
-        backgroundColor: '#e0ded7',
+        backgroundColor: '#fff',
         flexDirection: 'row',
         width: width,
         height: 55,
@@ -93,6 +119,12 @@ const styles = StyleSheet.create({
     body: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'center'
+        // justifyContent: 'center',
+        marginTop: height * 0.1,
+    },
+    image: {
+        width: 120,
+        height: 120,
+        borderRadius: 100
     }
 })

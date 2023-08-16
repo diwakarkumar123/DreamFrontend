@@ -25,7 +25,7 @@ const ChooseAccount = () => {
         {
             account_type: 'Business account',
             onPress: () => {
-                navigation.navigate('BusinessAccount')
+                navigation.navigate('BusinessAccountCategories')
             }
         }
     ]

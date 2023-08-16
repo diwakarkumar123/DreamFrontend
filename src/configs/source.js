@@ -153,6 +153,7 @@ const APPLE_ICON = require('../assets/icon-social/apple-logo.png');
 const KAKAOTALK_ICON = require('../assets/icon-social/kakao-talk.png');
 const LINE_ICON = require('../assets/icon-social/line.png');
 const TWITTER_ICON = require('../assets/icon-social/twitter.png');
+const BUSINESS_ACCOUNT_HAND_SAKE = require('../assets/images/business_account_hand_sake.jpeg')
 
 const RECORDING_ANIMATION = require('../assets/lottie/recording.json')
 
@@ -369,6 +370,6 @@ export {
   CHAT_WHITE_VIDEO,
   CHAT_WHITE_MUSIC,
   CHAT_WHITE_CALL,
-  RECORDING_ANIMATION
-
+  RECORDING_ANIMATION,
+  BUSINESS_ACCOUNT_HAND_SAKE
 };

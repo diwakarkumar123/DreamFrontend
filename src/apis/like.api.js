@@ -10,4 +10,11 @@ const like = async (data, token) => {
   return result.data;
 };
 
-export { like };
+const getUserAllLike = async (user_id)=>{
+  const url = `${SERVER_API_URL}/likes/getUserAllLike/${user_id}`;
+  const result = await axios.get(url)
+  return result.data
+
+}
+
+export { like, getUserAllLike };

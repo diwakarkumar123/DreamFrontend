@@ -42,6 +42,8 @@ import FavouritePost from './profile/screen/FavouritePost';
 import PrivatePost from './profile/screen/PrivatePost';
 import VideoPost from './profile/screen/VideoPost';
 import * as VideoApi from '../../apis/video.api'
+import * as userApi from '../../apis/userApi'
+import * as likeApi from '../../apis/like.api'
 const { width, height } = Dimensions.get('window')
 
 
@@ -55,6 +57,8 @@ const ProfileScreen = () => {
   const dispatch = useDispatch()
   const { t, i18n } = useTranslation()
   const [data, setData] = useState()
+  const [user_data, setUser_data] = useState()
+  const [total_like, setTotal_like] = useState(0)
 
   const handleClickMoreOption = useCallback(() => {
     dispatch(setBottomSheetSettingProfile(true));
@@ -76,17 +80,36 @@ const ProfileScreen = () => {
   }, [dispatch]);
 
 
-
-  const getmyVideos = async () => {
-    const result = await VideoApi.getMyVideos(my_data?.auth_token)
-    setData(result.data)
-  }
-
-  useEffect(() => {
-    if (my_data) {
-      getmyVideos()
+  // FUNCTION FOR GETTING THE USER DETIALS FROM BACKEND
+  const fetchMyDetails = async ()=>{
+    try {
+      if(my_data){
+        const result = await userApi.getInfoById(my_data?.id)
+        setUser_data(result)
+      }
+    } catch (error) {
+      console.log(error)
     }
+  }
+  useEffect(()=>{
+    fetchMyDetails()
   }, [])
+
+  // FUNCTION FOR GETTING ALL THE LIKES OF USERS 
+
+  const getAllLikes = async()=>{
+    try {
+      const result = await likeApi.getUserAllLike(my_data?.id)
+      setTotal_like(result?.no_of_likes)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  useEffect(()=>{
+    getAllLikes()
+  }, [])
+  
+  
 
 
 
@@ -105,12 +128,12 @@ const ProfileScreen = () => {
                 applyPadding={false}
                 style={styles.topContainer}
               >
-                <Body
+                {/* <Body
                   applyPadding={false}
                   style={styles.iconContainer}>
                   <Image source={GIFT_ICON} style={{ width: 30, height: 30 }} />
                   <Text style={styles.text}>{t('gift')}</Text>
-                </Body>
+                </Body> */}
 
                 <Body
                   applyPadding={false}
@@ -162,17 +185,17 @@ const ProfileScreen = () => {
               <Body applyPadding={false} style={styles.bottomContainer} >
 
                 <Pressable onPress={() => { navigation.navigate('Followings', { user_id: my_data?.id }) }} style={styles.followSection}>
-                  <Text style={styles.text}>0</Text>
+                  <Text style={styles.text}>{user_data?.user?.Following?.length}</Text>
                   <Text style={styles.text}>{t('Followings')}</Text>
                 </Pressable>
 
                 <Pressable onPress={() => { navigation.navigate('Followers', { user_id: my_data?.id }) }} style={styles.followSection}>
-                  <Text style={styles.text}>0</Text>
+                  <Text style={styles.text}>{user_data?.user?.Followers?.length}</Text>
                   <Text style={styles.text}>{t('Followers')}</Text>
                 </Pressable>
 
                 <Pressable onPress={() => { navigation.navigate('LikesHistory', { user_id: my_data?.id }) }} style={styles.followSection}>
-                  <Text style={styles.text}>0</Text>
+                  <Text style={styles.text}>{total_like}</Text>
                   <Text style={styles.text}>{t('Likes')}</Text>
                 </Pressable>
 
@@ -216,7 +239,7 @@ const ProfileScreen = () => {
             <Tabs.Tab
               label={() => (<Image source={LIKED_POST_NAVIGATION} style={styles.icon_size} />)}
               name={"like post"}>
-              <LikedPost data={data} />
+              <LikedPost data={user_data?.liked_video} />
             </Tabs.Tab>
 
             <Tabs.Tab
@@ -240,7 +263,7 @@ const ProfileScreen = () => {
             <Tabs.Tab
               label={() => (<Image source={VIDEO_POST_NAVIGATION} style={styles.icon_size} />)}
               name={"video post"}>
-              <VideoPost data={data} />
+              <VideoPost data={user_data?.user?.videos} />
             </Tabs.Tab>
 
           </Tabs.Container>
@@ -401,9 +424,12 @@ const styles = StyleSheet.create({
 
   },
   text: {
-    color: '#020202',
-    fontSize: 16,
-    textAlign: 'center',
-    fontWeight: '400'
+        color: '#020202',
+        fontSize: 16,
+        fontWeight: '400',
+        textAlign: 'center',
+        // textShadowColor: 'white',
+        // textShadowOffset: { width: 3, height: 3 },
+        // textShadowRadius: 30,
   }
 })

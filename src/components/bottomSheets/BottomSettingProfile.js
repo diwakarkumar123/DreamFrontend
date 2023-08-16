@@ -50,7 +50,7 @@ const BottomSettingProfile = () => {
         zIndex={100}
         padding={SPACING.S4}
         paddingBottom={SPACING.S8}>
-        <Container borderBottomWidth={0.2} borderBottomColor={COLOR.LIGHT_GRAY}>
+        {/* <Container borderBottomWidth={0.2} borderBottomColor={COLOR.LIGHT_GRAY}>
           <TouchableOpacity onPress={null}>
             <Container
               paddingVertical={SPACING.S3}
@@ -65,10 +65,13 @@ const BottomSettingProfile = () => {
               <CText marginLeft={SPACING.S2}>Tools for creators</CText>
             </Container>
           </TouchableOpacity>
-        </Container>
+        </Container> */}
 
         <Container borderBottomWidth={0.2} borderBottomColor={COLOR.LIGHT_GRAY}>
-          <TouchableOpacity onPress={()=>{navigation.navigate('AccountScreen')}}>
+          <TouchableOpacity
+           onPress={()=>{navigation.navigate('AccountScreen')}}
+          // onPress={()=>{navigation.navigate('AccountSettingSecondScreen')}}
+           >
             <Container
               paddingVertical={SPACING.S3}
               flexDirection="row"

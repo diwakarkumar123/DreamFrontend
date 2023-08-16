@@ -1,8 +1,9 @@
 import { Dimensions, Image, ImageBackground, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import { PROMOTION_SHARE, DIAMOND_ICON } from '../../../../configs/source'
+import { PROMOTION_SHARE, DIAMOND_ICON, Like_post } from '../../../../configs/source'
 import Fontisto from 'react-native-vector-icons/Fontisto'
 import Entypo from 'react-native-vector-icons/Entypo'
+import Octicons from 'react-native-vector-icons/Octicons'
 
 const { width, height } = Dimensions.get('window')
 
@@ -14,10 +15,10 @@ const RenderPost = ({ item, index }) => {
         resizeMode='cover'
         source={{ uri: `https://dpcst9y3un003.cloudfront.net/${item?.thum}` }}
         style={styles.image_style}>
-          
+
         <View style={styles.image_upper_view}>
-          <Text style={styles.txt}>{item?.diamond}</Text>
           <Image source={DIAMOND_ICON} style={styles.diamond} />
+          <Text style={styles.txt}>{item?.diamond || 0}</Text>
         </View>
 
         <View style={styles.image_bottom_view}>
@@ -26,8 +27,9 @@ const RenderPost = ({ item, index }) => {
             <Text style={styles.txt}>{item?.view}</Text>
           </View>
 
-          <View>
-            <Text style={styles.txt}>{item?.like}</Text>
+          <View style={styles.paused_section}>
+            <Octicons name='heart-fill' size={20} color={'#fff'} />
+            <Text style={[styles.txt, { marginLeft: 5 }]}>{item?.like}</Text>
           </View>
 
         </View>
@@ -45,8 +47,9 @@ const styles = StyleSheet.create({
     height: 180
   },
   main_container: {
-    marginHorizontal: width * 0.00,
-    width: width / 3
+    width: width / 3,
+    borderWidth: 2,
+    borderColor: '#fff'
   },
   image_upper_view: {
     flexDirection: 'row',
@@ -54,16 +57,17 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 5,
     width: width / 3,
-    paddingHorizontal: 2,
+    paddingHorizontal: 10,
     right: 5
   },
   txt: {
     color: 'rgba(255, 255, 255, 0.9)',
-    backgroundColor: 'black'
+    fontSize: 16
   },
   paused_section: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+
   },
   image_bottom_view: {
     flexDirection: 'row',
