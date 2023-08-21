@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, FlatList, Dimensions, StatusBar } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, FlatList, Dimensions, StatusBar, Pressable } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -18,27 +18,12 @@ const { width, height } = Dimensions.get("window")
 const SelectingLocationScreen = ({ route }) => {
     const navigation = useNavigation()
     const [data, setData] = useState('')
-    const [country_code, setCountry_code] = useState('')
-    const [searchText, setSearchText] = useState("");
     const [filteredUsers, setFilteredUsers] = useState(data);
     const [show_search, setShow_search] = useState(false)
-    const [selected_country, setSelected_country] = useState(['s'])
     const { setCountries, setCities, countries, cities } = route.params;
-
-
-    const device_info = async ()=>{
-        const result = await DeviceInfo.getFreeDiskStorage()
-        console.log(result)
-        
-    }
-    useEffect(()=>{
-        device_info()
-    }, [])
-    
+    const [selected_country, setSelected_country] = useState([...countries])
 
     const handleSearch = (text) => {
-        setSearchText(text);
-
         const filteredData = data.filter((user) =>
             user.name.toLowerCase().startsWith(text.toLowerCase())
         );
@@ -62,31 +47,28 @@ const SelectingLocationScreen = ({ route }) => {
 
 
 
+    const Country_card = React.memo(({ item, index }) => {
+        const code = item?.short_name;
+        const id = item?.id;
+        const [selected, setSelected] = useState(selected_country.includes(id))
 
-    const Country_card = ({ item, index }) => {
-            const code = item?.short_name;
-
-        const toggle_switch = (val) => {
-            if (selected_country.includes(item)) {
-
-                setSelected_country(selected_country.filter(it => it !== item));
-                setCountries(countries.filter(it => it != item.id));
+        const select_country = () => {
+            setSelected(p => !p)
+            if (selected_country.includes(id)) {
+                const newCountry = selected_country.filter(v => v !== id)
+                setSelected_country([...newCountry])
             } else {
-
-                setSelected_country([...selected_country, item]);
-                setCountries([...countries, item.id])
+                setSelected_country(selected_country.concat(id));
             }
         }
-
-
-
         return (
             <View style={styles.country_card}>
-                <View style={styles.flag_group}>
+
+                <Pressable style={styles.flag_group} onPress={select_country}>
                     <CheckBox
                         boxType='circle'
-                        value={selected_country.includes(item) ? true : false}
-                        onValueChange={toggle_switch}
+                        value={selected}
+                        onValueChange={select_country}
                         tintColors={{ true: 'red', false: 'black' }}
 
                     />
@@ -94,23 +76,30 @@ const SelectingLocationScreen = ({ route }) => {
                         <Text>{item.emoji}</Text>
                         <Text style={{ marginLeft: 12 }}>{item.name}</Text>
                     </View>
-                </View>
+                </Pressable>
+
                 <TouchableOpacity
                     onPress={() => {
-                        navigation.navigate('SelectingCitiesScreen', { code, setCountries, setCities, countries, cities })
-                    }}
-                >
+                        navigation.navigate('SelectingCitiesScreen', { code, setCities, cities })
+                    }}>
                     <AntDesign name='arrowright' size={25} />
                 </TouchableOpacity>
             </View>
         )
-    }
+    })
+
+
+
 
 
     const handleInsertIds = (data) => {
         const ids = data.map((item) => item.id);
-        setCountries(ids);
+        setSelected_country([...ids])
     };
+    const handleFinalClick = () => {
+        setCountries(selected_country)
+        navigation.goBack()
+    }
 
 
 
@@ -124,7 +113,7 @@ const SelectingLocationScreen = ({ route }) => {
                     setCountries([])
                     navigation.goBack()
                 }}>
-                    <AntDesign name='arrowleft' size={20} />
+                    <AntDesign name='arrowleft' size={25} />
                 </TouchableOpacity>
                 <Text style={[styles.headerText, { marginTop: 0 }]}>
                     Countries
@@ -147,7 +136,7 @@ const SelectingLocationScreen = ({ route }) => {
                     setCountries([])
                     navigation.goBack()
                 }}>
-                    <AntDesign name='arrowleft' size={20} />
+                    <AntDesign name='arrowleft' size={25} />
                 </TouchableOpacity>
                 <View style={{ width: width * 0.8, }}>
                     <TextInput
@@ -159,7 +148,7 @@ const SelectingLocationScreen = ({ route }) => {
                         }}
                     />
                 </View>
-                <TouchableOpacity onPress={() => { navigation.goBack() }}>
+                <TouchableOpacity onPress={handleFinalClick}>
                     <AntDesign name='check' size={25} color={'blue'} />
                 </TouchableOpacity>
             </View>}

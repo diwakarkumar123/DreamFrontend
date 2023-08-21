@@ -72,11 +72,16 @@ import RenderTextInput from './src/screens/videoEditor/components/RenderTextInpu
 import FontPicker from './src/screens/videoEditor/sticker/FontPicker';
 import ColorPicker from './src/screens/videoEditor/sticker/ColorPicker';
 import * as Localize from 'react-native-localize'
-import AccountSettingSecondScreen from './src/screens/profile/profile/screen/AccountSettingSecondScreen';
 import BusinessAccountCategories from './src/screens/profile/profile/screen/BusinessAccountCategories';
 import BusinessAccount1 from './src/screens/profile/profile/screen/business/BusinessAccount1';
 import BusinessAccount2 from './src/screens/profile/profile/screen/business/BusinessAccount2';
 import BusinessAccount3 from './src/screens/profile/profile/screen/business/BusinessAccount3';
+import PrivacyPolicy from './src/screens/profile/profile/privacy/Privacy';
+import Supperfollow from './src/screens/profile/profile/privacy/Supperfollow';
+import Viewlist from './src/screens/profile/profile/privacy/Viewlist';
+import Messageme from './src/screens/profile/profile/privacy/Messageme';
+import Userblocked from './src/screens/profile/profile/privacy/Userblocked';
+import AccountSettingSecondScreen from './src/screens/profile/profile/screen/AccountSettingSecondScreen';
 
 
 
@@ -513,6 +518,44 @@ const App = () => {
             <Stack.Screen
               name="BusinessAccount3"
               component={BusinessAccount3}
+              options={{
+                headerShown: false,
+                animationEnabled: false,
+              }} />
+
+
+            <Stack.Screen
+              name="PrivacyPolicy"
+              component={PrivacyPolicy}
+              options={{
+                headerShown: false,
+                animationEnabled: false,
+              }} />
+            <Stack.Screen
+              name="Supperfollow"
+              component={Supperfollow}
+              options={{
+                headerShown: false,
+                animationEnabled: false,
+              }} />
+
+            <Stack.Screen
+              name="Viewlist"
+              component={Viewlist}
+              options={{
+                headerShown: false,
+                animationEnabled: false,
+              }} />
+            <Stack.Screen
+              name="Userblocked"
+              component={Userblocked}
+              options={{
+                headerShown: false,
+                animationEnabled: false,
+              }} />
+            <Stack.Screen
+              name="Messageme"
+              component={Messageme}
               options={{
                 headerShown: false,
                 animationEnabled: false,

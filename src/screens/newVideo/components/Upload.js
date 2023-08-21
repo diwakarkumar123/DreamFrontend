@@ -12,21 +12,25 @@ const Upload = ({ endRecord }) => {
     try {
       const options = { mediaType: 'video', };
       const result = await launchImageLibrary(options);
-      setShow_loader(true)
-      const sourceUri = result.assets[0].uri;
-      const cache_path = RNFS.CachesDirectoryPath;
-      const out_put_path = `${cache_path}/selected_video.mp4`
-      RNFS.copyFile(sourceUri, out_put_path)
-        .then(() => {
-          const fileUri = `file://${out_put_path}`;
-          setShow_loader(false)
-          endRecord(fileUri, result?.assets[0]?.duration);
-        })
-        .catch((err) => {
-          console.log(err.message)
-        })
+      if (!result.didCancel) {
+        setShow_loader(true)
+        const sourceUri = result.assets[0].uri;
+        const cache_path = RNFS.CachesDirectoryPath;
+        const out_put_path = `${cache_path}/selected_video.mp4`
+        RNFS.copyFile(sourceUri, out_put_path)
+          .then(() => {
+            const fileUri = `file://${out_put_path}`;
+            setShow_loader(false)
+            endRecord(fileUri, result?.assets[0]?.duration);
+          })
+          .catch((err) => {
+            console.log(err.message)
+            setShow_loader(false)
+          })
+      }
     } catch (error) {
       console.log(error);
+      setShow_loader(false)
     }
   };
 

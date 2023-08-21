@@ -105,13 +105,49 @@ const CHAT_VIDEO_TWO = require('../assets/images/7.png')
 const CHAT_CALL = require('../assets/images/4.png')
 
 
+const setting_about_us_icon = require('../assets/images/setting_about_us.png')
+const setting_account_switching_icon = require('../assets/images/setting_account_switching.png')
+const setting_add_promote_icon = require('../assets/images/setting_add_&_promote.png')
+const setting_Analytics_icon = require('../assets/images/setting_Analytics.png')
+const setting_avtar_icon = require('../assets/images/setting_avtar.png')
+const setting_Backup_icon = require('../assets/images/setting_Backup.png')
+const setting_Balance_icon = require('../assets/images/setting_Balance.png')
+const setting_block_user_list_icon = require('../assets/images/setting_blockuserlist.png')
+const setting_blogs_icon = require('../assets/images/setting_blogs.png')
+const setting_choose_account_icon = require('../assets/images/setting_chooseaccount.png')
+const setting_account_close_icon = require('../assets/images/setting_close_account.png')
+const setting_download_information_icon = require('../assets/images/setting_downloadallinformation.png')
+const setting_free_up_space_icon = require('../assets/images/setting_free_up_space.png')
+const setting_help_and_contact_us_icon = require('../assets/images/setting_help&contactus.png')
+const setting_language_icon = require('../assets/images/setting_Language.png')
+const setting_logout_icon = require('../assets/images/setting_logout.png')
+const setting_notification_icon = require('../assets/images/setting_notification.png')
+const setting_paymentmethod_icon = require('../assets/images/setting_paymentmethod.png')
+const setting_privacy_policy_icon = require('../assets/images/setting_privacy_policy.png')
+const setting_privacy_icon = require('../assets/images/setting_privacy.png')
+const setting_Q_and_A_icon = require('../assets/images/setting_Q&a.png')
+const setting_reported_user_list_icon = require('../assets/images/setting_reported_user_list.png')
+const setting_security_icon = require('../assets/images/setting_security.png')
+const setting_share_profile_icon = require('../assets/images/setting_share_profile.png')
+const setting_transfer_all_information_icon = require('../assets/images/setting_transfer_all_informationtoother.png')
+const setting_video_live_alloewd_icon = require('../assets/images/setting_video_live_allowed.png')
+const setting_wallet_icon = require('../assets/images/setting_wallet.png')
+const setting_dislike = require('../assets/images/dislike.jpeg')
+const setting_heart = require('../assets/images/heart.jpeg')
+const Setting_green_tick_icon = require('../assets/images/green_tick.png')
+
+
+
+
+
+
 const CHAT_WHITE_BRIGHTNESS = require('../assets/images/34.png')
 const CHAT_WHITE_ROSE = require('../assets/images/33.png')
 const CHAT_WHITE_COLOR_PICKER = require('../assets/images/32.png')
 const CHAT_WHITE_ATTACHMENT = require('../assets/images/31.png')
 const CHAT_WHITE_CONTACT = require('../assets/images/30.png')
 const CHAT_WHITE_LOCATION = require('../assets/images/29.png')
-const CHAT_WHITE_AUDIO= require('../assets/images/28.png')
+const CHAT_WHITE_AUDIO = require('../assets/images/28.png')
 const CHAT_WHITE_GALLERY = require('../assets/images/27.png')
 const CHAT_WHITE_CAMERA = require('../assets/images/26.png')
 const CHAT_WHITE_DOCUMENT = require('../assets/images/25.png')
@@ -125,7 +161,7 @@ const CHAT_WHITE_CALL = require('../assets/images/20.png')
 
 const LUCKY_WHEEL_ICON = require('../assets/images/lucky_wheel.png')
 const PICTURE_ICON = require('../assets/images/picture_icon.png')
-const LIKED_POST_NAVIGATION = require('../assets/images/Liked_post_navigation.png') 
+const LIKED_POST_NAVIGATION = require('../assets/images/Liked_post_navigation.png')
 const FAVOURITE = require('../assets/images/favourite.png')
 const LOCK = require('../assets/images/lock.png')
 const VIDEO_POST_NAVIGATION = require('../assets/images/video_post_navigation.png')
@@ -340,7 +376,7 @@ export {
   HOME_NEW_VIDEO,
   SIGNUP_USER,
   ROSE,
-  
+
   CHAT_VIDEO,
   CHAT_ROSE,
   CHAT_ATTACHMENT,
@@ -371,5 +407,37 @@ export {
   CHAT_WHITE_MUSIC,
   CHAT_WHITE_CALL,
   RECORDING_ANIMATION,
-  BUSINESS_ACCOUNT_HAND_SAKE
+  BUSINESS_ACCOUNT_HAND_SAKE,
+
+
+  setting_about_us_icon,
+  setting_account_switching_icon,
+  setting_add_promote_icon,
+  setting_Analytics_icon,
+  setting_avtar_icon,
+  setting_Backup_icon,
+  setting_Balance_icon,
+  setting_block_user_list_icon,
+  setting_blogs_icon,
+  setting_choose_account_icon,
+  setting_account_close_icon,
+  setting_download_information_icon,
+  setting_free_up_space_icon,
+  setting_help_and_contact_us_icon,
+  setting_language_icon,
+  setting_logout_icon,
+  setting_notification_icon,
+  setting_paymentmethod_icon,
+  setting_privacy_policy_icon,
+  setting_privacy_icon,
+  setting_Q_and_A_icon,
+  setting_reported_user_list_icon,
+  setting_security_icon,
+  setting_share_profile_icon,
+  setting_transfer_all_information_icon,
+  setting_video_live_alloewd_icon,
+  setting_wallet_icon,
+  setting_dislike,
+  setting_heart,
+  Setting_green_tick_icon
 };

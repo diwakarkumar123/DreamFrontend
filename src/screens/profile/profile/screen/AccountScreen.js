@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, TouchableOpacity, Dimensions, SectionList, Image } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View, TouchableOpacity, Dimensions, SectionList, Image, Pressable, TextInput, Linking } from 'react-native'
+import React, { useState ,useEffect} from 'react'
 import Body from '../../../../components/Body/Body.components'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import { useNavigation } from '@react-navigation/native'
@@ -40,7 +40,37 @@ import {
     LOG_OUT,
     Q_A,
     POST,
-    LIVE_CENTER
+    LIVE_CENTER,
+
+
+    setting_about_us_icon,
+    setting_account_switching_icon,
+    setting_add_promote_icon,
+    setting_Analytics_icon,
+    setting_avtar_icon,
+    setting_Backup_icon,
+    setting_Balance_icon,
+    setting_block_user_list_icon,
+    setting_blogs_icon,
+    setting_choose_account_icon,
+    setting_account_close_icon,
+    setting_download_information_icon,
+    setting_free_up_space_icon,
+    setting_help_and_contact_us_icon,
+    setting_language_icon,
+    setting_logout_icon,
+    setting_notification_icon,
+    setting_paymentmethod_icon,
+    setting_privacy_policy_icon,
+    setting_privacy_icon,
+    setting_Q_and_A_icon,
+    setting_reported_user_list_icon,
+    setting_security_icon,
+    setting_share_profile_icon,
+    setting_transfer_all_information_icon,
+    setting_video_live_alloewd_icon,
+    setting_wallet_icon,
+
 } from '../../../../configs/source'
 import { Switch } from 'react-native-paper'
 
@@ -54,36 +84,37 @@ const AccountScreen = () => {
             data: [
                 {
                     name: 'Choose Account',
-                    image: PROMOTION_PROFILE_ICON,
+                    image: setting_choose_account_icon,
                     onPress: () => {
                         navigation.navigate('ChooseAccount')
                     }
                 },
                 {
                     name: 'Analytics',
-                    image: PROMOTION_ANALYTICS,
+                    image: setting_Analytics_icon,
                     onPress: () => {
                         navigation.navigate('MainInsightScreen')
                     }
                 },
                 {
                     name: 'Balance',
-                    image: PROMOTION_BALANCE,
+                    image: setting_Balance_icon,
                     onPress: () => {
 
                     }
                 },
                 {
-                    name: 'Payout Settings',
-                    image: PROMOTION_PAYOUTS_SETTINGS,
+                    name: 'Security',
+                    image: setting_security_icon,
                     onPress: () => {
 
                     }
                 },
                 {
                     name: 'Privacy',
-                    image: PROMOTION_PRIVACY,
+                    image: setting_privacy_icon,
                     onPress: () => {
+                        navigation.navigate('PrivacyPolicy')
 
                     }
                 }
@@ -93,29 +124,50 @@ const AccountScreen = () => {
             heading: 'Tools',
             data: [
                 {
-                    name: 'Blogs',
-                    image: PROMOTION_BLOG,
+                    name: 'Wallet',
+                    image: setting_wallet_icon,
                     onPress: () => {
 
                     }
                 },
                 {
-                    name: 'Blog',
-                    image: PROMOTION_BLOG,
-                    onPress: () => {
-
-                    }
-                },
-                {
-                    name: 'Language',
-                    image: PROMOTION_LANGUAGE,
+                    name: 'Backup',
+                    image: setting_Backup_icon,
                     onPress: () => {
 
                     }
                 },
                 {
                     name: 'Language',
-                    image: PROMOTION_LANGUAGE,
+                    image: setting_language_icon,
+                    onPress: () => {
+
+                    }
+                },
+                {
+                    name: 'Free up space',
+                    image: setting_free_up_space_icon,
+                    onPress: () => {
+
+                    }
+                },
+                {
+                    name: 'Block user list',
+                    image: setting_block_user_list_icon,
+                    onPress: () => {
+
+                    }
+                },
+                {
+                    name: 'Videos LIVE a Allowed',
+                    image: setting_video_live_alloewd_icon,
+                    onPress: () => {
+
+                    }
+                },
+                {
+                    name: 'QR Code',
+                    image: setting_Analytics_icon,
                     onPress: () => {
 
                     }
@@ -123,32 +175,32 @@ const AccountScreen = () => {
             ]
         },
         {
-            heading: 'Contact and activities',
+            heading: 'Wheel Luck',
             data: [
                 {
-                    name: 'Diary',
+                    name: 'Lucky wheel',
                     image: PROMOTION_DIARY,
                     onPress: () => {
 
                     }
                 },
                 {
-                    name: 'Activities',
+                    name: 'Box Wheel',
                     image: PROMOTION_ACTIVITIES,
                     onPress: () => {
 
                     }
                 },
                 {
-                    name: 'Activities',
-                    image: PROMOTION_ACTIVITIES,
+                    name: 'Q&A',
+                    image: setting_Q_and_A_icon,
                     onPress: () => {
 
                     }
                 },
                 {
-                    name: 'Download information',
-                    image: PROMOTION_DOWNLOAD,
+                    name: 'Help/ Contact Us',
+                    image: setting_help_and_contact_us_icon,
                     onPress: () => {
 
                     }
@@ -159,36 +211,92 @@ const AccountScreen = () => {
             heading: 'Settings',
             data: [
                 {
-                    name: 'Share your profile',
-                    image: PROMOTION_SHARE,
+                    name: 'Payment method',
+                    image: setting_paymentmethod_icon,
                     onPress: () => {
 
                     }
                 },
                 {
-                    name: 'Request Verification',
-                    image: PROMOTION_VERIFICATION,
-                    onPress: () => {
-
-                    }
-                },
-                {
-                    name: 'Security',
-                    image: PROMOTION_SECURITY,
+                    name: 'Avatar',
+                    image: setting_avtar_icon,
                     onPress: () => {
 
                     }
                 },
                 {
                     name: 'Notification',
-                    image: PROMOTION_NOTIFICATION,
+                    image: setting_notification_icon,
                     onPress: () => {
 
                     }
                 },
                 {
-                    name: 'Notification',
-                    image: PROMOTION_NOTIFICATION,
+                    name: 'Download all Information',
+                    image: setting_download_information_icon,
+                    onPress: () => {
+
+                    }
+                },
+                {
+                    name: 'Reported user list',
+                    image: setting_reported_user_list_icon,
+                    onPress: () => {
+
+                    }
+                },
+                {
+                    name: 'Transfer all information to another',
+                    image: setting_transfer_all_information_icon,
+                    onPress: () => {
+
+                    }
+                },
+                {
+                    name: 'Ads / promote',
+                    image: setting_add_promote_icon,
+                    onPress: () => {
+
+                    }
+                },
+                {
+                    name: 'Privacy policy',
+                    image: setting_privacy_policy_icon,
+                    onPress: () => {
+                        Linking.openURL('https://newspakupdat.blogspot.com/p/privacy-policy-of-dream-application.html?m=1')
+                    }
+                },
+                {
+                    name: 'About Us',
+                    image: setting_about_us_icon,
+                    onPress: () => {
+                        Linking.openURL('https://newspakupdat.blogspot.com/p/terms-of-service-of-dream-application.html?m=1')
+                    }
+                },
+                {
+                    name: 'Share profile',
+                    image: setting_share_profile_icon,
+                    onPress: () => {
+
+                    }
+                },
+                {
+                    name: 'Switiching Account',
+                    image: setting_account_switching_icon,
+                    onPress: () => {
+
+                    }
+                },
+                {
+                    name: 'Logout',
+                    image: setting_logout_icon,
+                    onPress: () => {
+
+                    }
+                },
+                {
+                    name: 'Close Account',
+                    image: setting_account_close_icon,
                     onPress: () => {
 
                     }
@@ -196,159 +304,39 @@ const AccountScreen = () => {
             ]
         }
     ]
-
-    const data = [
-        {
-            data: [
-                {
-                    name: 'Profits Law',
-                    image: PROMOTION_BALANCE,
-                    onPress: () => {
-                        navigation.navigate('Profits Law');
-                    },
-                },
-                {
-                    name: 'Block User List',
-                    image: BLOCK_AVATAR,
-                    onPress: () => {
-                        navigation.navigate('Block User List');
-                    },
-                },
-                {
-                    name: 'Draft Video',
-                    image: PROMOTION_BALANCE,
-                    onPress: () => {
-                        navigation.navigate('Draft Video');
-                    },
-                },
-                {
-                    name: 'QR Code',
-                    image: QR,
-                    onPress: () => {
-                        navigation.navigate('QR Code');
-                    },
-                },
-            ],
-        },
-        {
-            heading: 'Wheel Luck',
-            data: [
-                {
-                    name: 'Wheel Luck',
-                    image: SPIN_WHEEL,
-                    onPress: () => {
-                        navigation.navigate('Wheel luck');
-                    },
-                },
-                {
-                    name: 'Live Center',
-                    image: LIVE_CENTER,
-                    onPress: () => {
-                        navigation.navigate('Live Center');
-                    },
-                },
-                {
-                    name: ' Q & A',
-                    image: Q_A,
-                    onPress: () => {
-                        navigation.navigate('qusetion_answer');
-                    },
-                },
-                {
-                    name: 'Help',
-                    image: QUESTION_ANSWER,
-                    onPress: () => {
-                        navigation.navigate('Help');
-                    },
-                },
-                {
-                    name: 'Posts',
-                    image: POST,
-                    onPress: () => {
-                        navigation.navigate('Posts');
-                    },
-                },
-                {
-                    name: 'Terms and Privacy',
-                    image: TERMS_POLICY,
-                    onPress: () => {
-                        navigation.navigate('terms_policy')
-                    }
-                },
-            ],
-        },
-        {
-            heading: 'Payment methods',
-            data: [
-                {
-                    name: 'Payment methods',
-                    image: PAYMENT,
-                    onPress: () => {
-                        navigation.navigate('payment');
-                    },
-                },
-                {
-                    name: 'Avatar',
-                    image: BLOCK_AVATAR,
-                    onPress: () => {
-                        navigation.navigate('avatar');
-                    },
-                },
-                {
-                    name: 'Download Your Information',
-                    image: DOWNLOAD_ICON,
-                    onPress: () => {
-                        navigation.navigate('download_information');
-                    },
-                },
-                {
-                    name: 'Transfer a copy of Your Information',
-                    image: TRANSFER_INFORMATION,
-                    onPress: () => {
-                        navigation.navigate('transfer_information');
-                    },
-                },
-                {
-                    name: 'Privacy Policy',
-                    image: PROMOTION_PRIVACY,
-                    onPress: () => {
-                        navigation.navigate('privacy_policy');
-                    },
-                },
-                {
-                    name: 'About',
-                    image: QUESTION_ANSWER,
-                    onPress: () => {
-                        navigation.navigate('about');
-                    },
-                },
-            ],
-        },
-        {
-
-            data: [
-                {
-                    name: 'Switch account',
-                    image: SWITCH_ACCOUNT,
-                    onPress: () => {
-                        navigation.navigate('switch_account');
-                    },
-                },
-                {
-                    name: 'Log out',
-                    image: LOG_OUT,
-                    onPress: () => {
-                        navigation.navigate('logout');
-                    },
-                },
-
-
-            ],
-        },
-    ];
-
-
-
+    const [searchActive, setSearchActive] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filteredData, setFilteredData] = useState(data1);
+    const [mainData, setmainlData] = useState(data1); // Store original data
+    const handleSearch = text => {
+        setSearchQuery(text);
+        const filterdata = mainData.map(section => ({
+            ...section,
+            data: section.data.filter(item =>
+                item.name.toLowerCase().startsWith(text.toLowerCase())
+            ),
+        }));
+        setFilteredData(filterdata);
+    };
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+          setSearchActive(false);
+          setSearchQuery('');
+          setFilteredData(data1);
+        });
+        return unsubscribe;
+      }, [navigation]);
+    
+    const toggleSearch = () => {
+        if (searchActive) {
+          setSearchActive(false);
+          setSearchQuery('');
+          setFilteredData(data1);
+        } else {
+          setSearchActive(true);
+        }
+      };
+    
     const HeaderComponents = () => {
         return (
             <Body applyPadding={false} style={styles.upper_sections}>
@@ -370,15 +358,16 @@ const AccountScreen = () => {
         )
     }
 
-    const FooterComponents = ()=>{
-        return(
+    const FooterComponents = () => {
+        return (
             <View style={{
-               width: width,
-               marginBottom: 20,
-               marginTop: 10
+                width: width,
+                marginBottom: 20,
+                marginTop: 10,
+                height: 20
 
             }}>
-                <View style={{
+                {/* <View style={{
                     flexDirection: 'row',
                     alignItems: 'center',
                     width: width * 0.5,
@@ -391,9 +380,9 @@ const AccountScreen = () => {
                     />
                 </View>
                 <Text style={styles.footer_text}>
-                    With this settings on, you'll be able to allow advertisers to use 
+                    With this settings on, you'll be able to allow advertisers to use
                     your post in their ads, and choose whether your post will only show as an ad. You can manage how advertisers can use your content uner "..." "Ad settings" on each of your posts.
-                </Text>
+                </Text> */}
             </View>
         )
     }
@@ -408,60 +397,88 @@ const AccountScreen = () => {
 
     return (
         <Body style={{ flex: 1 }}>
-            <Body applyPadding={false} style={styles.header}>
-                <TouchableOpacity onPress={() => { navigation.goBack() }}>
-                    <AntDesign name='arrowleft' size={20} />
-                </TouchableOpacity>
-                <Text style={[styles.headerText, { marginTop: 0 }]}>
-                    Account Settings
-                </Text>
-            </Body>
+            {/* <Body applyPadding={false} style={styles.header}> */}
+            {searchActive ? (
+                <Body applyPadding={false} style={styles.header}>
 
+                    <TextInput
+                        style={styles.searchInput}
+                        placeholder="Search by name..."
+                        value={searchQuery}
+                        onChangeText={handleSearch}
+                    />
+                    <TouchableOpacity onPress={toggleSearch} style={{justifyContent:'center',alignItems:'center',height:height*0.06,marginLeft:width*0.87,position:'absolute',bottom:height*.03,opacity:0.4}}>
+                        <FontAwesome
+                            name={searchActive ? 'times' : 'search'}
+                            size={25}
+                            color={'#020202'}
+                        />
+                    </TouchableOpacity>
 
-            <Body applyPadding={false} style={{ flex: 1 }}>
+                </Body>
+
+            ) : (
+
+                <Body applyPadding={false} style={styles.header}>
+                    <TouchableOpacity onPress={() => { navigation.goBack() }}>
+                        <AntDesign name='arrowleft' size={25} color={'#020202'} />
+                    </TouchableOpacity>
+                    <Text style={[styles.headerText]}>
+                        Settings Profile
+                    </Text>
+                    <TouchableOpacity onPress={toggleSearch}>
+                        <FontAwesome
+                            name={searchActive ? 'times' : 'search'}
+                            size={25}
+                            color={'#020202'}
+                        />
+                    </TouchableOpacity>
+                </Body>
+            )}
+            {/* </Body> */}
+
+            <Body applyPadding={false}>
                 <SectionList
-                    sections={data1}
+                    sections={searchActive ? filteredData : data1}
                     ListHeaderComponent={HeaderComponents}
                     ListFooterComponent={FooterComponents}
                     keyExtractor={(item, index) => item + index}
                     renderItem={({ item }) => (
-                        <View style={styles.list_view}>
+                        <Pressable style={styles.list_view} onPress={item?.onPress}>
                             <View style={styles.list_left_view}>
-                                <Image source={item.image} style={{ width: 30, height: 30 }} />
+                                <Image source={item.image} style={{ width: 25, height: 25 }} />
                                 <Text style={styles.list_text}>{item.name}</Text>
                             </View>
                             <TouchableOpacity onPress={item.onPress}>
-                                <AntDesign name='arrowright' size={25} />
+                                <AntDesign name='arrowright' size={20} />
                             </TouchableOpacity>
-                        </View>
+                        </Pressable>
                     )}
                     renderSectionHeader={({ section: { heading } }) => (
                         <Text style={styles.headingText}>{heading}</Text>
                     )}
                 />
-
             </Body>
-
-
         </Body>
     )
 }
 
-export default AccountScreen
+
+
+export default React.memo(AccountScreen)
 
 const styles = StyleSheet.create({
     header: {
         alignItems: 'center',
         paddingHorizontal: 15,
-        paddingVertical: 10,
+        paddingVertical: 15,
         flexDirection: 'row',
+        justifyContent: 'space-between'
     },
     headerText: {
-        fontSize: 18,
+        fontSize: 20,
         fontWeight: '500',
         color: '#000000',
-        marginLeft: 25,
-        marginTop: 3
     },
     categoriesTxt: {
         fontFamily: 'lato-heavy',
@@ -500,6 +517,15 @@ const styles = StyleSheet.create({
         marginTop: 15,
         paddingBottom: 3
     },
+    searchInput: {
+        width: width * 0.9,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        borderBottomWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 8,
+        marginBottom: 15,
+    },
     footer_text: {
         width: width,
         paddingHorizontal: width * 0.05,
@@ -508,3 +534,9 @@ const styles = StyleSheet.create({
         marginTop: 15
     }
 })
+
+
+
+
+
+//////////

@@ -70,32 +70,17 @@ const iconCaption = ['#', '@', '▶', '◉'];
 const PostVideoScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const modalizeRef = useRef(null)
-  const [show_tag_modal, setShow_tag_modal] = useState(false)
-  const [following_people, setFollowing_people] = useState()
+  const dispatch = useDispatch()
+
+
   const video = useSelector(state => state.video)
   const my_data = useSelector(state => state.my_data.my_profile_data)
-  const dispatch = useDispatch()
-  const openModalize = async () => {
-    const result = await userApi.getAllFollowingsUsers(my_data?.auth_token)
-    setFollowing_people(result?.payload[0]?.Following)
-    setShow_tag_modal(true)
-  }
-  const move_to_promote = () => {
-    setPromotion(true)
-  }
-  const [searchText, setSearchText] = useState("");
-  const [filteredUsers, setFilteredUsers] = useState(userinfo);
 
 
-  const handleSearch = (text) => {
-    setSearchText(text);
-    const filteredData = following_people?.filter((user) =>
-      user.nickname.toLowerCase().startsWith(text.toLowerCase())
-    );
-    setFilteredUsers(filteredData);
-  };
-  console.log(following_people)
+
+  const [show_tag_modal, setShow_tag_modal] = useState(false)
+  const [following_people, setFollowing_people] = useState()
+  const [filteredUsers, setFilteredUsers] = useState();
   const [caption, setCaption] = useState('');
   const [privacy, setPrivacy] = useState(false);
   const [allow_comment, setAllow_comment] = useState(true)
@@ -110,7 +95,31 @@ const PostVideoScreen = () => {
   const [promoteModal, setPromoteModal] = useState(false)
   const [countries, setCountries] = useState([])
   const [cities, setCities] = useState([])
+  const [tag_username, setTagusername] = useState()
+  const [hashtag, setHastag] = useState()
+  const [people_id, setPeople_id] = useState([])
 
+
+
+  // for opening the taggging people model
+  const openModalize = async () => {
+    const result = await userApi.getAllFollowingsUsers(my_data?.auth_token)
+    setFollowing_people(result?.payload[0]?.Following)
+    setShow_tag_modal(true)
+  }
+  const move_to_promote = () => {
+    setPromotion(true)
+  }
+
+  // for handeling the search functionality
+  const handleSearch = (text) => {
+    const filteredData = following_people?.filter((user) =>
+      user.nickname.toLowerCase().startsWith(text.toLowerCase())
+    );
+    setFilteredUsers(filteredData);
+  };
+
+  // for generating the thumbnail
   const generate_thumbnail = async () => {
     const cache_dir_path = await RNFS.CachesDirectoryPath;
     const filename = new Date().getTime()
@@ -138,51 +147,7 @@ const PostVideoScreen = () => {
     generate_thumbnail()
   }, [])
 
-
-
-
-  const handlePostVideo = async () => {
-    if (my_data) {
-      try {
-        setShowModal(true);
-
-        const formData = new FormData();
-        formData.append('video', {
-          uri: `file:// + ${video?.video_url}`,
-          name: video?.video_url.split('/').reverse()[0],
-          type: 'video/mp4',
-        });
-
-        formData.append('cover', {
-          uri: image,
-          name: image.split('/').reverse()[0],
-          type: 'image/jpeg'
-        })
-
-        formData.append('caption', caption);
-        formData.append('privacy', privacy);
-        formData.append('allow_comment', allow_comment)
-        formData.append('allow_duet', allow_duet)
-        formData.append('user_id', my_data.id)
-        // formData.append('allow_stitch', allow_stitch)
-        // formData.append('countries', countries)
-        // formData.append('ciities', cities)
-
-        const result = await videoApi.postVideo(formData, my_data?.auth_token);
-
-        navigation.replace('Index');
-      } catch (error) {
-        console.log('error during post video: ', error.message);
-      } finally {
-        setShowModal(false);
-      }
-    } else {
-      Alert.alert("Login required", "please login youerself for uploading a video")
-    }
-  };
-
-
-
+  // for making payments
   const makePayments = async () => {
     try {
       const token = await paymentsApi.generateToken()
@@ -200,7 +165,7 @@ const PostVideoScreen = () => {
     }
   }
 
-
+  // function for handleing the url state change
   const onUrlChange = (webviewState) => {
     console.log("web view state change :", webviewState.url)
     if (webviewState.url.includes('https://example.com/cancel')) {
@@ -217,7 +182,7 @@ const PostVideoScreen = () => {
 
     }
   }
-
+  // function for handeling the payments success
   const paymentSucess = async (id) => {
     try {
       const res = paymentsApi.capturePayment(id, access_token)
@@ -228,74 +193,93 @@ const PostVideoScreen = () => {
       console.log("error raised in payment capture", error)
     }
   }
-
+  // function for clearing all the state of payments
   const clearPaypalState = () => {
     setPaypal_url(null)
     setAccess_token(null)
     setpromoteModal(false)
   }
 
+  const handleTagBottonPressed = (id) => {
+    if (people_id.includes(id)) {
+      const newData = people_id.filter(v => v !== id)
+      setPeople_id([...newData])
+    } else {
+      setPeople_id([...people_id, id])
+    }
+  }
 
 
-  const userinfo = [
-    {
-      id: 1,
-      name: "Diwakar kumar",
-      img: "https://media.licdn.com/dms/image/D4D03AQFe9vksJNnGiA/profile-displayphoto-shrink_800_800/0/1683797622677?e=2147483647&v=beta&t=jbVEvQ5xMGlW_wzNSt8AiT0Td6C5brUNrdsRAIGfKW4",
-    },
-    {
-      id: 2,
-      name: "pratikesh kumar",
-      img: "https://media.licdn.com/dms/image/D4D03AQFe9vksJNnGiA/profile-displayphoto-shrink_800_800/0/1683797622677?e=2147483647&v=beta&t=jbVEvQ5xMGlW_wzNSt8AiT0Td6C5brUNrdsRAIGfKW4",
-    },
-    {
-      id: 3,
-      name: "shubham kumar",
-      img: "https://media.licdn.com/dms/image/D4D03AQFe9vksJNnGiA/profile-displayphoto-shrink_800_800/0/1683797622677?e=2147483647&v=beta&t=jbVEvQ5xMGlW_wzNSt8AiT0Td6C5brUNrdsRAIGfKW4",
-    },
-    {
-      id: 4,
-      name: "pankaj kumar",
-      img: "https://media.licdn.com/dms/image/D4D03AQFe9vksJNnGiA/profile-displayphoto-shrink_800_800/0/1683797622677?e=2147483647&v=beta&t=jbVEvQ5xMGlW_wzNSt8AiT0Td6C5brUNrdsRAIGfKW4",
-    },
-    {
-      id: 5,
-      name: "pankaj kumar",
-      img: "https://media.licdn.com/dms/image/D4D03AQFe9vksJNnGiA/profile-displayphoto-shrink_800_800/0/1683797622677?e=2147483647&v=beta&t=jbVEvQ5xMGlW_wzNSt8AiT0Td6C5brUNrdsRAIGfKW4",
-    },
-    {
-      id: 6,
-      name: "diwakar kumar",
-      img: "https://media.licdn.com/dms/image/D4D03AQFe9vksJNnGiA/profile-displayphoto-shrink_800_800/0/1683797622677?e=2147483647&v=beta&t=jbVEvQ5xMGlW_wzNSt8AiT0Td6C5brUNrdsRAIGfKW4",
-    },
-    {
-      id: 7,
-      name: "Niraj kumar",
-      img: "https://media.licdn.com/dms/image/D4D03AQFe9vksJNnGiA/profile-displayphoto-shrink_800_800/0/1683797622677?e=2147483647&v=beta&t=jbVEvQ5xMGlW_wzNSt8AiT0Td6C5brUNrdsRAIGfKW4",
-    },
-    {
-      id: 8,
-      name: "aryan kumar",
-      img: "https://media.licdn.com/dms/image/D4D03AQFe9vksJNnGiA/profile-displayphoto-shrink_800_800/0/1683797622677?e=2147483647&v=beta&t=jbVEvQ5xMGlW_wzNSt8AiT0Td6C5brUNrdsRAIGfKW4",
-    },
-    {
-      id: 9,
-      name: "dinkar kumar",
-      img: "https://media.licdn.com/dms/image/D4D03AQFe9vksJNnGiA/profile-displayphoto-shrink_800_800/0/1683797622677?e=2147483647&v=beta&t=jbVEvQ5xMGlW_wzNSt8AiT0Td6C5brUNrdsRAIGfKW4",
-    },
-  ];
+
 
   const handleClickAddress = e => {
-    let txt = caption.trim();
+    let txt = caption.toString().trim();
     if (iconCaption.includes(txt[txt.length - 1])) txt = txt.slice(0, -1);
     console.log(txt);
     setCaption(txt.trim() + ' ◉' + e);
   };
 
 
+  // FUNCTION FOR HANDELING THE VIDEO POSTING
+  const handlePostVideo = async () => {
+    if (my_data) {
+      try {
+        setShowModal(true); // SHOW LOADER
 
+        const formData = new FormData(); // FORM DATA
 
+        // APPENDING VIDEO TO FORM DATA
+        formData.append('video', {
+          uri: `file:// + ${video?.video_url}`,
+          name: video?.video_url.split('/').reverse()[0],
+          type: 'video/mp4',
+        });
 
+        // APPENDING COVER OR THUMBNAIL TO THE VIDEO
+        formData.append('cover', {
+          uri: image,
+          name: image.split('/').reverse()[0],
+          type: 'image/jpeg'
+        })
+
+        formData.append('caption', caption);
+        formData.append('privacy', privacy);
+        formData.append('allow_comment', allow_comment)
+        formData.append('allow_duet', allow_duet)
+        formData.append('allow_stitch', allow_stitch)
+        formData.append('countries', countries)
+        formData.append('cities', cities)
+        formData.append('hashtag', hashtag)
+        formData.append('tag_people', tag_username)
+        formData.append('tagged_people_id', people_id)
+
+        console.log(formData)
+
+        const result = await videoApi.postVideo(formData, my_data?.auth_token);
+
+        navigation.replace('Index');
+      } catch (error) {
+        console.log('error during post video: ', error.message);
+      } finally {
+        setShowModal(false);
+      }
+    } else {
+      Alert.alert("Login required", "please login youerself for uploading a video")
+    }
+  };
+
+  console.log('tag_username', tag_username)
+  // console.log('hashtag', hashtag)
+  // console.log('caption', caption)
+  console.log('people_id', people_id)
+
+  // console.log('privacy', privacy)
+  // console.log('comment_allowed', allow_comment)
+  // console.log('allow duet', allow_duet)
+  // console.log('allow stitch', allow_stitch)
+  // console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$')
+
+  
 
   return (
     <Container
@@ -313,8 +297,10 @@ const PostVideoScreen = () => {
       <TopPostVideo
         pathVideo={video?.video_url}
         caption={caption}
-        setCaption={text => setCaption(text)}
+        setCaption={setCaption}
         image={image}
+        setTagusername={setTagusername}
+        setHastag={setHastag}
       />
       <ScrollView
         showsHorizontalScrollIndicator={false}
@@ -330,7 +316,11 @@ const PostVideoScreen = () => {
           iconLeft={PLACE_ICON}
           name={'Location'}
           iconRight={ARROW_FORWARD_IOS_ICON}
-          onPress={() => { navigation.navigate('SelectingLocationScreen', { setCountries, setCities, countries, cities }) }}
+          onPress={() => {
+            navigation.navigate('SelectingLocationScreen', {
+              setCountries, setCities, countries, cities
+            })
+          }}
 
         />
         <Container marginBottom={SPACING.S2}>
@@ -373,13 +363,13 @@ const PostVideoScreen = () => {
           iconLeft={STITCH_ICON}
           name={'Allow Stitch'}
           value={allow_stitch}
-          onChange={e => setAllow_stitch(e)} />
+          onChange={setAllow_stitch} />
 
-        <ItemChoose
+        {/* <ItemChoose
           iconLeft={MORE_HORIZ_ICON}
           name={'More options'}
           iconRight={ARROW_FORWARD_IOS_ICON}
-        />
+        /> */}
       </ScrollView>
       <View style={styles.actionBottom}>
         <Pressable
@@ -479,13 +469,23 @@ const PostVideoScreen = () => {
                     }}
                   />
                   <View>
-                  <Text style={styles.nickname}>{item?.nickname}</Text>
-                  <Text style={styles.username}>@{item?.username}</Text>
+                    <Text style={styles.nickname}>{item?.nickname}</Text>
+                    <Text style={styles.username}>@{item?.username}</Text>
                   </View>
                 </View>
-                <TouchableOpacity style={styles.tag_button}>
-                  <Text style={{ color: 'white' }}>Tag</Text>
-                </TouchableOpacity>
+
+                <Pressable
+                  style={[styles.tag_button,
+                  {
+                    backgroundColor: people_id.includes(item?.id) ? 'rgba(0, 0, 0, 0.3)' : 'red'
+                  }]}
+                  onPress={() => { handleTagBottonPressed(item?.id) }}>
+                  <Text style={{ color: 'white' }}>
+                    {people_id.includes(item?.id) ? 'Tagged' : 'Tag'}
+                  </Text>
+                </Pressable>
+
+
               </View>
             )}
           />
@@ -526,10 +526,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   tag_button: {
-    backgroundColor: 'red',
-    paddingHorizontal: 20,
-    paddingVertical: 5,
-    borderRadius: 5
+    paddingVertical: 7,
+    borderRadius: 2,
+    width: 80,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   nickname: {
     fontSize: 16,

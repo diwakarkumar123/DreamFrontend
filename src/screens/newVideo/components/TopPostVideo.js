@@ -8,12 +8,23 @@ import ItemAddCaption from './ItemAddCaption';
 import HighlightText from '@sanar/react-native-highlight-text';
 
 
-const {width, height} = Dimensions.get('window')
+const { width, height } = Dimensions.get('window')
 const listCaption = ['# hashtag', '@ Mention',];
 // '▶ Video'
 const iconCaption = ['#', '@', '▶', '◉'];
 
-const TopPostVideo = ({ pathVideo, caption, setCaption, image }) => {
+const TopPostVideo = ({
+  pathVideo,
+  caption,
+  setCaption,
+  image,
+  setTagusername,
+  setHastag
+
+}) => {
+
+
+
   const handleCick = t => {
     let txt = caption.trim();
     if (iconCaption.includes(txt[txt.length - 1])) txt = txt.slice(0, -1);
@@ -21,9 +32,16 @@ const TopPostVideo = ({ pathVideo, caption, setCaption, image }) => {
     setCaption(txt.trim() + ' ' + t.split(' ')[0]);
   };
 
+
+
+
+
+
   const handleChangeText = (inputText) => {
     const retLines = inputText.split("\n");
     const formattedText = [];
+    const usernames = [];
+    const hashtags = [];
     retLines.forEach((retLine) => {
       const words = retLine.split(" ");
       const contentLength = words.length;
@@ -38,8 +56,20 @@ const TopPostVideo = ({ pathVideo, caption, setCaption, image }) => {
               {word}
             </Text>
           );
-          if (index !== contentLength - 1) formattedText.push(mention, " ");
+          if (index !== contentLength - 1) {
+            formattedText.push(mention, ' ');
+
+          }
+
           else formattedText.push(mention);
+
+          // Extract usernames and hashtags and store them
+          if (word.startsWith("@")) {
+            usernames.push(word.substr(1));
+          } else if (word.startsWith("#")) {
+            hashtags.push(word.substr(1));
+          }
+
         } else {
           if (index !== contentLength - 1) return formattedText.push(word, " ");
           else return formattedText.push(word);
@@ -47,54 +77,56 @@ const TopPostVideo = ({ pathVideo, caption, setCaption, image }) => {
       });
     });
     setCaption(formattedText);
+    setTagusername(usernames)
+    setHastag(hashtags)
   };
 
 
 
 
   return (
-      <Container flexDirection="row" height={140}>
+    <Container flexDirection="row" height={140}>
 
 
+      <Container
+        height="100%"
+        width={90}
+        borderRadius={BORDER.SMALL}
+        overflow="hidden">
+        <Image
+          source={{ uri: image }}
+          style={styles.video}
+        />
         <Container
-          height="100%"
-          width={90}
-          borderRadius={BORDER.SMALL}
+          position="absolute"
+          backgroundColor={COLOR.setOpacity(COLOR.BLACK, 0.3)}
+          bottom={0}
+          left={0}
+          right={0}
+          paddingVertical={SPACING.S2}
           overflow="hidden">
-          <Image
-            source={{ uri: image }}
-            style={styles.video}
-          />
-          <Container
-            position="absolute"
-            backgroundColor={COLOR.setOpacity(COLOR.BLACK, 0.3)}
-            bottom={0}
-            left={0}
-            right={0}
-            paddingVertical={SPACING.S2}
-            overflow="hidden">
-            <CText color={COLOR.WHITE} textAlign="center" fontSize={12}>
-              cover photo
-            </CText>
-          </Container>
+          <CText color={COLOR.WHITE} textAlign="center" fontSize={12}>
+            cover photo
+          </CText>
         </Container>
-
-
-
-
-        <Container marginLeft={SPACING.S2}>
-          <TextInput
-            style={styles.input}
-            placeholder={'Describe the post, add a hashtag, or hit the creators who inspire you'}
-            textAlignVertical="top"
-            onChangeText={handleChangeText}
-            multiline={true}>
-            <Text>{caption}</Text>
-          </TextInput>
-        </Container>
-
-
       </Container>
+
+
+
+
+      <Container marginLeft={SPACING.S2}>
+        <TextInput
+          style={styles.input}
+          placeholder={'Describe the post, add a hashtag, or hit the creators who inspire you'}
+          textAlignVertical="top"
+          onChangeText={handleChangeText}
+          multiline={true}>
+          <Text>{caption}</Text>
+        </TextInput>
+      </Container>
+
+
+    </Container>
   );
 };
 

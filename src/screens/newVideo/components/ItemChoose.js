@@ -1,8 +1,7 @@
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Switch } from 'react-native';
 import React, { useState } from 'react';
 import { BORDER, COLOR, SPACING, TEXT } from '../../../configs/styles';
 import { Icon, CText } from '../../../components';
-import { Switch } from 'react-native-gesture-handler';
 
 const ItemChoose = ({
   iconLeft,
@@ -35,10 +34,10 @@ const ItemChoose = ({
           <Icon source={iconRight} tintColor={COLOR.GRAY} onPress={onPress} />
         ) : (
           <Switch
-            onChange={toggleSwitch}
-            value={value}
-            trackColor={{ false: '#767577', true: 'red'}}
+            trackColor={{ false: '#767577', true: 'red' }}
             thumbColor={isEnabled ? 'red' : '#f4f3f4'}
+            onValueChange={toggleSwitch}
+            value={isEnabled}
           />
         )}
       </View>

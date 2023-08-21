@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Dimensions, TouchableOpacity, TextInput } from 'react-native'
+import { StyleSheet, Text, View, Dimensions, TouchableOpacity, TextInput, Pressable } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -18,19 +18,17 @@ const { width, height } = Dimensions.get('window')
 
 
 const SelectingCitiesScreen = ({ route }) => {
-    const {code, setCountries, setCities, countries, cities } = route.params;
+    const {code, setCities, cities } = route.params;
     const [data, setData] = useState('')
     const navigation = useNavigation()
     const [show_search, setShow_search] = useState(false)
     const [filteredUsers, setFilteredUsers] = useState('');
-    const [searchText, setSearchText] = useState("");
-    const [selected_country, setSelected_country] = useState(["s"])
+    const [selected_country, setSelected_country] = useState([...cities])
     const getAllCitiesByCountryCode = async () => {
         try {
             const result = await countryApi.getCitiesByCountryCode(code)
             setData(result.payload)
         } catch (error) {
-            // console.log(error)
         }
     }
     useEffect(() => {
@@ -47,54 +45,54 @@ const SelectingCitiesScreen = ({ route }) => {
 
     const handleInsertIds = (data) => {
         const ids = data.map((item) => item.id);
-        setCities(ids);
+        setSelected_country([...ids])
     };
+    const handleFinalSelect = ()=>{
+        setCities([...selected_country])
+        navigation.goBack()
+    }
 
 
 
 
+    const Country_card = React.memo(({ item, index }) => {
+        const id = item?.id
+        const [selected, setSelected] = useState(selected_country.includes(id))
 
-    const Country_card = ({ item, index }) => {
-
-        const toggle_switch = (val) => {
-            if (selected_country.includes(item)) {
-
-                setSelected_country(selected_country.filter(it => it !== item));
-                setCities(cities.filter(it => it != item.id));
+        const select_country = () => {
+            setSelected(p => !p)
+            if (selected_country.includes(id)) {
+                const newCountry = selected_country.filter(v => v !== id)
+                setSelected_country([...newCountry])
             } else {
-
-                setSelected_country([...selected_country, item]);
-                setCities([...selected_country, item.id])
+                setSelected_country(selected_country.concat(id));
             }
         }
 
-
-
         return (
-            <View style={styles.cities_card}>
-                <Text>{item.name}</Text>
+            <Pressable style={styles.cities_card} onPress={select_country}>
+                <Text style={styles.text}>{item.name}</Text>
                 <CheckBox
-                    onValueChange={toggle_switch}
-                    value={selected_country.includes(item) ? true : false}
+                    onValueChange={select_country}
+                    value={selected}
                     tintColors={{ true: 'red', false: 'black' }}
-
                 />
-            </View>
+            </Pressable>
         )
-    }
+    })
 
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
             {show_search && <View style={styles.header}>
                 <TouchableOpacity onPress={() => { navigation.goBack() }}>
-                    <AntDesign name='arrowleft' size={20} />
+                    <AntDesign name='arrowleft' size={25} />
                 </TouchableOpacity>
                 <Text style={[styles.headerText, { marginTop: 0 }]}>
                     Cities
                 </Text>
                 <TouchableOpacity onPress={() => { setShow_search(true) }}>
-                    <EvilIcons name='search' size={20} />
+                    <EvilIcons name='search' size={25} />
                 </TouchableOpacity>
             </View>}
 
@@ -111,7 +109,7 @@ const SelectingCitiesScreen = ({ route }) => {
                     // setCities([])
                     navigation.goBack()
                 }}>
-                    <AntDesign name='arrowleft' size={20} />
+                    <AntDesign name='arrowleft' size={25} />
                 </TouchableOpacity>
                 <View style={{ width: width * 0.8, }}>
                     <TextInput
@@ -123,7 +121,7 @@ const SelectingCitiesScreen = ({ route }) => {
                         }}
                     />
                 </View>
-                <TouchableOpacity onPress={() => { navigation.goBack() }}>
+                <TouchableOpacity onPress={handleFinalSelect}>
                     <AntDesign name='check' size={30} color={'blue'} />
                 </TouchableOpacity>
             </View>}
@@ -192,6 +190,12 @@ const styles = StyleSheet.create({
         width: width,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingHorizontal: width * 0.1
+        paddingHorizontal: width * 0.1,
+        marginVertical: 5,
+        
+    },
+    text: {
+        fontSize: 16,
+        color: '#020202'
     }
 })

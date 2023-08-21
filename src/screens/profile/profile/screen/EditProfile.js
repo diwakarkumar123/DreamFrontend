@@ -527,7 +527,7 @@ const EditProfile = () => {
                     style={{ marginLeft: 5 }}
                     onPress={item.onPress}
                   >
-                    <AntDesign name='right' size={25} color={'#020202'} />
+                    <AntDesign name='right' size={20} color={'grey'} />
                   </TouchableOpacity>
                 </Body>
               </Body>
@@ -940,8 +940,7 @@ const EditProfile = () => {
 
       <Modal visible={pic_modal} transparent={true} animationType='slide'>
         <Pressable onPress={() => {
-          setPic_modal(false
-          )
+          setPic_modal(false)
         }} style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.4)' }} />
         <View style={styles.modal_main_view}>
           <TouchableOpacity
@@ -979,6 +978,7 @@ const EditProfile = () => {
             }}>
               Camera</Text>
           </TouchableOpacity>
+
         </View>
       </Modal>
 
