@@ -91,12 +91,21 @@ const getMyAllChatedPerson = async (token) => {
 }
 
 // FUNCTION FOR GETTING ALL THE FOLLOWING PERSONS
-const getAllFollowingsUsers = async (token)=>{
+const getAllFollowingsUsers = async (token) => {
     const config = {
         headers: { Authorization: `Bearer ${token}` }
     }
     const url = `${SERVER_API_URL}/users/getAllFollowingsUsers`;
     const result = await axios.get(url, config)
+    return result.data;
+}
+
+const addUserInteractionTime = async (data, token) => {
+    const config = {
+        headers: { Authorization: `Bearer ${token}` }
+    }
+    const url = `${SERVER_API_URL}/users/addUserInteractionTime`;
+    const result = await axios.post(url, data, config)
     return result.data;
 }
 
@@ -114,5 +123,6 @@ export {
     getFollowingsDetails,
     getAllMessages,
     getMyAllChatedPerson,
-    getAllFollowingsUsers
+    getAllFollowingsUsers,
+    addUserInteractionTime
 }

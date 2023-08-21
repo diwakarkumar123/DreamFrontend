@@ -107,7 +107,7 @@ const AccountScreen = () => {
                     name: 'Security',
                     image: setting_security_icon,
                     onPress: () => {
-
+                        navigation.navigate('MainSecurity')
                     }
                 },
                 {
